@@ -1,0 +1,51 @@
+---
+https://github.com/c-ares/c-ares.git:
+- pattern: "m4/**"
+  reason: "BUILD_TOOL_OF"
+  comment: "c-ares, build scripts."
+- pattern: "test/**"
+  reason: "TEST_OF"
+  comment: "c-ares, tests."
+https://github.com/gflags/gflags.git:
+- pattern: "doc/**"
+  reason: "DOCUMENTATION_OF"
+  comment: "gflags documentation."
+https://github.com/google/boringssl.git:
+- pattern: "crypto/**/asm/*.pl"
+  reason: "BUILD_TOOL_OF"
+  comment: "openssl build scripts."
+- pattern: "src/third_party/googletest/**"
+  reason: "TEST_OF"
+  comment: "Googletest, a testing framework."
+- pattern: "third_party/googletest/**"
+  reason: "TEST_OF"
+  comment: "Googletest, a testing framework."
+https://github.com/google/googletest.git:
+- pattern: "**"
+  reason: "TEST_OF"
+  comment: "GoogleTest, a testing framework."
+https://github.com/google/protobuf.git:
+- pattern: "conformance/**"
+  reason: "TEST_OF"
+  comment: "protobuf tests."
+- pattern: "js/**"
+  reason: "OPTIONAL_COMPONENT_OF"
+  comment: "protobuf JavaScript implementation."
+- pattern: "m4/**"
+  reason: "BUILD_TOOL_OF"
+  comment: "protobuf build scripts."
+https://github.com/llvm-mirror/libcxx.git:
+- pattern: "docs/**"
+  reason: "DOCUMENTATION_OF"
+  comment: "libcxx documentation."
+- pattern: "www/**"
+  reason: "DOCUMENTATION_OF"
+  comment: "libcxx documentation."
+https://github.com/llvm-mirror/libcxxabi.git:
+- pattern: "www/**"
+  reason: "DOCUMENTATION_OF"
+  comment: "libcxx documentation."
+https://github.com/madler/zlib:
+- pattern: "FAQ"
+  reason: "DOCUMENTATION_OF"
+  comment: "zlib documentation."

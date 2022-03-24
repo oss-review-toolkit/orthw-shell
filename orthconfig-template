@@ -1,0 +1,58 @@
+#
+# Directory containing the configuration directory.
+#
+configuration_home=~/devel/ort/configuration
+
+#
+# Directory containing a copy of the ort repository:
+# https://github.com/oss-review-toolkit/ort
+#
+ort_home=~/devel/ort/ort
+
+#
+# Directory containing a copy of the scancode-toolkit repository:
+# https://github.com/nexB/scancode-toolkit
+#
+scancode_home=~/sources/github/scancode-toolkit
+
+#
+# Configuration entries database home (used by import- and export commands):
+#
+exports_home=""
+
+#
+# Directory containing a copy of the orth repository:
+# https://github.com/oss-review-toolkit/orth
+#
+support_home=~/devel/ort/support
+
+#
+# Scan results cache Postgres database.
+#
+scandb_host=""
+scandb_port=""
+scandb_db=""
+scandb_schema=""
+scandb_user=""
+scandb_password=""
+
+#
+# Artifactory credentials.
+#
+artifactory_user_name=""
+artifactory_password=""
+
+#
+# GitLab credentials. The password can either be a token or a password.
+# The token can be created under
+# https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html and
+# should have 'read_registry' and 'read_api' permissions.
+#
+gitlab_host="gitlab.example.com"
+gitlab_token=""
+
+#
+# JVM options for `ort` and `orth`.
+#
+export ORT_OPTS="-Xmx16G"
+export ORTH_OPTS="-Xmx16G"
