@@ -1,0 +1,1158 @@
+#!/bin/bash
+
+########################################
+# Required configuration:
+#
+required_commands="curl jq md5sum xz"
+required_directories="configuration_home ort_home scancode_home support_home"
+
+########################################
+# User configuration:
+#
+
+# shellcheck source=orthconfig-template
+. ~/.orthconfig
+
+########################################
+# Executables:
+#
+ort="${ort_home}/cli/build/install/ort/bin/ort"
+orth="${ort_home}/helper-cli/build/install/orth/bin/orth"
+
+########################################
+# Dot directory files:
+#
+dot_dir=".orth"
+advisor_result_file="$dot_dir/advisor-result.json"
+evaluation_md5_sum_file="$dot_dir/evaluation-md5sum.txt"
+evaluation_result_file="$dot_dir/evaluation-result.json"
+package_configuration_md5_sum_file="$dot_dir/package-configuration-md5sum.txt"
+package_curations_md5_sum_file="$dot_dir/package-curations-md5sum.txt"
+scan_result_file="$dot_dir/scan-result.json"
+scan_results_storage_dir="$dot_dir/scan-results"
+target_url_file="$dot_dir/target-url.txt"
+temp_dir="$dot_dir/tmp"
+
+########################################
+# Configuration (repository) files:
+#
+copyright_garbage_file="$configuration_home/copyright-garbage.yml"
+curations_dir="$configuration_home/curations"
+how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kts"
+license_classifications_file="$configuration_home/license-classifications.yml"
+notice_by_package_template_file="$configuration_home/notice/by-package.ftl"
+notice_summary_template_file="$configuration_home/notice/summary.ftl"
+notice_license_ids_template_file="$configuration_home/notice/license-ids.ftl"
+package_configuration_dir="$configuration_home/package-configurations"
+resolutions_file="$configuration_home/resolutions.yml"
+rules_file="$configuration_home/evaluator-rules/src/main/resources/example.rules.kts"
+
+########################################
+# Support (repository) files:
+#
+license_finding_curations_file="$support_home/license-finding-curations.yml"
+path_excludes_file="$support_home/path-excludes.yml"
+vcs_url_mapping_file="$support_home/vcs-url-mapping.yml"
+
+########################################
+# (Helper-)CLI parameters:
+#
+# Set of policy rules for which violations can be triggered even by excluded findings:
+ignore_excluded_rule_ids="BLACKLISTED_LICENSE,UNAPPROVED_PATENT_GRANT"
+
+########################################
+# Initialized orth directory input /
+# output files:
+#
+copyrights_file="copyrights.txt"
+copyrights_debug_file="copyrights-debug.txt"
+cyclone_dx_report_file="cyclone-dx-report.xml"
+evaluated_model_report_file="evaluated-model.json"
+gitlab_license_model_report_file="gl-license-scanning-report.json"
+html_report_file="report.html"
+notice_by_package_report_file="NOTICE_BY_PACKAGE"
+notice_license_ids_report_file="NOTICE_LICENSE_IDS"
+notice_summary_report_file="NOTICE_SUMMARY"
+repository_configuration_file="ort.yml"
+spdx_json_report_file="report.spdx.json"
+spdx_yaml_report_file="report.spdx.yml"
+webapp_report_file="webapp.html"
+
+########################################
+# Helper functions:
+#
+usage() {
+  echo ""
+  echo "Configuration:"
+  echo ""
+  echo "  configuration-home: $configuration_home"
+  echo "  ort-home: $ort_home"
+  echo "  scancode-home: $scancode_home"
+  echo "  support-home: $support_home"
+  echo ""
+  echo "Commands with scan context:"
+  echo ""
+  echo "  advise"
+  echo "  analyze <source-code-dir>"
+  echo "  analyze-in-docker <source-code-dir>"
+  echo "  clean"
+  echo "  copyrights"
+  echo "  copyrights <package-id>"
+  echo "  export-copyright-garbage"
+  echo "  init <target-url>"
+  echo "  licenses <package-id>"
+  echo "  licenses <package-id> <source-code-dir>"
+  echo "  offending-licenses <package-id>"
+  echo "  offending-licenses <package-id> <source-code-dir>"
+  echo "  packages"
+  echo "  packages-for-detected-licenses <license-ids-csv>"
+  echo "  raw-licenses"
+  echo "  report"
+  echo "  report-cyclone-dx"
+  echo "  report-gitlab-license-model"
+  echo "  report-html"
+  echo "  report-model"
+  echo "  report-notices"
+  echo "  report-spdx"
+  echo "  report-webapp"
+  echo ""
+  echo "Commands for package configurations:"
+  echo ""
+  echo "  pc-clean <package-id>"
+  echo "  pc-create <package-id>"
+  echo "  pc-export-curations <package-id> <source-code-dir>"
+  echo "  pc-export-path-excludes <package-id> <source-code-dir>"
+  echo "  pc-find <package-id>"
+  echo "  pc-format <package-id>"
+  echo "  pc-import-curations <package-id> <source-code-dir>"
+  echo "  pc-import-path-excludes <package-id> <source-code-dir>"
+  echo "  pc-sort <package-id>"
+  echo ""
+  echo "Commands for repository configurations (ort.yml):"
+  echo ""
+  echo "  rc-clean <source-code-dir>"
+  echo "  rc-export-curations"
+  echo "  rc-export-path-excludes"
+  echo "  rc-format"
+  echo "  rc-generate-project-excludes"
+  echo "  rc-generate-rule-violation-resolutions"
+  echo "  rc-generate-scope-excludes"
+  echo "  rc-generate-timeout-error-resolutions"
+  echo "  rc-import-curations"
+  echo "  rc-import-curations-update-only"
+  echo "  rc-import-path-excludes"
+  echo "  rc-import-path-excludes-update-only"
+  echo "  rc-sort"
+  echo ""
+  echo "Commands without scan context:"
+  echo ""
+  echo "  analyze <source-code-dir>"
+  echo "  analyze-in-docker <source-code-dir>"
+  echo "  create-analyzer-result <package-ids-file>"
+  echo "  delete-scan-results <package-id>"
+  echo "  find-license-url <license-id>"
+  echo "  find-scans-for-package <package-id"
+  echo "  generate-license-classification-request <license-id>"
+  echo "  handled-licenses"
+  echo "  handled-licenses-by-category"
+  echo "  scan-results <package-id pattern>"
+  echo "  update"
+  echo ""
+  echo ""
+  echo "Working dir:"
+  echo ""
+  echo "  target-url: $(cat $target_url_file 2> /dev/null)"
+  echo ""
+}
+
+
+analyze() {
+  source_code_dir=$(realpath "$1")
+
+  $ort analyze \
+    --input-dir $source_code_dir \
+    --output-dir . \
+    --output-formats JSON \
+    --package-curations-dir $curations_dir
+}
+
+analyze_in_docker() {
+  analyzer_input_dir=$(realpath "$1")
+  analyzer_output_dir=$(realpath .)
+
+  docker_image="registry.gitlab.com/oss-review-toolkit/ort-gitlab-ci/ort:latest"
+
+  docker login registry.gitlab.com \
+    -u gitlab-ci-token \
+    -p $gitlab_token
+
+  docker pull $docker_image
+
+  # Setup temporary directories to mount into docker:
+  temp_dir=$(mktemp -d)
+
+  netrc_file="$temp_dir/.netrc"
+  echo -e "machine atrifactory.example.com" >> $netrc_file
+  echo -e "login $artifactory_user_name" >> $netrc_file
+  echo -e "password $artifactory_password" >> $netrc_file
+  chmod 0600 $netrc_file
+
+  # Note: mounting the host resolv.conf in order to fix a potential issue
+  # related to missing entries when connected via VPN.
+  docker run \
+    -it \
+    -v $netrc_file:/root/.netrc \
+    -v $ort_home:/workspace/ort \
+    -v $analyzer_input_dir:/workspace/in \
+    -v $analyzer_output_dir:/workspace/out \
+    -v /etc/resolv.conf:/etc/resolv.conf \
+    $docker_image \
+    /bin/bash
+}
+
+
+get_package_configuration_dir_md5_sum() {
+  find $package_configuration_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
+}
+
+get_package_curations_dir_md5_sum() {
+  find $curations_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
+}
+
+# Checks whether the evaluator inputs changed.
+check_evaluation_md5_sum() {
+  if [ -f $evaluation_md5_sum_file ]; then
+    get_package_configuration_dir_md5_sum > $package_configuration_md5_sum_file
+    md5sum -c $evaluation_md5_sum_file > /dev/null 2>&1
+    echo $?
+    rm -f $package_configuration_md5_sum_file
+  else
+    echo "2"
+  fi
+}
+
+# Creates or updates a file with md5sums of all evaluator input files.
+update_evaluation_md5_sum() {
+  get_package_configuration_dir_md5_sum > $package_configuration_md5_sum_file
+  get_package_curations_dir_md5_sum > $package_curations_md5_sum_file
+
+  md5sum \
+    $package_curations_md5_sum_file \
+    $scan_result_file \
+    $repository_configuration_file \
+    $rules_file \
+    $license_classifications_file \
+    $package_configuration_md5_sum_file \
+    > $evaluation_md5_sum_file
+
+  rm -f $package_configuration_md5_sum_file
+
+  if [ $? -eq "1" ]; then
+    echo "Error creating md5 sums."
+    rm -f $evaluation_md5_sum_file
+  fi
+}
+
+advise() {
+  mkdir -p $temp_dir
+
+  $ort advise \
+    --advisors OssIndex \
+    --output-dir $temp_dir \
+    --output-formats JSON \
+    --ort-file $scan_result_file \
+
+  mv "$temp_dir/advisor-result.json" $advisor_result_file
+
+  rm -rf $temp_dir
+}
+
+evaluate() {
+  if [ "$(check_evaluation_md5_sum)" = "0" ]; then
+    # Skip evaluation as the input files haven't changed.
+    # The advisor file is not included in the md5 sum, so return early can happen.
+    # This was done deliberately as we plan to refactor the way how we use the advisor from orth.
+    return
+  fi
+
+  input_file=$scan_result_file
+
+  if [ -f $advisor_result_file ]; then
+    input_file=$advisor_result_file
+  fi
+
+  mkdir -p $temp_dir
+
+  $ort evaluate \
+    --copyright-garbage-file $copyright_garbage_file \
+    --package-curations-dir $curations_dir \
+    --output-dir $temp_dir \
+    --output-formats JSON \
+    --ort-file $input_file \
+    --repository-configuration-file $repository_configuration_file \
+    --rules-file $rules_file \
+    --license-classifications-file $license_classifications_file \
+    --package-configuration-dir $package_configuration_dir
+  # Ideally the md5 sums should only be updated in case evaluate successfully.
+  # completes, but unfortunately the return code cannot be used as indicator.
+  # TODO: Fix the exit code of the evaluator.
+  update_evaluation_md5_sum
+  mv "$temp_dir/evaluation-result.json" $evaluation_result_file
+
+  rm -rf $temp_dir
+}
+
+begins_with() { case $2 in "$1"*) true;; *) false;; esac; }
+
+find_license_text_url() {
+  license_id=$1
+
+  if begins_with "LicenseRef-scancode-" "$license_id"; then
+    key=${license_id#"LicenseRef-scancode-"}
+    license_file_path="src/licensedcode/data/licenses/$key.LICENSE"
+
+    if [ -e "$scancode_home/$license_file_path" ]; then
+      revision=$(git -C $scancode_home rev-parse HEAD)
+      echo "https://github.com/nexB/scancode-toolkit/blob/$revision/$license_file_path"
+    fi
+  fi
+
+  if ! begins_with "LicenseRef-scancode-" "$license_id"; then
+    echo "https://spdx.org/licenses/$license_id.html"
+  fi
+
+  # TODO: handle custom license IDs.
+}
+
+find_package_configuration() {
+  package_id=$1
+
+  $orth package-configuration find \
+    --package-configuration-dir $package_configuration_dir \
+    --package-id $package_id
+}
+
+
+list_scan_results() {
+  package_id=$1
+  # The package_id is parameter to the SQL LIKE operator, see https://www.postgresqltutorial.com/postgresql-like/.
+  # For example to query all Sun Maven packages use: 'Maven:%sun%'.
+
+  sql="SELECT ROW_NUMBER() OVER (ORDER BY identifier) as index,identifier FROM scan_results WHERE identifier LIKE '$package_id'"
+  result=$(query_scandb "$sql")
+
+  echo "$result"
+}
+
+query_scandb() {
+  sql=$1
+  require_command "psql"
+
+  export PGPASSWORD="$scandb_password"
+  psql -qAt -U $scandb_user -h $scandb_host -p $scandb_port -d $scandb_db -c "$sql"
+}
+
+report() {
+  report_formats=$1
+  evaluate
+
+  mkdir -p $temp_dir
+
+  $ort report \
+    --copyright-garbage-file $copyright_garbage_file \
+    --how-to-fix-text-provider-script $how_to_fix_text_provider_script \
+    --license-classifications-file $license_classifications_file \
+    --package-configuration-dir $package_configuration_dir \
+    --ort-file $evaluation_result_file \
+    --output-dir $temp_dir \
+    --report-formats $report_formats \
+    --repository-configuration-file $repository_configuration_file \
+    --resolutions-file $resolutions_file \
+    -O SpdxDocument=output.file.formats=json,yaml \
+    -O EvaluatedModel=output.file.formats=json \
+    -O NoticeTemplate=project-types-as-packages="SpdxDocumentFile" \
+    -O NoticeTemplate=template.path="$notice_by_package_template_file,$notice_summary_template_file,$notice_license_ids_template_file"
+  mv "$temp_dir/CycloneDX-BOM.xml" $cyclone_dx_report_file > /dev/null 2>&1
+  mv "$temp_dir/document.spdx.json" $spdx_json_report_file > /dev/null 2>&1
+  mv "$temp_dir/document.spdx.yml" $spdx_yaml_report_file > /dev/null 2>&1
+  mv "$temp_dir/gl-license-scanning-report.json" $gitlab_license_model_report_file > /dev/null 2>&1
+  mv "$temp_dir/evaluated-model.json" $evaluated_model_report_file > /dev/null 2>&1
+  mv "$temp_dir/NOTICE_by-package" $notice_by_package_report_file > /dev/null 2>&1
+  mv "$temp_dir/NOTICE_license-ids" $notice_license_ids_report_file > /dev/null 2>&1
+  mv "$temp_dir/NOTICE_summary" $notice_summary_report_file > /dev/null 2>&1
+  mv "$temp_dir/scan-report.html" $html_report_file > /dev/null 2>&1
+  mv "$temp_dir/scan-report-web-app.html" $webapp_report_file > /dev/null 2>&1
+
+  rm -rf $temp_dir
+}
+
+require_initialized() {
+  if [ ! -d $dot_dir ] || [ ! -f $target_url_file ] || [ ! -f $scan_result_file ]; then
+    echo "The working directory is not initialized. Please run 'orth init' first."
+    exit 1
+  fi
+}
+
+require_command() {
+  command=$1
+
+  command -v $command >/dev/null 2>&1 || { echo >&2 "The command '$command' is required but not installed. Aborting."; exit 1; }
+}
+
+require_directory_configured() {
+  variable=$1 # name of config variable
+  directory=${!variable} # value of config variable
+
+  if [ -z ${directory} ]; then
+    echo "[.orthconfig] orth requires the variable $variable to be defined in .orthconfig"
+    exit 1
+  fi
+  if [ ! -d ${directory} ]; then
+    echo "[.orthconfig] The value of $variable is $directory, this directory does not exist"
+    exit 1
+  fi
+}
+
+require_docker_setup() {
+  require_command "docker"
+  require_directory_configured "mos_docker_home"
+}
+
+########################################
+# Check prerequisites:
+#
+for command in $required_commands; do
+  require_command $command
+done
+
+for directory in $required_directories; do
+  require_directory_configured $directory
+done
+
+########################################
+# Parse command line options:
+#
+command="$1"
+
+
+if [ "$command" = "advise" ]; then
+  advise
+
+  exit 0
+fi
+
+
+if [ "$command" = "analyze" ] && [ "$#" -eq 2 ]; then
+  project_dir=$2
+
+  analyze $project_dir
+
+  exit 0
+fi
+
+
+if [ "$command" = "analyze-in-docker" ] && [ "$#" -eq 2 ]; then
+  project_dir=$2
+  require_docker_setup
+
+  analyze_in_docker $project_dir
+
+  exit 0
+fi
+
+
+if [ "$command" = "create-analyzer-result" ] && [ "$#" -eq 2 ]; then
+  package_ids_file=$2
+
+  $orth create-analyzer-result \
+    --package-ids-file $package_ids_file \
+    --scancode-version "3.2.1-rc2" \
+    -P "ort.scanner.storages.postgres.url=jdbc:postgresql://$scandb_host:$scandb_port/$scandb_db" \
+    -P "ort.scanner.storages.postgres.schema=$scandb_schema" \
+    -P "ort.scanner.storages.postgres.username=$scandb_user" \
+    -P "ort.scanner.storages.postgres.password=$scandb_password" \
+    -P "ort.scanner.storages.postgres.sslmode=require" \
+    --ort-file ./synthetic-analyzer-result.json
+
+  exit 0
+fi
+
+
+if [ "$command" = "copyrights" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth list-copyrights \
+    --ort-file $scan_result_file \
+    --package-configuration-dir $package_configuration_dir \
+    --copyright-garbage-file $copyright_garbage_file \
+    > $copyrights_file
+
+  $orth list-copyrights \
+    --ort-file $scan_result_file \
+    --package-configuration-dir $package_configuration_dir \
+    --copyright-garbage-file $copyright_garbage_file \
+    --show-raw-statements \
+    > $copyrights_debug_file
+
+  echo "Results written to: $copyrights_file, $copyrights_debug_file."
+  exit 0
+fi
+
+
+if [ "$command" = "copyrights" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+  require_initialized
+
+  $orth list-copyrights \
+    --ort-file $scan_result_file \
+    --package-id $package_id
+
+  exit 0
+fi
+
+
+if [ "$command" = "clean" ] && [ "$#" -eq 1 ]; then
+  rm -rf $dot_dir
+  rm -f $repository_configuration_file
+  exit 0
+fi
+
+
+if [ "$command" = "find-scans-for-package" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+
+  # This command utilizes the following index:
+  # CREATE INDEX tbl_usr_gin_idx2 
+  # ON oso.ossreview 
+  # USING gin ((result->'analyzer'->'result'->'packages') jsonb_path_ops);
+
+  # Disable sequential scan to force using that index, because running `VACUUM ANALYZE`
+  # ensures this only temporarily (for unknown reason).
+  query="
+  SET enable_seqscan = OFF;
+  SELECT
+   	CONCAT(result->'labels'->'job_parameters.SW_NAME', result->'labels'->'SW_NAME') as sw_name,
+	  CONCAT(result->'labels'->'job_parameters.SW_VERSION', result->'labels'->'SW_VERSION') as sw_version,
+    (result->'analyzer'->>'start_time')::timestamp as start_time,
+    CONCAT(result->'labels'->'job_parameters.JENKINS_URL', result->'labels'->'JENKINS_URL') as job_url
+  FROM 
+	  oso.ossreview
+  WHERE 
+	  result->'analyzer'->'result'->'packages' @> '[{\"package\": {\"id\": \"$package_id\"}}]'
+  ORDER BY sw_name ASC, start_time DESC;
+  "
+  
+  echo "Querying packages..."
+  result=$(query_scandb "$query")
+  echo "$result"
+  
+  exit 0
+fi
+
+
+if [ "$command" = "delete-scan-results" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+
+  list_scan_results $package_id
+
+  count_sql="SELECT COUNT(*) FROM scan_results WHERE identifier LIKE '$package_id'"
+  count=$(query_scandb "$count_sql")
+
+  echo "Found the above $count scan results for query string '$package_id'."
+  echo "Press enter to delete them."
+  read -r key
+
+  delete_sql="DELETE FROM scan_results WHERE identifier LIKE '$package_id'"
+  query_scandb "$delete_sql"
+
+  exit 0
+fi
+
+
+if [ "$command" = "export-copyright-garbage" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  echo "exporting from '$copyrights_file' to '$copyright_garbage_file'."
+
+  mapped_copyrights_file="$temp_dir/copyrights-mapped.txt"
+  mkdir -p $temp_dir
+  $orth map-copyrights\
+    --input-copyrights-file $copyrights_file \
+    --output-copyrights-file $mapped_copyrights_file \
+    --ort-file $scan_result_file
+  echo "Mapped the given processed statements to the following unprocessed ones:"
+  echo ""
+  cat "$mapped_copyrights_file"
+  echo ""
+  $orth import-copyright-garbage \
+    --input-copyright-garbage-file $mapped_copyrights_file \
+    --output-copyright-garbage-file $copyright_garbage_file
+  rm -rf $temp_dir
+
+  exit 0
+fi
+
+
+if [ "$command" = "find-license-url" ] && [ "$#" -eq 2 ]; then
+  license_id=$2
+
+  find_license_text_url "$license_id"
+
+  exit 0
+fi
+
+
+if [ "$command" = "generate-license-classification-request" ] && [ "$#" -eq 2 ]; then
+  license_id=$2
+
+  license_url=$(find_license_text_url "$2")
+
+  message="
+  # In which category do we have to add this license?
+  # Do we need to add it to the notices?
+  # Do we need to provide source code offer?
+
+  [1] $license_url
+
+  "
+
+  printf "%s" "$message" | sed "s/^\s*//g"
+
+  exit 0
+fi
+
+
+if [ "$command" = "handled-licenses" ] && [ "$#" -eq 1 ]; then
+  $orth list-license-categories \
+    --license-classifications-file $license_classifications_file
+  exit 0
+fi
+
+
+if [ "$command" = "handled-licenses-by-category" ] && [ "$#" -eq 1 ]; then
+  $orth list-license-categories \
+    --license-classifications-file $license_classifications_file \
+    --group-by-category
+  exit 0
+fi
+
+
+if [ "$command" = "init" ] && [ "$#" -eq 2 ]; then
+  target_url=$2
+
+  rm -f $evaluation_md5_sum_file
+  mkdir -p $dot_dir
+  echo "$target_url" > $target_url_file
+
+  if [[ $target_url =~ https://$gitlab_host/oss/oss-review-toolkit/ort-gitlab-ci/-/jobs/([0-9]*)/artifacts/file/ort-results/scan-result.(json|json.xz) ]]; then
+    job_id=${BASH_REMATCH[1]}
+    ext=${BASH_REMATCH[2]}
+    target_url="https://$gitlab_host/api/v4/projects/8889/jobs/$job_id/artifacts/ort-results/scan-result.$ext"
+    echo "Patched URL: '$target_url'."
+  fi
+
+  declare -a header_options=()
+  if [[ $target_url == *$gitlab_host* ]]; then
+    header_options+=('-H' "PRIVATE-TOKEN: $gitlab_token")
+    echo "Added authentication header for $gitlab_host."
+  fi
+
+  filename="${target_url##*/}"
+  extension="${filename#*\.}"
+  temp_scan_result_file="$dot_dir/scan-result-temp.$extension"
+
+  curl -L "${header_options[@]}" $target_url > $temp_scan_result_file
+  if [[ "$extension" == "json.xz" ]]; then
+    xz -d -f $temp_scan_result_file
+    temp_scan_result_file="${temp_scan_result_file%\.*}"
+  fi
+  mv $temp_scan_result_file $scan_result_file
+
+  $orth extract-repository-configuration \
+    --repository-configuration-file $repository_configuration_file \
+    --ort-file $scan_result_file
+
+  $orth import-scan-results \
+    --ort-file $scan_result_file \
+    --scan-results-storage-dir $scan_results_storage_dir
+
+  exit 0
+fi
+
+
+if [ "$command" = "licenses" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+  require_initialized
+
+  evaluate
+  echo "Downloading sources for $2."
+  $orth list-licenses \
+    --ort-file $evaluation_result_file \
+    --package-id $package_id \
+    --repository-configuration-file $repository_configuration_file \
+    --package-configuration-dir $package_configuration_dir \
+    --apply-license-finding-curations \
+    --omit-excluded
+  exit 0
+fi
+
+
+if [ "$command" = "licenses" ] && [ "$#" -eq 3 ]; then
+  package_id=$2
+  source_code_dir=$3
+  require_initialized
+
+  evaluate
+  $orth list-licenses \
+    --ort-file $evaluation_result_file \
+    --package-id $package_id \
+    --repository-configuration-file $repository_configuration_file \
+    --package-configuration-dir $package_configuration_dir \
+    --source-code-dir $source_code_dir \
+    --apply-license-finding-curations \
+    --omit-excluded
+  exit 0
+fi
+
+
+if [ "$command" = "offending-licenses" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+  require_initialized
+
+  evaluate
+  echo "Downloading sources for $2."
+  $orth list-licenses \
+    --ort-file $evaluation_result_file \
+    --package-id $package_id \
+    --ignore-excluded-rule-ids $ignore_excluded_rule_ids \
+    --repository-configuration-file $repository_configuration_file \
+    --package-configuration-dir $package_configuration_dir \
+    --apply-license-finding-curations \
+    --offending-only \
+    --offending-severity ERROR \
+    --omit-excluded
+  exit 0
+fi
+
+
+if [ "$command" = "offending-licenses" ] && [ "$#" -eq 3 ]; then
+  package_id=$2
+  source_code_dir=$3
+  require_initialized
+
+  evaluate
+  $orth list-licenses \
+    --ort-file $evaluation_result_file \
+    --package-id $package_id \
+    --ignore-excluded-rule-ids $ignore_excluded_rule_ids \
+    --repository-configuration-file $repository_configuration_file \
+    --package-configuration-dir $package_configuration_dir \
+    --source-code-dir $source_code_dir \
+    --apply-license-finding-curations \
+    --offending-only \
+    --offending-severity ERROR \
+    --omit-excluded
+  exit 0
+fi
+
+
+if [ "$command" = "packages" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  $orth list-packages --ort-file $scan_result_file
+  exit 0
+fi
+
+
+if [ "$command" = "packages-for-detected-licenses" ] && [ "$#" -eq 2 ]; then
+  detected_licenses=$2
+  require_initialized
+
+  $orth list-packages \
+    --ort-file $scan_result_file \
+    --match-detected-licenses $detected_licenses
+  exit 0
+fi
+
+
+if [ "$command" = "pc-create" ] && [ "$#" -eq 2 ]; then
+  require_initialized
+
+  package_id=$2
+  $orth package-configuration create \
+    --scan-results-storage-dir $scan_results_storage_dir \
+    --package-id $package_id \
+    --create-hierarchical-dirs \
+    --output-dir $package_configuration_dir \
+    --force-overwrite
+  exit 0
+fi
+
+
+if [ "$command" = "pc-clean" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+
+  package_configuration_file=$(find_package_configuration $package_id)
+
+  $orth package-configuration remove-entries \
+    --package-configuration-file $package_configuration_file \
+    --ort-file $scan_result_file
+
+  exit 0
+fi
+
+
+if [ "$command" = "pc-export-curations" ] && [ "$#" -eq 3 ]; then
+  package_id=$2
+  source_code_dir=$3
+
+  package_configuration_file=$(find_package_configuration $package_id)
+
+  $orth package-configuration export-license-finding-curations \
+    --package-configuration-file $package_configuration_file \
+    --license-finding-curations-file $license_finding_curations_file \
+    --source-code-dir $source_code_dir \
+    --vcs-url-mapping-file $vcs_url_mapping_file
+
+  exit 0
+fi
+
+
+if [ "$command" = "pc-export-path-excludes" ] && [ "$#" -eq 3 ]; then
+  package_id=$2
+  source_code_dir=$3
+
+  package_configuration_file=$(find_package_configuration $package_id)
+
+  $orth package-configuration export-path-excludes \
+    --package-configuration-file $package_configuration_file \
+    --path-excludes-file $path_excludes_file \
+    --source-code-dir $source_code_dir \
+    --vcs-url-mapping-file $vcs_url_mapping_file
+
+  exit 0
+fi
+
+
+if [ "$command" = "pc-find" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+
+  find_package_configuration $package_id
+
+  exit 0
+fi
+
+
+if [ "$command" = "pc-format" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+
+  package_configuration_file=$(find_package_configuration $package_id)
+
+  $orth package-configuration format $package_configuration_file
+
+  exit 0
+fi
+
+
+if [ "$command" = "pc-import-curations" ] && [ "$#" -eq 3 ]; then
+  package_id=$2
+  source_code_dir=$3
+  require_initialized
+
+  package_configuration_file=$(find_package_configuration $package_id)
+
+  $orth package-configuration import-license-finding-curations \
+    --package-configuration-file $package_configuration_file \
+    --license-finding-curations-file $license_finding_curations_file \
+    --ort-file $scan_result_file \
+    --source-code-dir $source_code_dir
+
+  exit 0
+fi
+
+
+if [ "$command" = "pc-import-path-excludes" ] && [ "$#" -eq 3 ]; then
+  package_id=$2
+  source_code_dir=$3
+
+  package_configuration_file=$(find_package_configuration $package_id)
+
+  $orth package-configuration import-path-excludes \
+    --package-configuration-file $package_configuration_file \
+    --path-excludes-file $path_excludes_file \
+    --source-code-dir $source_code_dir
+
+  exit 0
+fi
+
+
+if [ "$command" = "pc-sort" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+
+  package_configuration_file=$(find_package_configuration $package_id)
+
+  $orth package-configuration sort $package_configuration_file
+
+  exit 0
+fi
+
+
+if [ "$command" = "raw-licenses" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  evaluate
+  package_ids=$($orth list-packages --ort-file $scan_result_file)
+  IFS='
+  '
+  for package_id in $package_ids
+  do
+    echo "Downloading sources for $package_id."
+    $orth list-licenses \
+      --ort-file $evaluation_result_file \
+      --package-id $package_id \
+      --repository-configuration-file $repository_configuration_file
+  done
+
+  exit 0
+fi
+
+
+if [ "$command" = "rc-clean" ] && [ "$#" -eq 2 ]; then
+  source_code_dir=$2
+  require_initialized
+  evaluate
+
+  $orth repository-configuration remove-entries \
+    --ort-file $evaluation_result_file \
+    --repository-configuration-file $repository_configuration_file \
+    --source-code-dir $source_code_dir \
+    --resolutions-file $resolutions_file
+  exit 0
+fi
+
+
+if [ "$command" = "rc-export-curations" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth repository-configuration export-license-finding-curations \
+    --license-finding-curations-file $license_finding_curations_file \
+    --ort-file $scan_result_file \
+    --repository-configuration-file $repository_configuration_file \
+    --vcs-url-mapping-file $vcs_url_mapping_file
+  exit 0
+fi
+
+
+if [ "$command" = "rc-export-path-excludes" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth repository-configuration export-path-excludes \
+    --path-excludes-file $path_excludes_file \
+    --ort-file $scan_result_file \
+    --repository-configuration-file $repository_configuration_file \
+    --vcs-url-mapping-file $vcs_url_mapping_file
+  exit 0
+fi
+
+
+if [ "$command" = "rc-format" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth repository-configuration format $repository_configuration_file
+  exit 0
+fi
+
+
+if [ "$command" = "rc-generate-project-excludes" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth repository-configuration generate-project-excludes \
+    --ort-file $scan_result_file \
+    --repository-configuration-file $repository_configuration_file
+  exit 0
+fi
+
+
+if [ "$command" = "rc-generate-scope-excludes" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth repository-configuration generate-scope-excludes \
+    --ort-file $scan_result_file \
+    --repository-configuration-file $repository_configuration_file
+  exit 0
+fi
+
+
+if [ "$command" = "rc-generate-rule-violation-resolutions" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  evaluate
+  $orth repository-configuration generate-rule-violation-resolutions \
+    --ort-file $evaluation_result_file \
+    --repository-configuration-file $repository_configuration_file \
+    --severity ERROR
+  exit 0
+fi
+
+
+if [ "$command" = "rc-generate-timeout-error-resolutions" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth generate-timeout-error-resolutions \
+    --ort-file $scan_result_file \
+    --repository-configuration-file $repository_configuration_file \
+    --resolutions-file $resolutions_file \
+    --omit-excluded
+  exit 0
+fi
+
+
+if [ "$command" = "rc-import-curations" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth repository-configuration import-license-finding-curations \
+    --license-finding-curations-file $license_finding_curations_file \
+    --ort-file $scan_result_file \
+    --repository-configuration-file $repository_configuration_file
+  exit 0
+fi
+
+
+if [ "$command" = "rc-import-curations-update-only" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth repository-configuration import-license-finding-curations \
+    --license-finding-curations-file $license_finding_curations_file \
+    --ort-file $scan_result_file \
+    --repository-configuration-file $repository_configuration_file \
+    --update-only-existing
+  exit 0
+fi
+
+
+if [ "$command" = "rc-import-path-excludes" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth repository-configuration import-path-excludes \
+    --path-excludes-file $path_excludes_file \
+    --ort-file $scan_result_file \
+    --repository-configuration-file $repository_configuration_file \
+    --vcs-url-mapping-file $vcs_url_mapping_file
+  exit 0
+fi
+
+
+if [ "$command" = "rc-import-path-excludes-update-only" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  $orth repository-configuration import-path-excludes \
+    --path-excludes-file $path_excludes_file \
+    --ort-file $scan_result_file \
+    --repository-configuration-file $repository_configuration_file \
+    --vcs-url-mapping-file $vcs_url_mapping_file \
+    --update-only-existing
+  exit 0
+fi
+
+
+if [ "$command" = "rc-sort" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  $orth repository-configuration sort $repository_configuration_file
+  exit 0
+fi
+
+
+if [ "$command" = "report" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  report "EvaluatedModel,GitLabLicenseModel,NoticeTemplate,SpdxDocument,StaticHtml,WebApp"
+  exit 0
+fi
+
+
+if [ "$command" = "report-cyclone-dx" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  report CycloneDx
+  exit 0
+fi
+
+
+if [ "$command" = "report-gitlab-license-model" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  report GitLabLicenseModel
+  exit 0
+fi
+
+
+if [ "$command" = "report-html" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  report StaticHtml
+  exit 0
+fi
+
+
+if [ "$command" = "report-model" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  report EvaluatedModel
+  exit 0
+fi
+
+
+if [ "$command" = "report-notices" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  report NoticeTemplate
+  exit 0
+fi
+
+
+if [ "$command" = "report-spdx" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  report SpdxDocument
+  exit 0
+fi
+
+
+if [ "$command" = "report-webapp" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  report WebApp
+  exit 0
+fi
+
+
+if [ "$command" = "scan-results" ] && [ "$#" -eq 2 ]; then
+  package_id=$2
+  list_scan_results $package_id
+  exit 0
+fi
+
+
+if [ "$command" = "update" ] && [ "$#" -eq 1 ]; then
+  cwd=$PWD
+
+  echo "Updating OSS Review Toolkit..."
+  cd $ort_home || exit 1
+  git add ./*
+  git stash
+  git fetch
+  git rebase origin/main
+  git stash pop
+  ./gradlew installDist
+
+  echo "Updating configuration repository for OSS Review Toolkit..."
+  cd $configuration_home || exit 1
+  git add ./*
+  git stash
+  git fetch
+  git rebase origin/master
+  git stash pop
+
+  echo "Updating orth..."
+  cd $support_home || exit 1
+  git stash
+  
+  git fetch
+  git rebase origin/master
+  git stash pop
+
+  cd "$cwd" || exit 1
+  exit 0
+fi
+
+usage

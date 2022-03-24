@@ -1,0 +1,3 @@
+---
+hostnames:
+  gitlab-amsterdam.example.com: "gitlab.example.com"
