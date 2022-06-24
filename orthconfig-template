@@ -33,6 +33,24 @@ support_home=~/devel/ort/support
 scancode_version="3.2.1-rc2"
 
 #
+# The template for the license classification request. Supported placeholders:
+# - <REPLACE_LICENSE_ID>
+# - <REPLACE_LICENSE_URL>
+#
+license_classification_request_template="
+Dear legal team,
+
+Please help with the following questions regarding the license '<REPLACE_LICENSE_ID>', see [1]:
+
+1. In which category do we have to add that license?
+2. Should the license be added to the notice file?
+3. Should a source code offer be included in the notice file?
+
+[1] <REPLACE_LICENSE_URL>
+
+"
+
+#
 # Scan results cache Postgres database.
 #
 scandb_host=""
