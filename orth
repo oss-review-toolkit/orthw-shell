@@ -38,8 +38,7 @@ temp_dir="$dot_dir/tmp"
 copyright_garbage_file="$configuration_home/copyright-garbage.yml"
 how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kts"
 license_classifications_file="$configuration_home/license-classifications.yml"
-notice_by_package_template_file="$configuration_home/notice/by-package.ftl"
-notice_summary_template_file="$configuration_home/notice/summary.ftl"
+notice_template_files="$configuration_home/notice/by-package.ftl,$configuration_home/notice/summary.ftl"
 package_configuration_dir="$configuration_home/package-configurations"
 package_curations_dir="$configuration_home/curations"
 resolutions_file="$configuration_home/resolutions.yml"
@@ -62,8 +61,6 @@ cyclone_dx_report_file="cyclone-dx-report.xml"
 evaluated_model_report_file="evaluated-model.json"
 gitlab_license_model_report_file="gl-license-scanning-report.json"
 html_report_file="report.html"
-notice_by_package_report_file="NOTICE_BY_PACKAGE"
-notice_summary_report_file="NOTICE_SUMMARY"
 repository_configuration_file="ort.yml"
 spdx_json_report_file="report.spdx.json"
 spdx_yaml_report_file="report.spdx.yml"
@@ -326,6 +323,11 @@ report() {
 
   mkdir -p $temp_dir
 
+  notice_template_path_option=""
+  if [ -n "$notice_template_files" ]; then
+    notice_template_path_option="-O NoticeTemplate=template.path=$notice_template_files"
+  fi
+
   $ort report \
     --copyright-garbage-file $copyright_garbage_file \
     --how-to-fix-text-provider-script $how_to_fix_text_provider_script \
@@ -339,16 +341,21 @@ report() {
     -O SpdxDocument=output.file.formats=json,yaml \
     -O EvaluatedModel=output.file.formats=json \
     -O NoticeTemplate=project-types-as-packages="SpdxDocumentFile" \
-    -O NoticeTemplate=template.path="$notice_by_package_template_file,$notice_summary_template_file"
+    $notice_template_path_option
   mv "$temp_dir/CycloneDX-BOM.xml" $cyclone_dx_report_file > /dev/null 2>&1
   mv "$temp_dir/document.spdx.json" $spdx_json_report_file > /dev/null 2>&1
   mv "$temp_dir/document.spdx.yml" $spdx_yaml_report_file > /dev/null 2>&1
   mv "$temp_dir/gl-license-scanning-report.json" $gitlab_license_model_report_file > /dev/null 2>&1
   mv "$temp_dir/evaluated-model.json" $evaluated_model_report_file > /dev/null 2>&1
-  mv "$temp_dir/NOTICE_by-package" $notice_by_package_report_file > /dev/null 2>&1
-  mv "$temp_dir/NOTICE_summary" $notice_summary_report_file > /dev/null 2>&1
   mv "$temp_dir/scan-report.html" $html_report_file > /dev/null 2>&1
   mv "$temp_dir/scan-report-web-app.html" $webapp_report_file > /dev/null 2>&1
+
+  # Move notice files and turn the filename into uppercase using underscores instead of ' ' and '-'.
+  for file in $temp_dir/NOTICE_* ; do
+      filename=$(basename -- "$file")
+      target_filename=$(echo $filename | tr 'a-z' 'A-Z' | tr '-' '_' | tr ' ' '_')
+      mv $file ./$target_filename > /dev/null 2>&1
+  done
 
   rm -rf $temp_dir
 }
