@@ -23,7 +23,6 @@ orth="${ort_home}/helper-cli/build/install/orth/bin/orth"
 # Dot directory files:
 #
 dot_dir=".orth"
-advisor_result_file="$dot_dir/advisor-result.json"
 evaluation_md5_sum_file="$dot_dir/evaluation-md5sum.txt"
 evaluation_result_file="$dot_dir/evaluation-result.json"
 package_configuration_md5_sum_file="$dot_dir/package-configuration-md5sum.txt"
@@ -86,7 +85,6 @@ usage() {
   echo ""
   echo "Commands with scan context:"
   echo ""
-  echo "  advise"
   echo "  analyze <source-code-dir>"
   echo "  analyze-in-docker <source-code-dir>"
   echo "  clean"
@@ -247,32 +245,10 @@ update_evaluation_md5_sum() {
   fi
 }
 
-advise() {
-  mkdir -p $temp_dir
-
-  $ort advise \
-    --advisors OssIndex \
-    --output-dir $temp_dir \
-    --output-formats JSON \
-    --ort-file $scan_result_file \
-
-  mv "$temp_dir/advisor-result.json" $advisor_result_file
-
-  rm -rf $temp_dir
-}
-
 evaluate() {
   if [ "$(check_evaluation_md5_sum)" = "0" ]; then
     # Skip evaluation as the input files haven't changed.
-    # The advisor file is not included in the md5 sum, so return early can happen.
-    # This was done deliberately as we plan to refactor the way how we use the advisor from orth.
     return
-  fi
-
-  input_file=$scan_result_file
-
-  if [ -f $advisor_result_file ]; then
-    input_file=$advisor_result_file
   fi
 
   mkdir -p $temp_dir
@@ -282,7 +258,7 @@ evaluate() {
     --package-curations-dir $curations_dir \
     --output-dir $temp_dir \
     --output-formats JSON \
-    --ort-file $input_file \
+    --ort-file $scan_result_file \
     --repository-configuration-file $repository_configuration_file \
     --rules-file $rules_file \
     --license-classifications-file $license_classifications_file \
