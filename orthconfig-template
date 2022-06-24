@@ -27,6 +27,12 @@ exports_home=""
 support_home=~/devel/ort/support
 
 #
+# ScanCode version to filter the scan results with the 'create-analyzer-result' command.
+# An empty string matches any ScanCode version.
+#
+scancode_version="3.2.1-rc2"
+
+#
 # Scan results cache Postgres database.
 #
 scandb_host=""
