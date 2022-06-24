@@ -36,13 +36,13 @@ temp_dir="$dot_dir/tmp"
 # Configuration (repository) files:
 #
 copyright_garbage_file="$configuration_home/copyright-garbage.yml"
-package_curations_dir="$configuration_home/curations"
 how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kts"
 license_classifications_file="$configuration_home/license-classifications.yml"
 notice_by_package_template_file="$configuration_home/notice/by-package.ftl"
 notice_summary_template_file="$configuration_home/notice/summary.ftl"
 notice_license_ids_template_file="$configuration_home/notice/license-ids.ftl"
 package_configuration_dir="$configuration_home/package-configurations"
+package_curations_dir="$configuration_home/curations"
 resolutions_file="$configuration_home/resolutions.yml"
 rules_file="$configuration_home/evaluator-rules/src/main/resources/example.rules.kts"
 
