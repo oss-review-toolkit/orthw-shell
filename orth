@@ -40,7 +40,6 @@ how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kt
 license_classifications_file="$configuration_home/license-classifications.yml"
 notice_by_package_template_file="$configuration_home/notice/by-package.ftl"
 notice_summary_template_file="$configuration_home/notice/summary.ftl"
-notice_license_ids_template_file="$configuration_home/notice/license-ids.ftl"
 package_configuration_dir="$configuration_home/package-configurations"
 package_curations_dir="$configuration_home/curations"
 resolutions_file="$configuration_home/resolutions.yml"
@@ -64,7 +63,6 @@ evaluated_model_report_file="evaluated-model.json"
 gitlab_license_model_report_file="gl-license-scanning-report.json"
 html_report_file="report.html"
 notice_by_package_report_file="NOTICE_BY_PACKAGE"
-notice_license_ids_report_file="NOTICE_LICENSE_IDS"
 notice_summary_report_file="NOTICE_SUMMARY"
 repository_configuration_file="ort.yml"
 spdx_json_report_file="report.spdx.json"
@@ -341,14 +339,13 @@ report() {
     -O SpdxDocument=output.file.formats=json,yaml \
     -O EvaluatedModel=output.file.formats=json \
     -O NoticeTemplate=project-types-as-packages="SpdxDocumentFile" \
-    -O NoticeTemplate=template.path="$notice_by_package_template_file,$notice_summary_template_file,$notice_license_ids_template_file"
+    -O NoticeTemplate=template.path="$notice_by_package_template_file,$notice_summary_template_file"
   mv "$temp_dir/CycloneDX-BOM.xml" $cyclone_dx_report_file > /dev/null 2>&1
   mv "$temp_dir/document.spdx.json" $spdx_json_report_file > /dev/null 2>&1
   mv "$temp_dir/document.spdx.yml" $spdx_yaml_report_file > /dev/null 2>&1
   mv "$temp_dir/gl-license-scanning-report.json" $gitlab_license_model_report_file > /dev/null 2>&1
   mv "$temp_dir/evaluated-model.json" $evaluated_model_report_file > /dev/null 2>&1
   mv "$temp_dir/NOTICE_by-package" $notice_by_package_report_file > /dev/null 2>&1
-  mv "$temp_dir/NOTICE_license-ids" $notice_license_ids_report_file > /dev/null 2>&1
   mv "$temp_dir/NOTICE_summary" $notice_summary_report_file > /dev/null 2>&1
   mv "$temp_dir/scan-report.html" $html_report_file > /dev/null 2>&1
   mv "$temp_dir/scan-report-web-app.html" $webapp_report_file > /dev/null 2>&1
