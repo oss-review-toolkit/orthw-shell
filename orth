@@ -466,7 +466,7 @@ if [ "$command" = "create-analyzer-result" ] && [ "$#" -eq 2 ]; then
 
   $orth create-analyzer-result \
     --package-ids-file $package_ids_file \
-    --scancode-version "3.2.1-rc2" \
+    --scancode-version "$scancode_version" \
     -P "ort.scanner.storages.postgres.url=jdbc:postgresql://$scandb_host:$scandb_port/$scandb_db" \
     -P "ort.scanner.storages.postgres.schema=$scandb_schema" \
     -P "ort.scanner.storages.postgres.username=$scandb_user" \
