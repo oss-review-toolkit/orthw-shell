@@ -36,7 +36,7 @@ temp_dir="$dot_dir/tmp"
 # Configuration (repository) files:
 #
 copyright_garbage_file="$configuration_home/copyright-garbage.yml"
-curations_dir="$configuration_home/curations"
+package_curations_dir="$configuration_home/curations"
 how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kts"
 license_classifications_file="$configuration_home/license-classifications.yml"
 notice_by_package_template_file="$configuration_home/notice/by-package.ftl"
@@ -165,7 +165,7 @@ analyze() {
     --input-dir $source_code_dir \
     --output-dir . \
     --output-formats JSON \
-    --package-curations-dir $curations_dir
+    --package-curations-dir $package_curations_dir
 }
 
 analyze_in_docker() {
@@ -208,7 +208,7 @@ get_package_configuration_dir_md5_sum() {
 }
 
 get_package_curations_dir_md5_sum() {
-  find $curations_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
+  find $package_curations_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
 }
 
 # Checks whether the evaluator inputs changed.
@@ -255,7 +255,7 @@ evaluate() {
 
   $ort evaluate \
     --copyright-garbage-file $copyright_garbage_file \
-    --package-curations-dir $curations_dir \
+    --package-curations-dir $package_curations_dir \
     --output-dir $temp_dir \
     --output-formats JSON \
     --ort-file $scan_result_file \
