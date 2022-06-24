@@ -605,15 +605,9 @@ if [ "$command" = "generate-license-classification-request" ] && [ "$#" -eq 2 ];
   license_id=$2
 
   license_url=$(find_license_text_url "$2")
-
-  message="
-  # In which category do we have to add this license?
-  # Do we need to add it to the notices?
-  # Do we need to provide source code offer?
-
-  [1] $license_url
-
-  "
+  message=$license_classification_request_template
+  message="${message/<REPLACE_LICENSE_ID>/$license_id}"
+  message="${message/<REPLACE_LICENSE_URL>/$license_url}"
 
   printf "%s" "$message" | sed "s/^\s*//g"
 
