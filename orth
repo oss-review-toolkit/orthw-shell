@@ -385,7 +385,6 @@ require_directory_configured() {
 
 require_docker_setup() {
   require_command "docker"
-  require_directory_configured "mos_docker_home"
 }
 
 ########################################
