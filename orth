@@ -170,8 +170,8 @@ analyze_in_docker() {
   docker_image="registry.gitlab.com/oss-review-toolkit/ort-gitlab-ci/ort:latest"
 
   docker login registry.gitlab.com \
-    -u gitlab-ci-token \
-    -p $gitlab_token
+    --username gitlab-ci-token \
+    --password $gitlab_token
 
   docker pull $docker_image
 
