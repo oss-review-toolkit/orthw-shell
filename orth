@@ -183,17 +183,28 @@ analyze_in_docker() {
   # Setup temporary directories to mount into docker:
   temp_dir=$(mktemp -d)
 
-  netrc_file="$temp_dir/.netrc"
-  echo -e "machine atrifactory.example.com" >> $netrc_file
-  echo -e "login $artifactory_user_name" >> $netrc_file
-  echo -e "password $artifactory_password" >> $netrc_file
-  chmod 0600 $netrc_file
+  mount_netrc_option=""
+  if [ -n "$netrc_machine" ] && \
+     [ -n "$netrc_login" ] && \
+     [ -n "$netrc_password" ]
+  then
+    netrc_file="$temp_dir/.netrc"
+    touch $netrc_file
+    chmod 0600 $netrc_file
+    echo -e "machine $netrc_machine" >> $netrc_file
+    echo -e "login $netrc_login" >> $netrc_file
+    echo -e "password $netrc_password" >> $netrc_file
+
+    mount_netrc_option="-v $netrc_file:/root/.netrc"
+  else
+    echo "Skip setting up a .netrc file, because that's not configured."
+  fi
 
   # Note: mounting the host resolv.conf in order to fix a potential issue
   # related to missing entries when connected via VPN.
   docker run \
     -it \
-    -v $netrc_file:/root/.netrc \
+    $mount_netrc_option \
     -v $ort_home:/workspace/ort \
     -v $analyzer_input_dir:/workspace/in \
     -v $analyzer_output_dir:/workspace/out \

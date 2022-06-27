@@ -77,10 +77,13 @@ ort_docker_registry_password=""
 ort_docker_image="registry.gitlab.com/oss-review-toolkit/ort-gitlab-ci/ort:latest"
 
 #
-# Artifactory credentials.
+# netrc file credentials to inject when running ORT docker.
 #
-artifactory_user_name=""
-artifactory_password=""
+# Some package managers, e.g. Npm and Pip, use the netrc file for authenticating against artifact repositories.
+#
+netrc_machine="artifactory.example.com"
+netrc_login="example-user"
+netrc_password="example-password"
 
 #
 # GitLab credentials. The password can either be a token or a password.
