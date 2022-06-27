@@ -66,6 +66,17 @@ scandb_user=""
 scandb_password=""
 
 #
+# ORT docker image.
+# The registry server, username and password should only be specified if authentication is required.
+# For GitLab it is recommended to use API tokens (as password), with "read registry" permission, instead of user
+# credentials.
+#
+ort_docker_registry_server=""
+ort_docker_registry_username=""
+ort_docker_registry_password=""
+ort_docker_image="registry.gitlab.com/oss-review-toolkit/ort-gitlab-ci/ort:latest"
+
+#
 # Artifactory credentials.
 #
 artifactory_user_name=""
