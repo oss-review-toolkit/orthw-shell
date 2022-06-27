@@ -198,8 +198,8 @@ analyze_in_docker() {
     -v $analyzer_input_dir:/workspace/in \
     -v $analyzer_output_dir:/workspace/out \
     -v /etc/resolv.conf:/etc/resolv.conf \
-    $docker_image \
-    /bin/bash
+    --entrypoint /bin/bash \
+    $ort_docker_image
 }
 
 
