@@ -167,13 +167,18 @@ analyze_in_docker() {
   analyzer_input_dir=$(realpath "$1")
   analyzer_output_dir=$(realpath .)
 
-  docker_image="registry.gitlab.com/oss-review-toolkit/ort-gitlab-ci/ort:latest"
+  if [ -n "$ort_docker_registry_server" ] && \
+     [ -n "$ort_docker_registry_username" ] && \
+     [ -n "$ort_docker_registry_password" ]
+  then
+    docker login $ort_docker_registry_server \
+      --username $ort_docker_registry_username \
+      --password $ort_docker_registry_password
+  else
+    echo "Skip docker registry login, because that's not configured."
+  fi
 
-  docker login registry.gitlab.com \
-    --username gitlab-ci-token \
-    --password $gitlab_token
-
-  docker pull $docker_image
+  docker pull $ort_docker_image
 
   # Setup temporary directories to mount into docker:
   temp_dir=$(mktemp -d)
