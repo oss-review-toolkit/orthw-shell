@@ -164,8 +164,7 @@ analyze() {
 }
 
 analyze_in_docker() {
-  analyzer_input_dir=$(realpath "$1")
-  analyzer_output_dir=$(realpath .)
+  project_dir=$(realpath "$1")
 
   if [ -n "$ort_docker_registry_server" ] && \
      [ -n "$ort_docker_registry_username" ] && \
@@ -205,9 +204,8 @@ analyze_in_docker() {
   docker run \
     -it \
     $mount_netrc_option \
-    -v $ort_home:/workspace/ort \
-    -v $analyzer_input_dir:/workspace/in \
-    -v $analyzer_output_dir:/workspace/out \
+    -v $ort_home:/ort \
+    -v $project_dir:/workspace \
     -v /etc/resolv.conf:/etc/resolv.conf \
     --entrypoint /bin/bash \
     $ort_docker_image
