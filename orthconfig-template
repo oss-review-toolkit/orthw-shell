@@ -18,7 +18,7 @@ scancode_home=~/devel/ort/scancode-toolkit
 #
 # Configuration entries database home (used by import- and export commands):
 #
-exports_home=""
+exports_home=~/devel/ort/exports
 
 #
 # Directory containing a copy of the orth repository:

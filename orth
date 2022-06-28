@@ -4,7 +4,7 @@
 # Required configuration:
 #
 required_commands="curl jq md5sum xz"
-required_directories="configuration_home ort_home scancode_home support_home"
+required_directories="configuration_home ort_home scancode_home support_home exports_home"
 
 ########################################
 # User configuration:
@@ -45,11 +45,11 @@ resolutions_file="$configuration_home/resolutions.yml"
 rules_file="$configuration_home/evaluator-rules/src/main/resources/example.rules.kts"
 
 ########################################
-# Support (repository) files:
+# Exports (repository) files:
 #
-license_finding_curations_file="$support_home/license-finding-curations.yml"
-path_excludes_file="$support_home/path-excludes.yml"
-vcs_url_mapping_file="$support_home/vcs-url-mapping.yml"
+license_finding_curations_file="$exports_home/license-finding-curations.yml"
+path_excludes_file="$exports_home/path-excludes.yml"
+vcs_url_mapping_file="$exports_home/vcs-url-mapping.yml"
 
 ########################################
 # Initialized orth directory input /
@@ -77,6 +77,7 @@ usage() {
   echo "  ort-home: $ort_home"
   echo "  scancode-home: $scancode_home"
   echo "  support-home: $support_home"
+  echo "  exports-home: $exports_home"
   echo ""
   echo "Commands with scan context:"
   echo ""
