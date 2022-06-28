@@ -13,7 +13,7 @@ ort_home=~/devel/ort/ort
 # Directory containing a copy of the scancode-toolkit repository:
 # https://github.com/nexB/scancode-toolkit
 #
-scancode_home=~/sources/github/scancode-toolkit
+scancode_home=~/devel/ort/scancode-toolkit
 
 #
 # Configuration entries database home (used by import- and export commands):
