@@ -38,7 +38,7 @@ temp_dir="$dot_dir/tmp"
 ort_config_copyright_garbage_file="$configuration_home/copyright-garbage.yml"
 ort_config_how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kts"
 ort_config_license_classifications_file="$configuration_home/license-classifications.yml"
-ort_config_notice_template_files="$configuration_home/notice/by-package.ftl,$configuration_home/notice/summary.ftl"
+ort_config_notice_templates_dir="$configuration_home/notice"
 ort_config_package_configuration_dir="$configuration_home/package-configurations"
 ort_config_package_curations_dir="$configuration_home/curations"
 ort_config_resolutions_file="$configuration_home/resolutions.yml"
@@ -338,9 +338,10 @@ report() {
 
   mkdir -p $temp_dir
 
-  local notice_template_path_option=""
-  if [ -n "$ort_config_notice_template_files" ]; then
-    notice_template_path_option="-O NoticeTemplate=template.path=$ort_config_notice_template_files"
+  local notice_template_files=$(find $ort_config_notice_templates_dir -name "*.ftl" | tr '\n' ',' | sed 's/,*\r*$//')
+
+  if [ -n "$notice_template_files" ]; then
+    notice_template_path_option="-O NoticeTemplate=template.path=$notice_template_files"
   fi
 
   $ort report \
