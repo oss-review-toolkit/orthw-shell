@@ -35,14 +35,14 @@ temp_dir="$dot_dir/tmp"
 ########################################
 # Configuration (repository) files:
 #
-copyright_garbage_file="$configuration_home/copyright-garbage.yml"
-how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kts"
-license_classifications_file="$configuration_home/license-classifications.yml"
-notice_template_files="$configuration_home/notice/by-package.ftl,$configuration_home/notice/summary.ftl"
-package_configuration_dir="$configuration_home/package-configurations"
-package_curations_dir="$configuration_home/curations"
-resolutions_file="$configuration_home/resolutions.yml"
-rules_file="$configuration_home/evaluator-rules/src/main/resources/example.rules.kts"
+ort_config_copyright_garbage_file="$configuration_home/copyright-garbage.yml"
+ort_config_how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kts"
+ort_config_license_classifications_file="$configuration_home/license-classifications.yml"
+ort_config_notice_template_files="$configuration_home/notice/by-package.ftl,$configuration_home/notice/summary.ftl"
+ort_config_package_configuration_dir="$configuration_home/package-configurations"
+ort_config_package_curations_dir="$configuration_home/curations"
+ort_config_resolutions_file="$configuration_home/resolutions.yml"
+ort_config_rules_file="$configuration_home/evaluator-rules/src/main/resources/example.rules.kts"
 
 ########################################
 # Exports (repository) files:
@@ -161,7 +161,7 @@ analyze() {
     --input-dir $source_code_dir \
     --output-dir . \
     --output-formats JSON \
-    --package-curations-dir $package_curations_dir
+    --package-curations-dir $ort_config_package_curations_dir
 }
 
 analyze_in_docker() {
@@ -214,11 +214,11 @@ analyze_in_docker() {
 
 
 get_package_configuration_dir_md5_sum() {
-  find $package_configuration_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
+  find $ort_config_package_configuration_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
 }
 
 get_package_curations_dir_md5_sum() {
-  find $package_curations_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
+  find $ort_config_package_curations_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
 }
 
 # Checks whether the evaluator inputs changed.
@@ -242,8 +242,8 @@ update_evaluation_md5_sum() {
     $package_curations_md5_sum_file \
     $scan_result_file \
     $repository_configuration_file \
-    $rules_file \
-    $license_classifications_file \
+    $ort_config_rules_file \
+    $ort_config_license_classifications_file \
     $package_configuration_md5_sum_file \
     > $evaluation_md5_sum_file
 
@@ -264,15 +264,15 @@ evaluate() {
   mkdir -p $temp_dir
 
   $ort evaluate \
-    --copyright-garbage-file $copyright_garbage_file \
-    --package-curations-dir $package_curations_dir \
+    --copyright-garbage-file $ort_config_copyright_garbage_file \
+    --package-curations-dir $ort_config_package_curations_dir \
     --output-dir $temp_dir \
     --output-formats JSON \
     --ort-file $scan_result_file \
     --repository-configuration-file $repository_configuration_file \
-    --rules-file $rules_file \
-    --license-classifications-file $license_classifications_file \
-    --package-configuration-dir $package_configuration_dir
+    --rules-file $ort_config_rules_file \
+    --license-classifications-file $ort_config_license_classifications_file \
+    --package-configuration-dir $ort_config_package_configuration_dir
   # Ideally the md5 sums should only be updated in case evaluate successfully.
   # completes, but unfortunately the return code cannot be used as indicator.
   # TODO: Fix the exit code of the evaluator.
@@ -308,7 +308,7 @@ find_package_configuration() {
   package_id=$1
 
   $orth package-configuration find \
-    --package-configuration-dir $package_configuration_dir \
+    --package-configuration-dir $ort_config_package_configuration_dir \
     --package-id $package_id
 }
 
@@ -339,20 +339,20 @@ report() {
   mkdir -p $temp_dir
 
   notice_template_path_option=""
-  if [ -n "$notice_template_files" ]; then
-    notice_template_path_option="-O NoticeTemplate=template.path=$notice_template_files"
+  if [ -n "$ort_config_notice_template_files" ]; then
+    notice_template_path_option="-O NoticeTemplate=template.path=$ort_config_notice_template_files"
   fi
 
   $ort report \
-    --copyright-garbage-file $copyright_garbage_file \
-    --how-to-fix-text-provider-script $how_to_fix_text_provider_script \
-    --license-classifications-file $license_classifications_file \
-    --package-configuration-dir $package_configuration_dir \
+    --copyright-garbage-file $ort_config_copyright_garbage_file \
+    --how-to-fix-text-provider-script $ort_config_how_to_fix_text_provider_script \
+    --license-classifications-file $ort_config_license_classifications_file \
+    --package-configuration-dir $ort_config_package_configuration_dir \
     --ort-file $evaluation_result_file \
     --output-dir $temp_dir \
     --report-formats $report_formats \
     --repository-configuration-file $repository_configuration_file \
-    --resolutions-file $resolutions_file \
+    --resolutions-file $ort_config_resolutions_file \
     -O SpdxDocument=output.file.formats=json,yaml \
     -O EvaluatedModel=output.file.formats=json \
     -O NoticeTemplate=project-types-as-packages="SpdxDocumentFile" \
@@ -471,14 +471,14 @@ if [ "$command" = "copyrights" ] && [ "$#" -eq 1 ]; then
 
   $orth list-copyrights \
     --ort-file $scan_result_file \
-    --package-configuration-dir $package_configuration_dir \
-    --copyright-garbage-file $copyright_garbage_file \
+    --package-configuration-dir $ort_config_package_configuration_dir \
+    --copyright-garbage-file $ort_config_copyright_garbage_file \
     > $copyrights_file
 
   $orth list-copyrights \
     --ort-file $scan_result_file \
-    --package-configuration-dir $package_configuration_dir \
-    --copyright-garbage-file $copyright_garbage_file \
+    --package-configuration-dir $ort_config_package_configuration_dir \
+    --copyright-garbage-file $ort_config_copyright_garbage_file \
     --show-raw-statements \
     > $copyrights_debug_file
 
@@ -559,7 +559,7 @@ fi
 
 if [ "$command" = "export-copyright-garbage" ] && [ "$#" -eq 1 ]; then
   require_initialized
-  echo "exporting from '$copyrights_file' to '$copyright_garbage_file'."
+  echo "exporting from '$copyrights_file' to '$ort_config_copyright_garbage_file'."
 
   mapped_copyrights_file="$temp_dir/copyrights-mapped.txt"
   mkdir -p $temp_dir
@@ -573,7 +573,7 @@ if [ "$command" = "export-copyright-garbage" ] && [ "$#" -eq 1 ]; then
   echo ""
   $orth import-copyright-garbage \
     --input-copyright-garbage-file $mapped_copyrights_file \
-    --output-copyright-garbage-file $copyright_garbage_file
+    --output-copyright-garbage-file $ort_config_copyright_garbage_file
   rm -rf $temp_dir
 
   exit 0
@@ -605,14 +605,14 @@ fi
 
 if [ "$command" = "handled-licenses" ] && [ "$#" -eq 1 ]; then
   $orth list-license-categories \
-    --license-classifications-file $license_classifications_file
+    --license-classifications-file $ort_config_license_classifications_file
   exit 0
 fi
 
 
 if [ "$command" = "handled-licenses-by-category" ] && [ "$#" -eq 1 ]; then
   $orth list-license-categories \
-    --license-classifications-file $license_classifications_file \
+    --license-classifications-file $ort_config_license_classifications_file \
     --group-by-category
   exit 0
 fi
@@ -671,7 +671,7 @@ if [ "$command" = "licenses" ] && [ "$#" -eq 2 ]; then
     --ort-file $evaluation_result_file \
     --package-id $package_id \
     --repository-configuration-file $repository_configuration_file \
-    --package-configuration-dir $package_configuration_dir \
+    --package-configuration-dir $ort_config_package_configuration_dir \
     --apply-license-finding-curations \
     --omit-excluded
   exit 0
@@ -688,7 +688,7 @@ if [ "$command" = "licenses" ] && [ "$#" -eq 3 ]; then
     --ort-file $evaluation_result_file \
     --package-id $package_id \
     --repository-configuration-file $repository_configuration_file \
-    --package-configuration-dir $package_configuration_dir \
+    --package-configuration-dir $ort_config_package_configuration_dir \
     --source-code-dir $source_code_dir \
     --apply-license-finding-curations \
     --omit-excluded
@@ -707,7 +707,7 @@ if [ "$command" = "offending-licenses" ] && [ "$#" -eq 2 ]; then
     --package-id $package_id \
     --ignore-excluded-rule-ids $ignore_excluded_rule_ids \
     --repository-configuration-file $repository_configuration_file \
-    --package-configuration-dir $package_configuration_dir \
+    --package-configuration-dir $ort_config_package_configuration_dir \
     --apply-license-finding-curations \
     --offending-only \
     --offending-severity ERROR \
@@ -727,7 +727,7 @@ if [ "$command" = "offending-licenses" ] && [ "$#" -eq 3 ]; then
     --package-id $package_id \
     --ignore-excluded-rule-ids $ignore_excluded_rule_ids \
     --repository-configuration-file $repository_configuration_file \
-    --package-configuration-dir $package_configuration_dir \
+    --package-configuration-dir $ort_config_package_configuration_dir \
     --source-code-dir $source_code_dir \
     --apply-license-finding-curations \
     --offending-only \
@@ -763,7 +763,7 @@ if [ "$command" = "pc-create" ] && [ "$#" -eq 2 ]; then
     --scan-results-storage-dir $scan_results_storage_dir \
     --package-id $package_id \
     --create-hierarchical-dirs \
-    --output-dir $package_configuration_dir \
+    --output-dir $ort_config_package_configuration_dir \
     --force-overwrite
   exit 0
 fi
@@ -906,7 +906,7 @@ if [ "$command" = "rc-clean" ] && [ "$#" -eq 2 ]; then
     --ort-file $evaluation_result_file \
     --repository-configuration-file $repository_configuration_file \
     --source-code-dir $source_code_dir \
-    --resolutions-file $resolutions_file
+    --resolutions-file $ort_config_resolutions_file
   exit 0
 fi
 
@@ -981,7 +981,7 @@ if [ "$command" = "rc-generate-timeout-error-resolutions" ] && [ "$#" -eq 1 ]; t
   $orth generate-timeout-error-resolutions \
     --ort-file $scan_result_file \
     --repository-configuration-file $repository_configuration_file \
-    --resolutions-file $resolutions_file \
+    --resolutions-file $ort_config_resolutions_file \
     --omit-excluded
   exit 0
 fi
