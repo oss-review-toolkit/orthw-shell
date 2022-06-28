@@ -155,7 +155,7 @@ usage() {
 
 
 analyze() {
-  source_code_dir=$(realpath "$1")
+  local source_code_dir=$(realpath "$1")
 
   $ort analyze \
     --input-dir $source_code_dir \
@@ -165,7 +165,7 @@ analyze() {
 }
 
 analyze_in_docker() {
-  project_dir=$(realpath "$1")
+  local project_dir=$(realpath "$1")
 
   if [ -n "$ort_docker_registry_server" ] && \
      [ -n "$ort_docker_registry_username" ] && \
@@ -181,7 +181,7 @@ analyze_in_docker() {
   docker pull $ort_docker_image
 
   # Setup temporary directories to mount into docker:
-  temp_dir=$(mktemp -d)
+  local temp_dir=$(mktemp -d)
 
   mount_netrc_option=""
   if [ -n "$netrc_machine" ] && \
@@ -285,14 +285,14 @@ evaluate() {
 begins_with() { case $2 in "$1"*) true;; *) false;; esac; }
 
 find_license_text_url() {
-  license_id=$1
+  local license_id=$1
 
   if begins_with "LicenseRef-scancode-" "$license_id"; then
-    key=${license_id#"LicenseRef-scancode-"}
-    license_file_path="src/licensedcode/data/licenses/$key.LICENSE"
+    local key=${license_id#"LicenseRef-scancode-"}
+    local license_file_path="src/licensedcode/data/licenses/$key.LICENSE"
 
     if [ -e "$scancode_home/$license_file_path" ]; then
-      revision=$(git -C $scancode_home rev-parse HEAD)
+      local revision=$(git -C $scancode_home rev-parse HEAD)
       echo "https://github.com/nexB/scancode-toolkit/blob/$revision/$license_file_path"
     fi
   fi
@@ -305,7 +305,7 @@ find_license_text_url() {
 }
 
 find_package_configuration() {
-  package_id=$1
+  local package_id=$1
 
   $orth package-configuration find \
     --package-configuration-dir $ort_config_package_configuration_dir \
@@ -314,18 +314,18 @@ find_package_configuration() {
 
 
 list_scan_results() {
-  package_id=$1
+  local package_id=$1
   # The package_id is parameter to the SQL LIKE operator, see https://www.postgresqltutorial.com/postgresql-like/.
   # For example to query all Sun Maven packages use: 'Maven:%sun%'.
 
-  sql="SELECT ROW_NUMBER() OVER (ORDER BY identifier) as index,identifier FROM scan_results WHERE identifier LIKE '$package_id'"
-  result=$(query_scandb "$sql")
+  local sql="SELECT ROW_NUMBER() OVER (ORDER BY identifier) as index,identifier FROM scan_results WHERE identifier LIKE '$package_id'"
+  local result=$(query_scandb "$sql")
 
   echo "$result"
 }
 
 query_scandb() {
-  sql=$1
+  local sql=$1
   require_command "psql"
 
   export PGPASSWORD="$scandb_password"
@@ -333,12 +333,12 @@ query_scandb() {
 }
 
 report() {
-  report_formats=$1
+  local report_formats=$1
   evaluate
 
   mkdir -p $temp_dir
 
-  notice_template_path_option=""
+  local notice_template_path_option=""
   if [ -n "$ort_config_notice_template_files" ]; then
     notice_template_path_option="-O NoticeTemplate=template.path=$ort_config_notice_template_files"
   fi
@@ -367,8 +367,8 @@ report() {
 
   # Move notice files and turn the filename into uppercase using underscores instead of ' ' and '-'.
   for file in $temp_dir/NOTICE_* ; do
-      filename=$(basename -- "$file")
-      target_filename=$(echo $filename | tr 'a-z' 'A-Z' | tr '-' '_' | tr ' ' '_')
+      local filename=$(basename -- "$file")
+      local target_filename=$(echo $filename | tr 'a-z' 'A-Z' | tr '-' '_' | tr ' ' '_')
       mv $file ./$target_filename > /dev/null 2>&1
   done
 
@@ -383,14 +383,14 @@ require_initialized() {
 }
 
 require_command() {
-  command=$1
+  local command=$1
 
   command -v $command >/dev/null 2>&1 || { echo >&2 "The command '$command' is required but not installed. Aborting."; exit 1; }
 }
 
 require_directory_configured() {
-  variable=$1 # name of config variable
-  directory=${!variable} # value of config variable
+  local variable=$1 # name of config variable
+  local directory=${!variable} # value of config variable
 
   if [ -z ${directory} ]; then
     echo "[.orthconfig] orth requires the variable $variable to be defined in .orthconfig"
