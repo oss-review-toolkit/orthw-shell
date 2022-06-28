@@ -47,9 +47,9 @@ rules_file="$configuration_home/evaluator-rules/src/main/resources/example.rules
 ########################################
 # Exports (repository) files:
 #
-license_finding_curations_file="$exports_home/license-finding-curations.yml"
-path_excludes_file="$exports_home/path-excludes.yml"
-vcs_url_mapping_file="$exports_home/vcs-url-mapping.yml"
+exports_license_finding_curations_file="$exports_home/license-finding-curations.yml"
+exports_path_excludes_file="$exports_home/path-excludes.yml"
+exports_vcs_url_mapping_file="$exports_home/vcs-url-mapping.yml"
 
 ########################################
 # Initialized orth directory input /
@@ -790,9 +790,9 @@ if [ "$command" = "pc-export-curations" ] && [ "$#" -eq 3 ]; then
 
   $orth package-configuration export-license-finding-curations \
     --package-configuration-file $package_configuration_file \
-    --license-finding-curations-file $license_finding_curations_file \
+    --license-finding-curations-file $exports_license_finding_curations_file \
     --source-code-dir $source_code_dir \
-    --vcs-url-mapping-file $vcs_url_mapping_file
+    --vcs-url-mapping-file $exports_vcs_url_mapping_file
 
   exit 0
 fi
@@ -806,9 +806,9 @@ if [ "$command" = "pc-export-path-excludes" ] && [ "$#" -eq 3 ]; then
 
   $orth package-configuration export-path-excludes \
     --package-configuration-file $package_configuration_file \
-    --path-excludes-file $path_excludes_file \
+    --path-excludes-file $exports_path_excludes_file \
     --source-code-dir $source_code_dir \
-    --vcs-url-mapping-file $vcs_url_mapping_file
+    --vcs-url-mapping-file $exports_vcs_url_mapping_file
 
   exit 0
 fi
@@ -843,7 +843,7 @@ if [ "$command" = "pc-import-curations" ] && [ "$#" -eq 3 ]; then
 
   $orth package-configuration import-license-finding-curations \
     --package-configuration-file $package_configuration_file \
-    --license-finding-curations-file $license_finding_curations_file \
+    --license-finding-curations-file $exports_license_finding_curations_file \
     --ort-file $scan_result_file \
     --source-code-dir $source_code_dir
 
@@ -859,7 +859,7 @@ if [ "$command" = "pc-import-path-excludes" ] && [ "$#" -eq 3 ]; then
 
   $orth package-configuration import-path-excludes \
     --package-configuration-file $package_configuration_file \
-    --path-excludes-file $path_excludes_file \
+    --path-excludes-file $exports_path_excludes_file \
     --source-code-dir $source_code_dir
 
   exit 0
@@ -915,10 +915,10 @@ if [ "$command" = "rc-export-curations" ] && [ "$#" -eq 1 ]; then
   require_initialized
 
   $orth repository-configuration export-license-finding-curations \
-    --license-finding-curations-file $license_finding_curations_file \
+    --license-finding-curations-file $exports_license_finding_curations_file \
     --ort-file $scan_result_file \
     --repository-configuration-file $repository_configuration_file \
-    --vcs-url-mapping-file $vcs_url_mapping_file
+    --vcs-url-mapping-file $exports_vcs_url_mapping_file
   exit 0
 fi
 
@@ -927,10 +927,10 @@ if [ "$command" = "rc-export-path-excludes" ] && [ "$#" -eq 1 ]; then
   require_initialized
 
   $orth repository-configuration export-path-excludes \
-    --path-excludes-file $path_excludes_file \
+    --path-excludes-file $exports_path_excludes_file \
     --ort-file $scan_result_file \
     --repository-configuration-file $repository_configuration_file \
-    --vcs-url-mapping-file $vcs_url_mapping_file
+    --vcs-url-mapping-file $exports_vcs_url_mapping_file
   exit 0
 fi
 
@@ -991,7 +991,7 @@ if [ "$command" = "rc-import-curations" ] && [ "$#" -eq 1 ]; then
   require_initialized
 
   $orth repository-configuration import-license-finding-curations \
-    --license-finding-curations-file $license_finding_curations_file \
+    --license-finding-curations-file $exports_license_finding_curations_file \
     --ort-file $scan_result_file \
     --repository-configuration-file $repository_configuration_file
   exit 0
@@ -1002,7 +1002,7 @@ if [ "$command" = "rc-import-curations-update-only" ] && [ "$#" -eq 1 ]; then
   require_initialized
 
   $orth repository-configuration import-license-finding-curations \
-    --license-finding-curations-file $license_finding_curations_file \
+    --license-finding-curations-file $exports_license_finding_curations_file \
     --ort-file $scan_result_file \
     --repository-configuration-file $repository_configuration_file \
     --update-only-existing
@@ -1014,10 +1014,10 @@ if [ "$command" = "rc-import-path-excludes" ] && [ "$#" -eq 1 ]; then
   require_initialized
 
   $orth repository-configuration import-path-excludes \
-    --path-excludes-file $path_excludes_file \
+    --path-excludes-file $exports_path_excludes_file \
     --ort-file $scan_result_file \
     --repository-configuration-file $repository_configuration_file \
-    --vcs-url-mapping-file $vcs_url_mapping_file
+    --vcs-url-mapping-file $exports_vcs_url_mapping_file
   exit 0
 fi
 
@@ -1026,10 +1026,10 @@ if [ "$command" = "rc-import-path-excludes-update-only" ] && [ "$#" -eq 1 ]; the
   require_initialized
 
   $orth repository-configuration import-path-excludes \
-    --path-excludes-file $path_excludes_file \
+    --path-excludes-file $exports_path_excludes_file \
     --ort-file $scan_result_file \
     --repository-configuration-file $repository_configuration_file \
-    --vcs-url-mapping-file $vcs_url_mapping_file \
+    --vcs-url-mapping-file $exports_vcs_url_mapping_file \
     --update-only-existing
   exit 0
 fi
