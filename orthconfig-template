@@ -95,7 +95,7 @@ gitlab_host="gitlab.example.com"
 gitlab_token=""
 
 #
-# JVM options for `ort` and `orth`.
+# JVM options for ORT's CLI and helper CLI binaries, `ort` and `orth`.
 #
 export ORT_OPTS="-Xmx16G"
 export ORTH_OPTS="-Xmx16G"
