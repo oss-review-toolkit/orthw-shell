@@ -390,15 +390,16 @@ require_command() {
 }
 
 require_directory_configured() {
-  local variable=$1 # name of config variable
-  local directory=${!variable} # value of config variable
+  local variable_name=$1
+  local directory=${!variable_name}
 
   if [ -z ${directory} ]; then
-    echo "The variable '$variable' must be defined in '$orth_config_file'."
+    echo "The variable '$variable_name' must be defined in '$orth_config_file'."
     exit 1
   fi
+
   if [ ! -d ${directory} ]; then
-    echo "The variable '$variable' defined in '$orth_config_file' must point to an existing directory."
+    echo "The variable '$variable_name' defined in '$orth_config_file' must point to an existing directory."
     exit 1
   fi
 }
