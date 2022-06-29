@@ -145,7 +145,6 @@ usage() {
   echo "  scan-results <package-id pattern>"
   echo "  update"
   echo ""
-  echo ""
   echo "Working dir:"
   echo ""
   echo "  target-url: $(cat $target_url_file 2> /dev/null)"
