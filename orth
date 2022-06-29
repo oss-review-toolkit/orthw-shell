@@ -6,10 +6,6 @@
 required_commands="curl jq md5sum xz"
 required_directories="configuration_home ort_home orth_home scancode_home exports_home"
 
-########################################
-# User configuration:
-#
-
 # shellcheck source=orthconfig-template
 . ~/.orthconfig
 
