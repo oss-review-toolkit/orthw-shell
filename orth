@@ -43,6 +43,7 @@ ort_config_package_configuration_dir="$configuration_home/package-configurations
 ort_config_package_curations_dir="$configuration_home/curations"
 ort_config_resolutions_file="$configuration_home/resolutions.yml"
 ort_config_rules_file="$configuration_home/evaluator-rules/src/main/resources/example.rules.kts"
+ort_config_custom_license_texts_dir="$configuration_home/custom-licenses"
 
 ########################################
 # Exports (repository) files:
@@ -345,6 +346,7 @@ report() {
 
   $ort report \
     --copyright-garbage-file $ort_config_copyright_garbage_file \
+    --custom-license-texts-dir $ort_config_custom_license_texts_dir \
     --how-to-fix-text-provider-script $ort_config_how_to_fix_text_provider_script \
     --license-classifications-file $ort_config_license_classifications_file \
     --package-configuration-dir $ort_config_package_configuration_dir \
