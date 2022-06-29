@@ -29,7 +29,7 @@ support_home=~/devel/ort/support
 #
 # Set of policy rules for which violations can be triggered even by excluded license findings:
 #
-ignore_excluded_rule_ids="BLACKLISTED_LICENSE,UNAPPROVED_PATENT_GRANT"
+ignore_excluded_rule_ids=""
 
 #
 # ScanCode version to filter the scan results with the 'create-analyzer-result' command.
