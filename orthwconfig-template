@@ -21,10 +21,10 @@ scancode_home=~/devel/ort/scancode-toolkit
 exports_home=~/devel/ort/exports
 
 #
-# Directory containing a copy of the orth repository:
-# https://github.com/oss-review-toolkit/orth
+# Directory containing a copy of the orthw repository:
+# https://github.com/oss-review-toolkit/orthw
 #
-orth_home=~/devel/ort/orth
+orthw_home=~/devel/ort/orthw
 
 #
 # Set of policy rules for which violations can be triggered even by excluded license findings:

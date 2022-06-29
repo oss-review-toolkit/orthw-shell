@@ -4,12 +4,12 @@
 # Required configuration:
 #
 required_commands="curl jq md5sum xz"
-required_directories="configuration_home ort_home orth_home scancode_home exports_home"
+required_directories="configuration_home ort_home orthw_home scancode_home exports_home"
 
 
-orth_config_file=~/.orthconfig
+orthw_config_file=~/.orthwconfig
 # shellcheck source=orthconfig-template
-. "$orth_config_file"
+. "$orthw_config_file"
 
 ########################################
 # Executables:
@@ -20,7 +20,7 @@ orth="${ort_home}/helper-cli/build/install/orth/bin/orth"
 ########################################
 # Dot directory files:
 #
-dot_dir=".orth"
+dot_dir=".orthw"
 evaluation_md5_sum_file="$dot_dir/evaluation-md5sum.txt"
 evaluation_result_file="$dot_dir/evaluation-result.json"
 package_configuration_md5_sum_file="$dot_dir/package-configuration-md5sum.txt"
@@ -51,7 +51,7 @@ exports_path_excludes_file="$exports_home/path-excludes.yml"
 exports_vcs_url_mapping_file="$exports_home/vcs-url-mapping.yml"
 
 ########################################
-# Initialized orth directory input /
+# Initialized orthw directory input /
 # output files:
 #
 copyrights_file="copyrights.txt"
@@ -74,7 +74,7 @@ usage() {
   echo ""
   echo "  configuration-home: $configuration_home"
   echo "  ort-home: $ort_home"
-  echo "  orth-home: $orth_home"
+  echo "  orthw-home: $orthw_home"
   echo "  scancode-home: $scancode_home"
   echo "  exports-home: $exports_home"
   echo ""
@@ -377,7 +377,7 @@ report() {
 
 require_initialized() {
   if [ ! -d $dot_dir ] || [ ! -f $target_url_file ] || [ ! -f $scan_result_file ]; then
-    echo "The working directory is not initialized. Please run 'orth init' first."
+    echo "The working directory is not initialized. Please run 'orthw init' first."
     exit 1
   fi
 }
@@ -393,12 +393,12 @@ require_directory_configured() {
   local directory=${!variable_name}
 
   if [ -z ${directory} ]; then
-    echo "The variable '$variable_name' must be defined in '$orth_config_file'."
+    echo "The variable '$variable_name' must be defined in '$orthw_config_file'."
     exit 1
   fi
 
   if [ ! -d ${directory} ]; then
-    echo "The variable '$variable_name' defined in '$orth_config_file' must point to an existing directory."
+    echo "The variable '$variable_name' defined in '$orthw_config_file' must point to an existing directory."
     exit 1
   fi
 }
@@ -1127,7 +1127,7 @@ if [ "$command" = "update" ] && [ "$#" -eq 1 ]; then
   git stash pop
 
   echo "Updating orth..."
-  cd $orth_home || exit 1
+  cd $orthw_home || exit 1
   git stash
   
   git fetch
