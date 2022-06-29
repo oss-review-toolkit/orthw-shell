@@ -6,8 +6,10 @@
 required_commands="curl jq md5sum xz"
 required_directories="configuration_home ort_home orth_home scancode_home exports_home"
 
+
+orth_config_file=~/.orthconfig
 # shellcheck source=orthconfig-template
-. ~/.orthconfig
+. "$orth_config_file"
 
 ########################################
 # Executables:
@@ -392,11 +394,11 @@ require_directory_configured() {
   local directory=${!variable} # value of config variable
 
   if [ -z ${directory} ]; then
-    echo "[.orthconfig] orth requires the variable $variable to be defined in .orthconfig"
+    echo "The variable '$variable' must be defined in '$orth_config_file'."
     exit 1
   fi
   if [ ! -d ${directory} ]; then
-    echo "[.orthconfig] The value of $variable is $directory, this directory does not exist"
+    echo "The variable '$variable' defined in '$orth_config_file' must point to an existing directory."
     exit 1
   fi
 }
