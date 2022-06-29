@@ -4,7 +4,7 @@
 # Required configuration:
 #
 required_commands="curl jq md5sum xz"
-required_directories="configuration_home ort_home scancode_home support_home exports_home"
+required_directories="configuration_home ort_home orth_home scancode_home exports_home"
 
 ########################################
 # User configuration:
@@ -76,8 +76,8 @@ usage() {
   echo ""
   echo "  configuration-home: $configuration_home"
   echo "  ort-home: $ort_home"
+  echo "  orth-home: $orth_home"
   echo "  scancode-home: $scancode_home"
-  echo "  support-home: $support_home"
   echo "  exports-home: $exports_home"
   echo ""
   echo "Commands with scan context:"
@@ -1129,7 +1129,7 @@ if [ "$command" = "update" ] && [ "$#" -eq 1 ]; then
   git stash pop
 
   echo "Updating orth..."
-  cd $support_home || exit 1
+  cd $orth_home || exit 1
   git stash
   
   git fetch

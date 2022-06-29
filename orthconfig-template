@@ -24,7 +24,7 @@ exports_home=~/devel/ort/exports
 # Directory containing a copy of the orth repository:
 # https://github.com/oss-review-toolkit/orth
 #
-support_home=~/devel/ort/support
+orth_home=~/devel/ort/orth
 
 #
 # Set of policy rules for which violations can be triggered even by excluded license findings:
