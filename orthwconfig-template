@@ -1,30 +1,30 @@
 #
 # Directory containing the configuration directory.
 #
-configuration_home=~/devel/ort/configuration
+configuration_home=~/ort-project/ort-config
 
 #
 # Directory containing a copy of the ort repository:
 # https://github.com/oss-review-toolkit/ort
 #
-ort_home=~/devel/ort/ort
+ort_home=~/ort-project/ort
 
 #
 # Directory containing a copy of the scancode-toolkit repository:
 # https://github.com/nexB/scancode-toolkit
 #
-scancode_home=~/devel/ort/scancode-toolkit
+scancode_home=~/ort-project/scancode-toolkit
 
 #
 # Configuration entries database home (used by import- and export commands):
 #
-exports_home=~/devel/ort/exports
+exports_home=~/ort-project/exports
 
 #
 # Directory containing a copy of the orthw repository:
 # https://github.com/oss-review-toolkit/orthw
 #
-orthw_home=~/devel/ort/orthw
+orthw_home=~/ort-project/orthw
 
 #
 # Set of policy rules for which violations can be triggered even by excluded license findings:

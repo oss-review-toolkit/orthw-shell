@@ -1,250 +1,175 @@
-This repository is about (semi-) automating ORT support tasks relating to OSS compliance scans. It is the place to put
-scripts, configuration and data files such as re-usable curations.
+# The orthw script
 
-# The `orthw` script
+The `orthw` shell script can simplify and speed up common tasks for an [ORT][ort] scan of your software project.
+For example, you can use:
+- `orthw pc-create <package-id>` to generate a [package configuration][ort-package-configurations] file to correct license findings
+in an open source dependency.
+- `orthw  rc-generate-scope-excludes` to generate [scopes excludes][ort-yml-scope-excludes] in your project's [.ort.yml][ort-yml] file.
 
-`orthw` is a shell script that provides a set of commands for working with a specific scan result. Thus, the first step
-is to initialize an arbitrary empty directory with a scan result using the `orthw init` command. After that, you
-can issue further commands: run `orthw` without any arguments to see all the available options.
+Benefits of using the `orthw` script:
+- Simplify common ORT scan review tasks such as clearing found licenses.
+- Easy to remember CLI commands, and in case you do forget them running `orthw` will show all of them.
+- Pre-configured to work with the [ort-config] repository so you can re-use the work of other ORT users.
+- Includes commands to format, sort, clean-up and generate ORT config files such as [.ort.yml][ort-yml] and [package configuration][ort-package-configurations].
 
-To fix issues with a scan result, you will most likely need to set entries in the local and global configuration,
-i.e. the file `.ort.yml` and the files within the `configuration repository`, respectively. All `orthw` commands use the
-local copy of these files (on your hard drive), which means the changes you make are applied instantly, considerably
-shortening the feedback cycle, compared to running a scan remotely (on Jenkins). For example, you can make a
-configuration change and then regenerate all reports with the command `orthw report` or you can recreate a specific
-report, with a command like `orthw report-html`, which usually takes a few seconds to a minute.
+## Installation
 
-Besides generating `ORT` reports `orthw` provides many other helpful commands, e.g. for investigating license
-findings, adding entries to the copyright garbage list, sharing `path excludes` and `license finding curations` across
-different projects or `.ort.yml` files as well as formatting, sorting, cleaning-up and generating `.ort.yml` entries.
-The following sections explain the use of some of the commands and illustrate suggested `orthw`-based workflows. The
-intention is to get you started, rather than provide a comprehensive guide. Please try out the available
-commands to explore and learn.
+### 1. Prerequisites
 
-Note: A major design goal of the commands is to provide a granularity just fine enough to allow for separate atomic
-commits made-up of the commands outputs.
+The `orthw` is requires the following tools to be installed on your system:
 
-## Setup
+* [curl](https://curl.se)
+* [jq](https://stedolan.github.io/jq)
+* [md5sum](https://linux.die.net/man/1/md5sum)
+* [xz](https://linux.die.net/man/1/xz)
+* [OpenJDK]()
 
-1. Install the prerequisites: `sudo apt install curl jq md5sum xz`
-2. Put `orthw` on the system path, e.g. create a symbolic link to `orthw` in the `bin` directory (alternatively copy
-   `orthw` to `bin`, but remember to do that again after each update)
-3. Copy `orthwconfig-template` to a file `~/.orthwconfig`
-4. Clone the OSS repositories `configuration`, `ort`, `scancode-toolkit` and set the parameters in
-   `~/.orthwconfig` to point to those local clones and to `support` (this repository)
-5. Build `ORT` (`ort` repository cloned in the previous step) via `./gradlew installDist`
-4. Verify that `orthw` works by proceeding with the following two sections
+You can install these tools on your operation system using:
+- Ubuntu Linux: 
+  - Run: `sudo apt install curl md5sum openjdk-18-jdk xz-utils -y`
+- MacOS: 
+  - Install [HomeBrew][homebrew] and run: `brew install curl md5sha1sum openjdk xz`
+- Windows using Chocolatey and [Git Bash][git-bash]
+  - Install [Chocolatey][chocolatey]
+  - Run `choco install curl md5 microsoft-openjdk`
+  - Alternatively you can also install Microsoft OpenJDK using Powershell _as adminstrator_ and run `winget search Microsoft.OpenJDK`
+  - Use [Git Bash][git-bash] as your terminal
+- Windows using Windows Subsystem for Linux
+  - Install [Ubuntu on WSL for Windows 10][ubuntu-wsl-win-10], or [Ubuntu on WSL for Windows 11][ubuntu-wsl-win-11]
+  - Run `sudo apt install curl md5sum openjdk-18-jdk xz-utils -y`
 
-Note that the parameters (point 4 above) must be set for the Bash session you use to execute any of the commands below,
-otherwise the commands will fail.
+ To verify all tools are correctly installed, open a new terminal and run:
 
-## Using the commands
+| Command           | Output starts with                 |
+|-------------------|------------------------------------|
+| `curl --version`  | `curl [VERSION_NUMBER]`            |
+| `java -version`   | `openjdk version [VERSION_NUMBER]` |
+| `md5sum --version`| `md5sum/sha1sum [VERSION_NUMBER]`  |
+| `xz --version`    | `xz (XZ Utils) [VERSION_NUMBER]`   |
 
-### Run the analyzer
+Next, you need a copy of the [ORT][ort], [ort-config], [ScanCode][scancode] and the [orthw script][orthw] repositories.
 
-You can choose to run the analyzer in the Docker container that is used on Jenkins or on your local system.
-
-```bash
-mkdir dir-for-result && cd dir-for-result
-orthw analyze <source-code-dir>            # To run the analyzer without Docker.
-orthw analyze-in-docker <source-code-dir>  # To run the analyzer in the Docker container.
-```
-
-### Initializing a directory
-
-```bash
-mkdir dir-for-scan && cd dir-for-scan
-orthw init https://example.com/scans/123456/scan-result.json
-cat ort.yml
-# Note that `init` extracts the `ort.yml` from the given scan-result, ready to be edited.
-# In order to make commits to that ort.yml file it is recommended to replace it with a symbolic
-# link to your `ort.yml` within your clone of your source code repository.
-```
-
-### Computing a scan report
-
-To compute reports based on your copy of the local and global configuration, run any of the following commands in an
-`initialized` directory:
+We recommend you clone below-listed repositories in a dedicated directory such as `~/ort-project`:
 
 ```bash
-orthw report          # Compute all reports like static HTML, Web-App or a `FOSS_NOTICE` file.
-orthw report-html     # Compute only the static HTML report.
-orthw report-*        # Compute any other single report, see also list of available commands.
+mkdir -p ~/ort-project && \
+cd ~/ort-project && \
+git clone https://github.com/oss-review-toolkit/ort.git && \
+git clone https://github.com/oss-review-toolkit/ort-config.git && \
+git clone https://github.com/oss-review-toolkit/orthw.git && \
+git clone https://github.com/nexB/scancode-toolkit.git
 ```
 
-### Basic `.ort.yml` setup
-
-Perform the following steps in this order to produce a good basic `ort.yml` file to which you can make further manual
-additions as needed:
-
-#### Apply default formatting
+Finally create a `exports` directory which will be used to store exported license finding curations, path excludes and vcs mappings.
 
 ```bash
-orthw rc-format
+mkdir -p ~/ort-project/exports
 ```
 
-#### Sort the entries alphabetically
+### 2. Build ORT
+
+Navigate to the directory where you cloned [ORT][ort] repository and run its [native build][ort-build-native] command:
 
 ```bash
-orthw rc-sort
+cd ~/ort-project/ort && \
+./gradlew installDist
 ```
 
-#### Remove obsolete entries
+### 3. Make `orthw` Script Executable Everywhere
+
+To make `orthw` executable everywhere, add a `PATH` export to your terminal configuration file.
+
+- Open using text editor either the `~/.bashrc` or `~/.zshrc` file.
+- Add a path export pointing to the `orthw` script e.g. `export PATH=" ~/ort-project/orthw/orthw$PATH"`
+
+### 4. Create your `orthw` configuration
+
+- Copy the `orthwconfig-template` file from the orthw repository into your home directory.
 
 ```bash
-orthw rc-clean <source-code-dir>
+cp ~/ort-project/orthw/orthwconfig-template ~/.orthwconfig
 ```
 
-#### Generating scope excludes
+- Open using a text editor the `~/.orthwconfig` file.
+- Set `ort_home`, `orthw_home`, `configuration_home` and `scancode_home` to respectively the location
+  of the ORT, orthw, ORT configuration and ScanCode repositories which you cloned in above [Prerequisites](#1-prerequisites).
 
-```bash
-orthw rc-generate-scope-excludes
-```
-
-#### Importing and exporting path excludes from other projects
-
-This repository has a database file holding path excludes with high re-use potential, see `path-excludes.yml`. 
-The `import` command automatically picks entries potentially applicable to your project, but the entries do not always apply and need to be reviewed. After
-finishing your OSS review, you can share your path excludes to help others by using the `export` command.
-
-Tip: Use a diff-tool (like bcompare) for editing the export before committing to avoid errors and to save time.
-
-```bash
-orthw rc-import-path-excludes <source-code-dir>
-...
-orthw rc-export-path-excludes
-```
-
-#### Importing and exporting license finding curations
-
-Similar to the previous section also license findings can be `imported` and `exported` via:
-```bash
-orthw rc-import-curations
-...
-orthw rc-export-curations
-```
-
-### Listing license findings
-
-This section illustrates all commands for listing license findings. In order to reproduce the examples please run the
-following init command first:
-```bash
-orthw init https://example.com/scans/123456/scan-result.json
-```
-
-#### All license findings for a package
-
-1. grouped by license text
-  ```bash
-  # Fast variant as sources are provided (revision needs to match scanned revision):
-  orthw licenses Unmanaged:manifest.xml:manifest:91a99da65c0e1558085b01b0de44ddf38e376a48 ~/sources/repo/manifest/
-  # Slow variant as sources are downloaded:
-  orthw licenses Unmanaged:manifest.xml:manifest:91a99da65c0e1558085b01b0de44ddf38e376a48
-  ```
-2. not grouped (note the `dot` at the end)
-  ```bash
-  orthw licenses Unmanaged:manifest.xml:manifest:91a99da65c0e1558085b01b0de44ddf38e376a48 .
-  ```
-
-#### Only offending license findings for a package
-
-1. grouped by license text
-  ```bash
-  # Fast variant as sources are provided (revision needs to match scanned revision):
-  orthw offending-licenses Unmanaged:manifest.xml:manifest:91a99da65c0e1558085b01b0de44ddf38e376a48 ~/sources/repo/manifest/
-  # Slow variant as sources are downloaded:
-  orthw offending-licenses Unmanaged:manifest.xml:manifest:91a99da65c0e1558085b01b0de44ddf38e376a48
-  ```
-2. not grouped
-  ```bash
-  orthw offending-licenses Unmanaged:manifest.xml:manifest:91a99da65c0e1558085b01b0de44ddf38e376a48 .
-  ```
-
-#### Output format explained
-
-1. There are exactly 6 findings with 2 distinct license texts referred to by `[0]` or `[1]`
-2. `[-]` would indicate that the license text could not be resolved
-3. `excluded` / `not excluded` is indicated by `(-)` / `(+)`
+  If you followed examples in the previous steps and used a `ort-project` direcotry then
+  the contents of `~/.orthwconfig` file should be as follows:
 
 ```
-NCSA:
-  [0] (+) external/boost/include/boost/chrono/detail/scan_keyword.hpp:6-7
-  [0] (+) external/boost/include/boost/chrono/io/time_point_io.hpp:11-12
-  [0] (+) external/boost/include/boost/thread/detail/invoke.hpp:19-20
-  [0] (+) external/boost/include/boost/thread/detail/invoker.hpp:17-18
-  [0] (+) external/boost/include/boost/thread/detail/make_tuple_indices.hpp:15-16
+configuration_home=~/ort-project/ort-config
 
-  [0]
+ort_home=~/ort-project/ort
 
-    // This file is dual licensed under the MIT and the University of Illinois Open
-    // Source Licenses. See LICENSE.TXT for details.
+scancode_home=~/ort-project/scancode-toolkit
 
-  [1]
+exports_home=~/ort-project/exports
 
-    # This file is distributed under the University of Illinois Open Source
-    # License. See LICENSE.TXT for details.
+orthw_home=~/ort-project/orthw
 ```
 
-### Resolving scan timeout issues
+### 5. Test if Everything Works
 
-There is only one way of addressing scan timeout issues, which is by creating an `IssueResolution`. You should
-prefer global over local resolutions in order to minimize effort. The resolution has to make clear via its comment entry why
-it is OK not to scan this file. Common reasons are:
-* The file does not contain license information (applicable also to binary files)
-* The file does have license information, but there are many other files containing the same license
-  text which do get successfully scanned
-* It's **not distributed** is **not a valid reason**!
+Verify that `orthw` works by opening a new terminal and run `orthw`. 
+It should print a the full list of available commands and no error messages.
 
-The command below generates template entries for the resolutions. Sometimes it makes sense to merge the entries by
-adjusting the regex matching the file path to match multiple files.
-```bash
-orthw rc-generate-timeout-error-resolutions
-```
+# Usage
 
-### Copyright statements
+Follow the [Getting Started][gs] guide to learn how to use `orthw` to:
+- [Initializing a local directory with an ORT scan result][gs-orthw-init]
+- [Generating a Web App report to see scan results in a web browser][gs-orthw-report-webapp]
+- [Marking files, directories or package manager scopes in your project as not included in released artifacts][gs-orthw-rc-excludes]
+- [Checking your project dependencies for security advisories][gs-orthw-check-advisories]
+- [Correcting missing or incorrect package metadata][gs-orthw-curations]
+- [Marking files or directories in the sources of a dependency as not included in released artifacts][gs-orthw-pc-excludes]
+- [Correcting a detected license found in package source code][gs-orthw-pc-create]
+- [Listing the licenses found in the sources of a package][gs-orthw-licenses]
+- [Listing licenses flagged with a policy violation][gs-orthw-offending-licenses]
+- [Conclude the license for a package][gs-orthw-concluded-license-curation]
 
-The input for the generation of NOTICE files contains a set of `raw copyright statements` per `license`, which are
-filtered by the `copyright-garbage.yml` black-list. That black-list allows a company-wide elimination of false copyright
-statement detections. After the statements are filtered by that black-list, they get processed further in order to make
-the NOTICE file more compact and readable. In order to show the `processed` statements to be put in the notices and the
-corresponding `raw` statements, run the following command and view the output files.
-```bash
-orthw copyrights
-Results written to: copyrights.txt, copyrights-debug.txt.
-```
+# Want to Help or have Questions?
 
-#### Adding entries to the copyright garbage list
+All contributions are welcome. If you are interested in contributing, please read our
+[contributing guide][ort-contributing], and to get quick answers to any of your questions
+we recommend you [join our Slack community][ort-slack].
 
-Open the generated `copyrights.txt` in a text editor and remove all lines except the ones to be black-listed. Afterwards, run the
-command below which merges the garbage entries into a `copyright-garbage.yml` file located in the `configuration`
-repository. Note that the `merge` command determines all `raw copyright statements` corresponding to the given
-`processed copyright statements` and adds them to the black-list.
+# License
 
-```bash
-orthw export-copyright-garbage
-```   
+Copyright (C) 2019-2022 HERE Europe B.V.\
+Copyright (C) 2022 EPAM Systems, Inc.
 
-## An `orthw` based workflow for OSS reviews
+See the [LICENSE](./LICENSE) file in the root of this project for license details.
 
-The steps below work quite efficiently for us in particular for C/C++ projects.
+OSS Review Toolkit (ORT) is a [Linux Foundation project](https://www.linuxfoundation.org) and part of
+[ACT](https://automatecompliance.org/).
 
-1. Perform the basic `.ort.yml` setup as described in its dedicated section above
-2. Go through all analyzer issues and add path excludes for each if applicable
-3. Fix offending licenses in C/C++ sources (and dependency sources present in the HERE source tree)
-  1. Iterate over the output of `orthw offending licenses` and add path excludes if applicable
-  2. Iterate over the output of `orthw offending licenses` and add license finding curations if applicable
-  3. Last resort: Add rule violation resolutions for all remaining offending licenses if applicable
-  4. If a license issue remains, it needs to be fixed
-4. Fix offending licenses in dependencies (managed by a package manager)
-  1. Pick any package with a offending license and set the concluded license in `curations.yml` if applicable
-  2. Regenerate the report to see the effect via `orthw report-html`
-5. Create resolutions for all scan timeout issues as described in its own section
-6. Fix the FOSS_NOTICE file
-  1. Check if there is any copyright statement which is actually garbage
-  2. If so add all such entries to `copyright-garbage.yml` as described in above section
-  3. Recompute the FOSS_NOTICE file via `orthw report-notices` to see the effect
-
-Tips:
-* Make the `ort.yml` in your `orthw` directory a symlink to a VCS-managed file so that you can commit your changes often
-* Do not waste time finding a place for a new entry in the `ort.yml`. Just pick a random place and use the
-  `rc-sort` command
+[chocolatey]: https://chocolatey.org/
+[git-bash]: https://git-scm.com/download/win
+[gs]: docs/getting-started.md
+[gs-orthw-check-advisories]: docs/getting-started.md#orthw-check-advisories
+[gs-orthw-copyrights]: docs/getting-started.md#orthw-copyrights
+[gs-orthw-concluded-license-curation]: docs/getting-started.md#orthw-concluded-license-curation
+[gs-orthw-curations]: docs/getting-started.md#orthw-curations
+[gs-orthw-init]: docs/getting-started.md#orthw-init
+[gs-orthw-license-choice]: docs/getting-started.md#orthw-license-choice
+[gs-orthw-licenses]: docs/getting-started.md#orthw-licenses
+[gs-orthw-offending-licenses]: docs/getting-started.md#orthw-offending-licenses
+[gs-orthw-pc-create]: docs/getting-started.md#orthw-pc-create
+[gs-orthw-pc-excludes]: docs/getting-started.md#orthw-pc-excludes
+[gs-orthw-report-webapp]: docs/getting-started.md#orthw-report-webapp
+[gs-orthw-rc-excludes]: docs/getting-started.md#orthw-rc-excludes
+[homebrew]: https://brew.sh/
+[ort]: https://github.com/oss-review-toolkit/ort
+[ort-config]: https://github.com/oss-review-toolkit/ort-config
+[ort-contributing]: https://github.com/oss-review-toolkit/.github/blob/main/CONTRIBUTING.md
+[ort-curations]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-curations-yml.md
+[ort-build-native]: https://github.com/oss-review-toolkit/ort#build-natively
+[ort-package-configurations]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-package-configuration-yml.md
+[ort-slack]: https://join.slack.com/t/ort-talk/shared_invite/zt-1c7yi4sj6-mk7R1fAa6ZdW5MQ6DfAVRg
+[ort-yml]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-ort-yml.md
+[ort-yml-scope-excludes]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-ort-yml.md#excluding-scopes
+[orthw]: https://github.com/oss-review-toolkit/orthw
+[scancode]: https://github.com/nexB/scancode-toolkit
+[ubuntu-wsl-win-10]: https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-10#1-overview
+[ubuntu-wsl-win-11]: https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-11-with-gui-support#1-overview
