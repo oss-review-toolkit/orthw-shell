@@ -83,6 +83,7 @@ usage() {
   echo "  analyze <source-code-dir>"
   echo "  analyze-in-docker <source-code-dir>"
   echo "  clean"
+  echo "  check-advisories"
   echo "  copyrights"
   echo "  copyrights <package-id>"
   echo "  export-copyright-garbage"
@@ -210,6 +211,19 @@ analyze_in_docker() {
     $ort_docker_image
 }
 
+advise() {
+  mkdir -p $temp_dir
+
+  $ort advise \
+    --advisors "$enabled_advisors" \
+    --output-dir $temp_dir \
+    --output-formats JSON \
+    --ort-file $scan_result_file
+
+  mv "$temp_dir/advisor-result.json" $scan_result_file > /dev/null 2>&1
+
+  rm -rf $temp_dir
+}
 
 get_package_configuration_dir_md5_sum() {
   find $ort_config_package_configuration_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
@@ -442,6 +456,11 @@ if [ "$command" = "analyze-in-docker" ] && [ "$#" -eq 2 ]; then
   exit 0
 fi
 
+if [ "$command" = "check-advisories" ]; then
+  advise
+
+  exit 0
+fi
 
 if [ "$command" = "create-analyzer-result" ] && [ "$#" -eq 2 ]; then
   package_ids_file=$2
