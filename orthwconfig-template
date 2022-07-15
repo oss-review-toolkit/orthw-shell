@@ -38,6 +38,12 @@ ignore_excluded_rule_ids=""
 scancode_version="30.1.0"
 
 #
+# Comma-separated list of advisors to query for known security advisories or defects.
+# A list of valid values can be obtained from the ORT CLI via the command `ort advise --help`.
+#
+enabled_advisors="osv"
+
+#
 # The template for the license classification request. Supported placeholders:
 # - <REPLACE_LICENSE_ID>
 # - <REPLACE_LICENSE_URL>
