@@ -424,13 +424,6 @@ done
 command="$1"
 
 
-if [ "$command" = "advise" ]; then
-  advise
-
-  exit 0
-fi
-
-
 if [ "$command" = "analyze" ] && [ "$#" -eq 2 ]; then
   project_dir=$2
 
