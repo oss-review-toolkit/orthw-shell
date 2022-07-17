@@ -1126,7 +1126,7 @@ if [ "$command" = "update" ] && [ "$#" -eq 1 ]; then
   git rebase origin/master
   git stash pop
 
-  echo "Updating orth..."
+  echo "Updating orthw..."
   cd $orthw_home || exit 1
   git stash
   
