@@ -377,7 +377,7 @@ report() {
 
 require_initialized() {
   if [ ! -d $dot_dir ] || [ ! -f $target_url_file ] || [ ! -f $scan_result_file ]; then
-    echo "The working directory is not initialized. Please run 'orthw init' first."
+    echo "The working directory is not initialized. Please run 'orthw init <target-url>' first."
     exit 1
   fi
 }
