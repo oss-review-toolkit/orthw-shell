@@ -706,7 +706,7 @@ if [ "$command" = "offending-licenses" ] && [ "$#" -eq 2 ]; then
   $orth list-licenses \
     --ort-file $evaluation_result_file \
     --package-id $package_id \
-    --ignore-excluded-rule-ids $ignore_excluded_rule_ids \
+    --ignore-excluded-rule-ids "$ignore_excluded_rule_ids" \
     --repository-configuration-file $repository_configuration_file \
     --package-configuration-dir $ort_config_package_configuration_dir \
     --apply-license-finding-curations \
@@ -726,7 +726,7 @@ if [ "$command" = "offending-licenses" ] && [ "$#" -eq 3 ]; then
   $orth list-licenses \
     --ort-file $evaluation_result_file \
     --package-id $package_id \
-    --ignore-excluded-rule-ids $ignore_excluded_rule_ids \
+    --ignore-excluded-rule-ids "$ignore_excluded_rule_ids" \
     --repository-configuration-file $repository_configuration_file \
     --package-configuration-dir $ort_config_package_configuration_dir \
     --source-code-dir $source_code_dir \
