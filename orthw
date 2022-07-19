@@ -237,6 +237,7 @@ get_package_curations_dir_md5_sum() {
 check_evaluation_md5_sum() {
   if [ -f $evaluation_md5_sum_file ]; then
     get_package_configuration_dir_md5_sum > $package_configuration_md5_sum_file
+    get_package_curations_dir_md5_sum > $package_curations_md5_sum_file
     md5sum -c $evaluation_md5_sum_file > /dev/null 2>&1
     echo $?
     rm -f $package_configuration_md5_sum_file
