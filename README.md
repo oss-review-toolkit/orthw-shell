@@ -16,7 +16,7 @@ Benefits of using the `orthw` script:
 
 ### 1. Prerequisites
 
-The `orthw` is requires the following tools to be installed on your system:
+The `orthw` requires the following tools to be installed on your system:
 
 * [curl](https://curl.se)
 * [jq](https://stedolan.github.io/jq)
@@ -24,7 +24,7 @@ The `orthw` is requires the following tools to be installed on your system:
 * [xz](https://linux.die.net/man/1/xz)
 * [OpenJDK]()
 
-You can install these tools on your operation system using:
+You can install these tools on your operating system using:
 - Ubuntu Linux: 
   - Run: `sudo apt install curl md5sum openjdk-18-jdk xz-utils -y`
 - MacOS: 
@@ -60,7 +60,7 @@ git clone https://github.com/oss-review-toolkit/orthw.git && \
 git clone https://github.com/nexB/scancode-toolkit.git
 ```
 
-Finally create a `exports` directory which will be used to store exported license finding curations, path excludes and vcs mappings.
+Finally, create a `exports` directory which will be used to store exported license finding curations, path excludes and vcs mappings.
 
 ```bash
 mkdir -p ~/ort-project/exports
@@ -94,7 +94,7 @@ cp ~/ort-project/orthw/orthwconfig-template ~/.orthwconfig
 - Set `ort_home`, `orthw_home`, `configuration_home` and `scancode_home` to respectively the location
   of the ORT, orthw, ORT configuration and ScanCode repositories which you cloned in above [Prerequisites](#1-prerequisites).
 
-  If you followed examples in the previous steps and used a `ort-project` direcotry then
+  If you followed examples in the previous steps and used a `ort-project` directory then
   the contents of `~/.orthwconfig` file should be as follows:
 
 ```
@@ -112,7 +112,7 @@ orthw_home=~/ort-project/orthw
 ### 5. Test if Everything Works
 
 Verify that `orthw` works by opening a new terminal and run `orthw`. 
-It should print a the full list of available commands and no error messages.
+It should print the full list of available commands and no error messages.
 
 # Usage
 
