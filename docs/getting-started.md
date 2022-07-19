@@ -17,8 +17,6 @@ It will guide you through the following workflow steps for `orthw` to :
 - [Listing the licenses found in the sources of a package](#orthw-licenses)
 - [Listing licenses flagged with a policy violation](#orthw-offending-licenses)
 - [Conclude the license for a package](#orthw-concluded-license-curation)
-- [Selecting a license for packages which offer a license choice](#orthw-license-choice)
-- [Removing falsely detected copyright statements](#orthw-copyrights)
 
 ## Initializing a Local Directory with an ORT Scan Result <a name="orthw-init"></a>
 
@@ -44,11 +42,9 @@ mkdir -p ~/ort-scans/mime-types-orthw && cd ~/ort-scans/mime-types-orthw
 orthw init https://raw.githubusercontent.com/oss-review-toolkit/orthw/examples/npm-mime-types-2.1.26-scan-result.json
 ```
 
-Once `orthw init` command successfully finishes the contents of  `~/ort-scans/mime-types-orthw` should have a hidden directory named `.orthw`
-containing the scan results and the `ort.yml` file.
+Once `orthw init` command successfully finishes the contents of  `~/ort-scans/mime-types-orthw` should have a hidden directory named `.orthw` containing the scan results and the `ort.yml` file.
 
-The [ort.yml][ort-yml] file will either contain the contents of the [.ort.yml][ort-yml] file as found in the root of the project,
-or `--- {}` if no `.ort.yml` was found.
+The [ort.yml][ort-yml] file will either contain the contents of the [.ort.yml][ort-yml] file as found in the root of the project, or `--- {}` if no `.ort.yml` was found.
 
 ```
 .
@@ -86,13 +82,13 @@ Click any '+' sign in front of a package id, such as _NPM::ansi-regex:3.0.0_ to 
 - _Package details_: description, homepage, code repositories, binary and source artifact
 - _Licenses_: declared licenses (from package metadata), detected licenses (found in source code), and concluded licenses (human overwrites)
 - _Paths_: dependency trail from root project to opened package id
-- _Scan Results_: Copyright and licenses findings for files included in the source repository or artifact of opened package id
-- _Scope Excludes_: Reasons why opened package id was marked as not included in released artifacts
+- _Scan Results_: copyright and licenses findings for files included in the source repository or artifact of opened package id
+- _Scope Excludes_: reasons why opened package id was marked as not included in released artifacts
 
 ### About Modal
 
 In the top-right corner of the Web App report you can find the _About_ button which if clicked shows you:
-- _Excludes_: contents of the [.ort.yml][ort-yml] file for the project. Not shown if no `.ort.yml` was detected
+- _Excludes_: contents of the [.ort.yml][ort-yml] file for the project. Not shown if no `.ort.yml` was found
 - _Labels_: labels were passed to the ORT _analyzer_ using one or more `-L` parameters. Not shown if no labels were set
 - _About_: details on the ORT project and render timestamp for the report
 
@@ -141,11 +137,9 @@ orthw rc-generate-scope-excludes
 
 ### Marking Files and Directories in a Project as Excluded
 
-Besides scope excludes you can also mark files and directories as excluded in the [.ort.yml][ort-yml] file using [path excludes][ort-yml-path-excludes].
-At the moment you can not yet generate [path excludes][ort-yml-path-excludes] using `orthw` so you have to add them by hand.
+Besides scope excludes, you can also mark files and directories as excluded in the [.ort.yml][ort-yml] file using [path excludes][ort-yml-path-excludes]. At the moment you can not yet generate [path excludes][ort-yml-path-excludes] using `orthw` so you have to add them by hand.
 
-If you look at [code for mime types version 2.1.26][mime-types-2.1.26] you will see it contains a directory named `test` which is not included in the
-release artifact [mime-types-2.1.26.tgz] so we can exclude it by adding a [path exclude][ort-yml-path-excludes] in the [.ort.yml][ort-yml] file:
+If you look at [code for mime types version 2.1.26][mime-types-2.1.26] you will see it contains a directory named `test` which is not included in the release artifact [mime-types-2.1.26.tgz] so we can excluded it by adding a [path exclude][ort-yml-path-excludes] into the [.ort.yml][ort-yml] file:
 
 ```
 ---
@@ -175,8 +169,7 @@ excludes:
 
 ORT supports querying multiple security advisory providers to help you safely use open source software in your project.
 
-The `~/.orthwconfig` file is preconfigured to use [OSV][osv] as the default advisory provider but are free to add one or more other services
-such as [OSS Index][oss-index] or your locally installed [VulnerableCode][vulnerablecode] instance.
+The `~/.orthwconfig` file is preconfigured to use [OSV][osv] as the default advisory provider but you are free to add one or more other services such as [OSS Index][oss-index] or your local instance of [VulnerableCode][vulnerablecode].
 
 Run the below command to check your project dependencies for known security vulnerabilities:
 
@@ -191,21 +184,20 @@ orthw check-advisories
 
 Using [curations][ort-curations] you can correct invalid or missing package metadata including the declared license and code repository information.
 
-In the WebApp report look up `NPM::acorn:7.1.1` by filtering the _Package_ column under _Table_. You will find the declared license is MIT but the detected are Apache-2.0, BSD-2-Clause, BSD-3-Clause, LicenseRef-scancode-facebook-patent-rights-2 and MIT so which licenses apply?
+In the WebApp report look up `NPM::acorn:7.1.1` by filtering the _Package_ column under _Table_. You will find the declared license is MIT but the detected are Apache-2.0, BSD-2-Clause, BSD-3-Clause, LicenseRef-scancode-facebook-patent-rights-2 and MIT, so which licenses apply?
 
 ### Determining whether Right Sources where Scanned
 
-Click the '+' sign on the left of `NPM::acorn:7.1.1` and expand the _Scan Results_ section which contains copyright and license findings. Look at copyright and license findings and you will find entries for the directories `acorn-loose` and `acorn-walk` containing LICENSE and package.json files. 
-This is an indication of _overscanning_ - more than the actual sources of the package were scanned due to incorrect package metadata. In this case the code repository seems to contain multiple packages. 
+Click the '+' sign on the left of `NPM::acorn:7.1.1` and expand the _Scan Results_ section which contains copyright and license findings. Look at copyright and license findings and you will find entries for the directories `acorn-loose` and `acorn-walk` containing `LICENSE` and `package.json` files. 
+This is an indication of _overscanning_ - more than the actual sources of the package were scanned due to incorrect package metadata. In this case code repository seems to contain multiple packages so sources of multiple packages were scanned.
 
 To confirm this assumption, do the following:
 
 1. Navigate to the _Details_ section under `NPM::acorn:7.1.1`.
 2. Download and extract [acorn-7.1.1.tgz].
 3. Open the [acorn] repository in a web browser and find the code for version `7.1.1`. 
-4. Compare the extracted files from [acorn-7.1.1.tgz] with the 
-5. Compare [version 7.1.1 in the repository][acorn-7.1.1] with the extracted contents of [acorn-7.1.1.tgz].
-6. You will find the contents of [acorn-7.1.1.tgz] come from the `acorn` directory within [acorn repository][acorn-7.1.1]. 
+4. Compare [version 7.1.1 in the repository][acorn-7.1.1] with the extracted contents of [acorn-7.1.1.tgz].
+5. You will find the contents of [acorn-7.1.1.tgz] come from the `acorn` directory within [acorn repository][acorn-7.1.1]. 
 
 An alternative way to confirm [acorn repository][acorn-7.1.1] contains multiple npm packages is to simply search for the package names on [npmjs.com][npmjs]. Both the [acorn-loose][npm-acorn-loose] and [npm-acorn-walk][npm-acorn-walk] packages can be found on [npmjs.com][npmjs]. 
 
@@ -219,7 +211,7 @@ The cause of the _overscanning_ can be found in the [repository field of acorn's
 },
 ```
 
-One can not fix the sources of already released packages so to resolve the missing _directory_ in the metadata of `NPM::acorn:7.1.1` you can use a [VCS path curation][ort-curations]:
+One can not fix the sources of already released package artifacts so to resolve the missing _directory_ in the metadata of `NPM::acorn:7.1.1` you can use a [VCS path curation][ort-curations]:
 
 1. Create or open using a text editor `curations/NPM/_/acorn.yml` in your local clone of the [ort-config] repository.
 2. Add the below to the file, this instructs ORT that sources for any version of `NPM::acron` can be found in the `acorn` directory within the [acorn] code repository:
@@ -232,7 +224,7 @@ One can not fix the sources of already released packages so to resolve the missi
       path: "acorn"
 ```
 
-*Important*: Any time you add a [VCS curation][ort-curations] to [ort-config] you will need do a re-scan of your project. Once the rescan has completed you should see a reduced number of detected licenses.
+*Important*: Any time you add a [VCS curation][ort-curations] to [ort-config] you will need do a re-scan of your project. Once the re-scan has completed you should see a reduced number of detected licenses.
 
 ### Tips for Working with curations
 
@@ -243,11 +235,11 @@ One can not fix the sources of already released packages so to resolve the missi
 
 Using [package configuration][ort-package-configurations] you can mark files and directories as not included in released artifacts - use it to make clear that license findings in documentation or tests in a package sources do not apply to the release (binary) artifact which is a dependency in your project.
 
-In the WebApp report look up `NPM::acorn-jsx:5.2.0` by filtering the _Package_ column under _Table_. You will find the declared license is MIT but the detected are BSD-2-Clause and MIT so which licenses apply?
+[Generate the Web App report](#orthw-report-webapp) and look up `NPM::acorn-jsx:5.2.0` by filtering the _Package_ column under _Table_. You will find the declared license is MIT but the detected are BSD-2-Clause and MIT so which licenses apply?
 
 ### Determining what is Included in a Package
 
-Click the '+' sign on the left of `NPM::acorn-jsx:5.2.0` and expand the _Scan Results_ section which contains copyright and license findings. Look at copyright and license findings and you will find 1 BSD-2-Clause match in `test/tests-jsx.js`. It's likely that the `test` directory is not include in the released package.
+Click the '+' sign on the left of `NPM::acorn-jsx:5.2.0` and expand the _Scan Results_ section which contains copyright and license findings. Look at copyright and license findings and you will find a single BSD-2-Clause match in `test/tests-jsx.js`. It's likely that the `test` directory is not included in the release artifact of the package.
 
 To confirm this assumption, do the following:
 1. Navigate to the _Details_ section under `NPM::acorn-jsx:5.2.0`.
@@ -305,7 +297,7 @@ path_excludes:
 
 Using [package configuration][ort-package-configurations] you can overwrite scanner findings to correct identified licenses in a dependency for a specific file(s).
 
-In the WebApp report look up `NPM::eslint-scope:5.0.0` by filtering the _Package_ column under _Table_. You will find the detected licenses containing a NOASSERTION. 
+[Generate the Web App report](#orthw-report-webapp) and look up `NPM::eslint-scope:5.0.0` by filtering the _Package_ column under _Table_. You will find the detected licenses containing a NOASSERTION. 
 
 All licenses in ORT follow the [SPDX][spdx] license specification and a NOASSERTION in detected licenses means the scanner detected something that looks like a license but was unable to determine which one.
 
@@ -389,9 +381,11 @@ license_finding_curations:
 5. [Generate the Web App report](#orthw-report-webapp) using `orthw report-webapp`.
 6. Open `~/ort-scans/mime-types-orthw/webapp.html` using a web browser.
 6. The Web App report should now show for `NPM::eslint-scope:5.0.0`:
-   - _Detected licenses_: BSD-2-Clause
-   - _Detected Excluded_: BSD-3-Clause, LicenseRef-scancode-public-domain, MIT
-   - _Scan Results_: A light grey icon in front the `Makefile.js` file and `test` directory rows 
+   - _Licenses_:
+      - _Detected_: BSD-2-Clause
+      - _Detected Excluded_: BSD-3-Clause, LicenseRef-scancode-public-domain, MIT
+   - _Scan Results_:
+      - A light grey icon in front the `Makefile.js` file and `test` directory rows 
 
 ## Listing the Licenses found in the Sources of a Package <a name="orthw-licenses"></a>
 
@@ -474,7 +468,7 @@ Before you set the concluded license of a package it's recommend to the below wo
    - Use a _VCS URL_ curation to set the correct code repository location.
    - Use a _VCS path_ curation to set the directory within the code repository that contains the sources for a package.
 2. Mark files and directories as not included in released artifacts:
-   - Use a [package configuration][ort-package-configurations] with `path_exludes` to make clear that license findings in documentation, build scripts, or tests in a package sources do not apply to the release (binary) artifact which is a dependency in your project.
+   - Use a [package configuration][ort-package-configurations] with `path_excludes` to make clear that license findings in documentation, build scripts, or tests in a package sources do not apply to the release (binary) artifact which is a dependency in your project.
 3. Correct license scanner findings:
     - Use a [package configuration][ort-package-configurations] with `license_finding_curation` to overwrite scanner findings to correct identified licenses for a specific file(s).
 4.  Package includes license choices or a too large number of findings to be excluded or curated:
@@ -482,7 +476,7 @@ Before you set the concluded license of a package it's recommend to the below wo
     - Omit the version number within id of the curation if you are sure the concluded license applies
       to all versions of the package.
 
-In the WebApp report look up `NPM::spdx-license-ids:3.0.5` by filtering the _Package_ column under _Table_. You will find the hunderds of detected licenses. This is not surprising once you read the description of the package which states "a list of SPDX license identifiers".
+In the WebApp report look up `NPM::spdx-license-ids:3.0.5` by filtering the _Package_ column under _Table_. You will find hundreds of detected licenses. This is not surprising once you read the description of the package which states "a list of SPDX license identifiers".
 
 One could use a [package configuration][ort-package-configurations] with hundreds concluded license `license_finding_curation` entries to set the applicable licenses for `NPM::spdx-license-ids:3.0.5`
 Following the _License Clearance Workflow_ above the best solution here is to conclude the license for  `NPM::spdx-license-ids` as SPDX license list has and will always be licensed under CC-1.0.
@@ -504,9 +498,11 @@ Following the _License Clearance Workflow_ above the best solution here is to co
 5. [Generate the Web App report](#orthw-report-webapp) using `orthw report-webapp`.
 6. Open `~/ort-scans/mime-types-orthw/webapp.html` using a web browser.
 7. The Web App report should now show less policy violations under _Summary_ and for `NPM::spdx-license-ids:3.0.5`:
-   - _Detected licenses_: 0BSD, AFL-1.1 .... gSOAP-1.3b, mpich2, zlib-acknowledgement
-   - _Concluded_license_: CC-1.0 
-   - _Scan Results_: No changes
+   - _Licenses_:
+      - _Detected_: 0BSD, AFL-1.1 .... gSOAP-1.3b, mpich2, zlib-acknowledgement
+      - _Concluded_: CC-1.0 
+   - _Scan Results_:
+      - No changes
 
 [acorn]: https://github.com/acornjs/acorn
 [acorn-7.1.1]: https://github.com/acornjs/acorn/tree/7.1.1
