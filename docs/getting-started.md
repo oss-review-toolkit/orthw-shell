@@ -3,7 +3,7 @@
 This tutorial gives a brief introduction to how one can use the `orthw` script on a [ORT][ort] scan
 of the [code repository][mime-types-github] of the [mime-types][mime-types-npm] 2.1.26 NPM package.
 
-The steps assumes you already have followed the [installation instructions][orthw-installation] for `orthw`.
+The steps assume you already have followed the [installation instructions][orthw-installation] for `orthw`.
 
 It will guide you through the following workflow steps for `orthw` to :
 
@@ -98,7 +98,7 @@ In the top-right corner of the Web App report you can find the _About_ button wh
 
 ## Marking Files, Directories or Package Manager Scopes in your Project as not Included in Released Artifacts <a name="orthw-rc-excludes"></a>
 
-Not every file in the code repository of a sofware project is included in its release artifacts things such as build scripts, documentation or tests are often only used internally and are not released. You may want the treat these project internal files differently when reviewing license findings, e.g. a GPL-2.0-only licensed build script may be OK but GPL-2.0-only source code file which is included in the release artifacts may be not OK.
+Not every file in the code repository of a software project is included in its release artifacts things such as build scripts, documentation or tests are often only used internally and are not released. You may want the treat these project internal files differently when reviewing license findings, e.g. a GPL-2.0-only licensed build script may be OK but GPL-2.0-only source code file which is included in the release artifacts may be not OK.
 
 In ORT you can add defined [excludes][ort-yml-excludes] in a file named [.ort.yml][ort-yml] in the root of a software project to be scanned to define which OSS is distributed to third parties and which code is only used internally, e.g. for building, documenting or testing the code.
 
@@ -137,7 +137,7 @@ orthw rc-generate-scope-excludes
 6. The Web App report should show _Completed scan successfully_ under _Summary_.
 
    Previously the _Completed scan with 375 unresolved policy violations_, however the example [policy rules][ort-config-04c6b0d-rules-kts] contain an `-isExcluded()` in the `require` for most policy rules.
-   An `-isExcluded()` in the `require` means that a rule requires a package not to be excluded before its excuted. As all of the 375 unresolved policy violation were in now by the `ort.yml` marked excluded `devDependencies` there are no policy violations resulting in _Completed scan successfully_.
+   An `-isExcluded()` in the `require` means that a rule requires a package not to be excluded before its executed. As all of the 375 unresolved policy violation were in now by the `ort.yml` marked excluded `devDependencies` there are no policy violations resulting in _Completed scan successfully_.
 
 ### Marking Files and Directories in a Project as Excluded
 
@@ -236,7 +236,7 @@ One can not fix the sources of already released packages so to resolve the missi
 
 ### Tips for Working with curations
 
-- Fix incorrect pacakage metadata upstream if the issue exists for latest version. Contributing back helps the community and you; once package mantainers are aware of the issue they might fix the same issue for all the packages they maintain.
+- Fix incorrect package metadata upstream if the issue exists for latest version. Contributing back helps the community and you; once package maintainers are aware of the issue they might fix the same issue for all the packages they maintain.
 - Contribute when possible curations you make to the [ort-config] repository so any [ORT][ort] user can benefit
 
 ## Marking Files or Directories in the Sources of a Dependency as not Included in Released Artifacts <a name="orthw-pc-excludes"></a>
@@ -258,7 +258,7 @@ To confirm this assumption, do the following:
 
 ### Marking a Files or Directories for a Dependency as Excluded
 
-You first thought might be to conclude the license for `NPM::acorn-jsx:5.2.0` as MIT. However, a beter solution is to mark up the `test` directory as not included in the released artifact using [package configuration][ort-package-configurations] with a _path exclude_. Conclude only licenses if they were incorrectly identified e.g. a found BSD-3-Clause is actually a BSD-2-Clause.
+You first thought might be to conclude the license for `NPM::acorn-jsx:5.2.0` as MIT. However, a better solution is to mark up the `test` directory as not included in the released artifact using [package configuration][ort-package-configurations] with a _path exclude_. Conclude only licenses if they were incorrectly identified e.g. a found BSD-3-Clause is actually a BSD-2-Clause.
 
 1. Run the below command to generate a [package configuration][ort-package-configurations]:
 
