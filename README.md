@@ -19,10 +19,9 @@ Benefits of using the `orthw` script:
 The `orthw` requires the following tools to be installed on your system:
 
 * [curl](https://curl.se)
-* [jq](https://stedolan.github.io/jq)
 * [md5sum](https://linux.die.net/man/1/md5sum)
 * [xz](https://linux.die.net/man/1/xz)
-* [OpenJDK]()
+* [OpenJDK](https://openjdk.org/)
 
 You can install these tools on your operating system using:
 - Ubuntu Linux: 
