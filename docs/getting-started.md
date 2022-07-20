@@ -133,7 +133,7 @@ orthw rc-generate-scope-excludes
 6. The Web App report should show _Completed scan successfully_ under _Summary_.
 
    Previously the _Completed scan with 375 unresolved policy violations_, however the example [policy rules][ort-config-04c6b0d-rules-kts] contain an `-isExcluded()` in the `require` for most policy rules.
-   An `-isExcluded()` in the `require` means that a rule requires a package not to be excluded before its executed. As all of the 375 unresolved policy violation were in now by the `ort.yml` marked excluded `devDependencies` there are no policy violations resulting in _Completed scan successfully_.
+   An `-isExcluded()` in the `require` block means that a rule requires a package not to be excluded before it is executed. As all packages corresponding to the 375 unresolved policy violations have been marked as excluded by the scope exclude for `devDependencies` in the `ort.yml`, there are no more open policy violations left.
 
 ### Marking Files and Directories in a Project as Excluded
 
