@@ -78,7 +78,7 @@ The Web App is divided in three sections:
 
 ### Package Details
 
-Click any '+' sign in front of a package id, such as _NPM::ansi-regex:3.0.0_ to see additionial information such as:
+Click any '+' sign in front of a package id, such as _NPM::ansi-regex:3.0.0_ to see additional information such as:
 - _Package details_: description, homepage, code repositories, binary and source artifact
 - _Licenses_: declared licenses (from package metadata), detected licenses (found in source code), and concluded licenses (human overwrites)
 - _Paths_: dependency trail from root project to opened package id
