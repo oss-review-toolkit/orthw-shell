@@ -188,7 +188,7 @@ In the WebApp report look up `NPM::acorn:7.1.1` by filtering the _Package_ colum
 
 ### Determining whether Right Sources where Scanned
 
-Click the '+' sign on the left of `NPM::acorn:7.1.1` and expand the _Scan Results_ section which contains copyright and license findings. Look at copyright and license findings and you will find entries for the directories `acorn-loose` and `acorn-walk` containing `LICENSE` and `package.json` files. 
+Click the '+' sign on the left of `NPM::acorn:7.1.1` and expand the _Scan Results_ section which contains copyright and license findings. Look at copyright and license findings, and you will find entries for the directories `acorn-loose` and `acorn-walk` containing `LICENSE` and `package.json` files. 
 This is an indication of _overscanning_ - more than the actual sources of the package were scanned due to incorrect package metadata. In this case code repository seems to contain multiple packages so sources of multiple packages were scanned.
 
 To confirm this assumption, do the following:
