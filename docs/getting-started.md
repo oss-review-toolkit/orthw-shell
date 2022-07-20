@@ -87,7 +87,7 @@ Click any '+' sign in front of a package id, such as _NPM::ansi-regex:3.0.0_ to 
 
 ### About Modal
 
-In the top-right corner of the Web App report you can find the _About_ button which if clicked shows you:
+In the top-right corner of the Web App report you can find the _About_ button which, if clicked, shows you:
 - _Excludes_: contents of the [.ort.yml][ort-yml] file for the project. Not shown if no `.ort.yml` was found
 - _Labels_: labels were passed to the ORT _analyzer_ using one or more `-L` parameters. Not shown if no labels were set
 - _About_: details on the ORT project and render timestamp for the report
