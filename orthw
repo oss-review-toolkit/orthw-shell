@@ -340,10 +340,14 @@ list_scan_results() {
 }
 
 ort() {
+  export ORT_OPTS="$ort_jvm_options"
+
   $ort "$@"
 }
 
 orth() {
+  export ORTH_OPTS="$orth_jvm_options"
+
   $orth "$@"
 }
 
