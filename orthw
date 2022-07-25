@@ -327,7 +327,6 @@ find_package_configuration() {
     --package-id $package_id
 }
 
-
 list_scan_results() {
   local package_id=$1
   # The package_id is parameter to the SQL LIKE operator, see https://www.postgresqltutorial.com/postgresql-like/.
