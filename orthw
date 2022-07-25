@@ -286,9 +286,12 @@ evaluate() {
     --rules-file $ort_config_rules_file \
     --license-classifications-file $ort_config_license_classifications_file \
     --package-configuration-dir $ort_config_package_configuration_dir
-  # Ideally the md5 sums should only be updated in case evaluate successfully.
-  # completes, but unfortunately the return code cannot be used as indicator.
-  # TODO: Fix the exit code of the evaluator.
+
+  if [[ $? -eq "1" ]]; then
+    echo "Error running the evaluator."
+    exit 1
+  fi
+
   update_evaluation_md5_sum
   mv "$temp_dir/evaluation-result.json" $evaluation_result_file
 
