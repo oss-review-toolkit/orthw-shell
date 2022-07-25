@@ -106,7 +106,7 @@ gitlab_token=""
 #
 # The logging can be configured e.g. via "--info", "--debug" and "--stacktrace".
 #
-ort_options=""
+ort_options="--info"
 orth_options=""
 
 #
