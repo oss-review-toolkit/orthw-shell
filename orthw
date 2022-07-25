@@ -152,11 +152,10 @@ usage() {
   echo ""
 }
 
-
 analyze() {
   local source_code_dir=$(realpath "$1")
 
-  $ort analyze \
+  ort analyze \
     --input-dir $source_code_dir \
     --output-dir . \
     --output-formats JSON \
@@ -214,7 +213,7 @@ analyze_in_docker() {
 advise() {
   mkdir -p $temp_dir
 
-  $ort advise \
+  ort advise \
     --advisors "$enabled_advisors" \
     --output-dir $temp_dir \
     --output-formats JSON \
@@ -276,7 +275,7 @@ evaluate() {
 
   mkdir -p $temp_dir
 
-  $ort evaluate \
+  ort evaluate \
     --copyright-garbage-file $ort_config_copyright_garbage_file \
     --package-curations-dir $ort_config_package_curations_dir \
     --output-dir $temp_dir \
@@ -340,6 +339,10 @@ list_scan_results() {
   echo "$result"
 }
 
+ort() {
+  $ort "$@"
+}
+
 query_scandb() {
   local sql=$1
   require_command "psql"
@@ -360,7 +363,7 @@ report() {
     notice_template_path_option="-O NoticeTemplate=template.path=$notice_template_files"
   fi
 
-  $ort report \
+  ort report \
     --copyright-garbage-file $ort_config_copyright_garbage_file \
     --custom-license-texts-dir $ort_config_custom_license_texts_dir \
     --how-to-fix-text-provider-script $ort_config_how_to_fix_text_provider_script \
