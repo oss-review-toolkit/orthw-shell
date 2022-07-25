@@ -342,13 +342,13 @@ list_scan_results() {
 ort() {
   export ORT_OPTS="$ort_jvm_options"
 
-  $ort "$@"
+  $ort $ort_options "$@"
 }
 
 orth() {
   export ORTH_OPTS="$orth_jvm_options"
 
-  $orth "$@"
+  $orth $orth_options "$@"
 }
 
 query_scandb() {
