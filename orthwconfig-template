@@ -101,7 +101,7 @@ gitlab_host="gitlab.example.com"
 gitlab_token=""
 
 #
-# Options for ORT's CLI and helper CLI binaries, `ort` and `orthw`.
+# Options for ORT's CLI and helper CLI binaries, `ort` and `orth`.
 # Please refer to the help instructions of the respective CLI binary for the full list of available options.
 #
 # The logging can be configured e.g. via "--info", "--debug" and "--stacktrace".
