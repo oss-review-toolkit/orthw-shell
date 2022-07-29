@@ -6,8 +6,7 @@ scan results. It supports a number of commands, which can be run in the terminal
 For example:
 - to correct license findings in an open source dependency, you can run `orthw pc-create <package-id>`, which generates
   a [package configuration][ort-package-configurations] file
-- to indicate that certain items are internal to the project (and so license findings should not be reported against them), you can generate scope excludes
-  for you project's  [.ort.yml][ort-yml] file with the command `orthw  rc-generate-scope-excludes` generates [scope excludes][ort-yml-scope-excludes].
+- to indicate that certain items are internal to the project (and so license findings should not be reported against them), you can generate scope excludes for your project's  [.ort.yml][ort-yml] file with the command `orthw  rc-generate-scope-excludes` generates [scope excludes][ort-yml-scope-excludes].
 
 ## Benefits of `orthw`
 
@@ -51,7 +50,7 @@ The installation of these tools depends on the operating system:
 | `md5sum --version`| `md5sum/sha1sum [VERSION_NUMBER]`  |
 | `xz --version`    | `xz (XZ Utils) [VERSION_NUMBER]`   |
 
-The next step is to clone the [ORT][ort], [ort-config], [ScanCode][scancode] and the [orthw script][orthw] repositories.
+The next step is to clone the repositories of [ORT][ort], [ort-config], [ScanCode][scancode] and [orthw script][orthw].
 Run the commands shown below in a dedicated directory such as `~/ort-project`:
 
 ```bash

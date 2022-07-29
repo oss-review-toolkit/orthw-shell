@@ -189,7 +189,7 @@ excludes:
 
 ### Tips for Working with the `.ort.yml` File
 
-- Symlink the `ort.yml` created by `orthw` to the `.ort.yml` in the project code repository so you can commit your
+- Symlink the `ort.yml` created by `orthw` to the `.ort.yml` in the project code repository, so you can commit your
   changes easily and often
 - Do not sort path or scope exclude entries in `ort.yml` manually, but simply add them and use the command `orthw rc-sort`
 
