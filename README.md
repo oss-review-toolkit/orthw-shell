@@ -118,16 +118,16 @@ Verify that `orthw` works by  running `orthw` in a new terminal window: `orthw` 
 # Usage
 
 Follow the [Getting Started][gs] guide to learn how to use `orthw` to:
-- [Initializing a local directory with an ORT scan result][gs-orthw-init]
-- [Generating a Web App report to see scan results in a web browser][gs-orthw-report-webapp]
+- [Initializing a local directory with an ORT scan result][gs-orthw-init]{:target="_blank"}
+- [Generating a Web App report to see scan results in a web browser][gs-orthw-report-webapp]{:target="_blank"}
 - [Marking files, directories or package manager scopes in your project as not included in released artifacts][gs-orthw-rc-excludes]
 - [Checking your project dependencies for security advisories][gs-orthw-check-advisories]
 - [Correcting missing or incorrect package metadata][gs-orthw-curations]
 - [Marking files or directories in the sources of a dependency as not included in released artifacts][gs-orthw-pc-excludes]
 - [Correcting a detected license found in package source code][gs-orthw-pc-create]
 - [Listing the licenses found in the sources of a package][gs-orthw-licenses]
-- [Listing licenses flagged with a policy violation][gs-orthw-offending-licenses]
-- [Conclude the license for a package][gs-orthw-concluded-license-curation]
+- [Listing licenses flagged with a policy violation][gs-orthw-offending-licenses]{:target="_blank"}
+- [Conclude the license for a package][gs-orthw-concluded-license-curation]{:target="_blank"}
 
 # Contributing to `orthw` and Questions
 
@@ -150,15 +150,15 @@ OSS Review Toolkit (ORT) is a [Linux Foundation project](https://www.linuxfounda
 [gs]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md
 [gs-orthw-check-advisories]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-check-advisories
 [gs-orthw-copyrights]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-copyrights
-[gs-orthw-concluded-license-curation]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-concluded-license-curation
+[gs-orthw-concluded-license-curation]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#concluding-the-license-for-a-package-
 [gs-orthw-curations]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-curations
 [gs-orthw-init]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-init
 [gs-orthw-license-choice]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-license-choice
-[gs-orthw-licenses]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-licenses
+[gs-orthw-licenses]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#listing-the-licenses-found-in-the-sources-of-a-package-
 [gs-orthw-offending-licenses]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-offending-licenses
 [gs-orthw-pc-create]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-pc-create
 [gs-orthw-pc-excludes]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-pc-excludes
-[gs-orthw-report-webapp]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-report-webapp
+[gs-orthw-report-webapp]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#generating-a-web-app-report-to-see-scan-results-in-a-web-browser-
 [gs-orthw-rc-excludes]: https://github.com/oss-review-toolkit/orthw/blob/main/docs/getting-started.md#orthw-rc-excludes
 [homebrew]: https://brew.sh/
 [ort]: https://github.com/oss-review-toolkit/ort
