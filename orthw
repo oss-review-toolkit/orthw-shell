@@ -334,6 +334,7 @@ init() {
   mkdir -p $dot_dir
   echo "$target_url" > $target_url_file
 
+  # TODO: The below patching of GitLab URLs is HERE specific and needs to be generalized.
   if [[ $target_url =~ https://$gitlab_host/oss/oss-review-toolkit/ort-gitlab-ci/-/jobs/([0-9]*)/artifacts/file/ort-results/scan-result.(json|json.xz) ]]; then
     local job_id=${BASH_REMATCH[1]}
     local ext=${BASH_REMATCH[2]}
