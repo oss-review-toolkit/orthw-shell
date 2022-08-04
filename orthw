@@ -327,6 +327,48 @@ find_package_configuration() {
     --package-id $package_id
 }
 
+init() {
+  target_url=$1
+
+  rm -f $evaluation_md5_sum_file
+  mkdir -p $dot_dir
+  echo "$target_url" > $target_url_file
+
+  if [[ $target_url =~ https://$gitlab_host/oss/oss-review-toolkit/ort-gitlab-ci/-/jobs/([0-9]*)/artifacts/file/ort-results/scan-result.(json|json.xz) ]]; then
+    job_id=${BASH_REMATCH[1]}
+    ext=${BASH_REMATCH[2]}
+    target_url="https://$gitlab_host/api/v4/projects/8889/jobs/$job_id/artifacts/ort-results/scan-result.$ext"
+    echo "Patched URL: '$target_url'."
+  fi
+
+  declare -a header_options=()
+  if [[ $target_url == *$gitlab_host* ]]; then
+    header_options+=('-H' "PRIVATE-TOKEN: $gitlab_token")
+    echo "Added authentication header for $gitlab_host."
+  fi
+
+  filename="${target_url##*/}"
+  extension="${filename#*\.}"
+  temp_scan_result_file="$dot_dir/scan-result-temp.$extension"
+
+  curl -L "${header_options[@]}" $target_url > $temp_scan_result_file
+  if [[ "$extension" == "json.xz" ]]; then
+    xz -d -f $temp_scan_result_file
+    temp_scan_result_file="${temp_scan_result_file%\.*}"
+  fi
+  mv $temp_scan_result_file $scan_result_file
+
+  orth extract-repository-configuration \
+    --repository-configuration-file $repository_configuration_file \
+    --ort-file $scan_result_file
+
+  orth import-scan-results \
+    --ort-file $scan_result_file \
+    --scan-results-storage-dir $scan_results_storage_dir
+
+  exit 0
+}
+
 list_scan_results() {
   local package_id=$1
   # The package_id is parameter to the SQL LIKE operator, see https://www.postgresqltutorial.com/postgresql-like/.
@@ -648,41 +690,7 @@ fi
 if [ "$command" = "init" ] && [ "$#" -eq 2 ]; then
   target_url=$2
 
-  rm -f $evaluation_md5_sum_file
-  mkdir -p $dot_dir
-  echo "$target_url" > $target_url_file
-
-  if [[ $target_url =~ https://$gitlab_host/oss/oss-review-toolkit/ort-gitlab-ci/-/jobs/([0-9]*)/artifacts/file/ort-results/scan-result.(json|json.xz) ]]; then
-    job_id=${BASH_REMATCH[1]}
-    ext=${BASH_REMATCH[2]}
-    target_url="https://$gitlab_host/api/v4/projects/8889/jobs/$job_id/artifacts/ort-results/scan-result.$ext"
-    echo "Patched URL: '$target_url'."
-  fi
-
-  declare -a header_options=()
-  if [[ $target_url == *$gitlab_host* ]]; then
-    header_options+=('-H' "PRIVATE-TOKEN: $gitlab_token")
-    echo "Added authentication header for $gitlab_host."
-  fi
-
-  filename="${target_url##*/}"
-  extension="${filename#*\.}"
-  temp_scan_result_file="$dot_dir/scan-result-temp.$extension"
-
-  curl -L "${header_options[@]}" $target_url > $temp_scan_result_file
-  if [[ "$extension" == "json.xz" ]]; then
-    xz -d -f $temp_scan_result_file
-    temp_scan_result_file="${temp_scan_result_file%\.*}"
-  fi
-  mv $temp_scan_result_file $scan_result_file
-
-  orth extract-repository-configuration \
-    --repository-configuration-file $repository_configuration_file \
-    --ort-file $scan_result_file
-
-  orth import-scan-results \
-    --ort-file $scan_result_file \
-    --scan-results-storage-dir $scan_results_storage_dir
+  init $target_url
 
   exit 0
 fi
