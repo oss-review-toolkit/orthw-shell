@@ -352,11 +352,17 @@ init() {
   local temp_scan_result_file="$dot_dir/scan-result-temp.$extension"
 
   curl -L "${header_options[@]}" $target_url > $temp_scan_result_file
-  if [[ "$extension" == "json.xz" ]]; then
+  if [[ "$extension" == *.xz ]]; then
     xz -d -f $temp_scan_result_file
     temp_scan_result_file="${temp_scan_result_file%\.*}"
+    extension="${extension%\.*}"
   fi
-  mv $temp_scan_result_file $scan_result_file
+
+  if [[ "$extension" == "json" ]]; then
+    mv $temp_scan_result_file $scan_result_file
+  elif [[ "$extension" == "yml" ]]; then
+    orth convert-ort-file -i $temp_scan_result_file -o $scan_result_file
+  fi
 
   orth extract-repository-configuration \
     --repository-configuration-file $repository_configuration_file \
