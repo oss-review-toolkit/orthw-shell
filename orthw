@@ -90,6 +90,7 @@ usage() {
   echo "  init <target-url>"
   echo "  licenses <package-id>"
   echo "  licenses <package-id> <source-code-dir>"
+  echo "  offending-packages"
   echo "  offending-licenses <package-id>"
   echo "  offending-licenses <package-id> <source-code-dir>"
   echo "  packages"
@@ -793,6 +794,19 @@ if [ "$command" = "packages-for-detected-licenses" ] && [ "$#" -eq 2 ]; then
   orth list-packages \
     --ort-file $scan_result_file \
     --match-detected-licenses $detected_licenses
+  exit 0
+fi
+
+
+if [ "$command" = "offending-packages" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  evaluate
+
+  orth list-packages \
+    --ort-file $evaluation_result_file \
+    --offending-only \
+    --offending-severities ERROR
   exit 0
 fi
 
