@@ -752,7 +752,7 @@ if [ "$command" = "offending-licenses" ] && [ "$#" -eq 2 ]; then
     --package-configuration-dir $ort_config_package_configuration_dir \
     --apply-license-finding-curations \
     --offending-only \
-    --offending-severity ERROR \
+    --offending-severities ERROR \
     --omit-excluded
   exit 0
 fi
@@ -773,7 +773,7 @@ if [ "$command" = "offending-licenses" ] && [ "$#" -eq 3 ]; then
     --source-code-dir $source_code_dir \
     --apply-license-finding-curations \
     --offending-only \
-    --offending-severity ERROR \
+    --offending-severities ERROR \
     --omit-excluded
   exit 0
 fi
