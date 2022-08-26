@@ -204,14 +204,11 @@ analyze_in_docker() {
     echo "Skip setting up a .netrc file, because that's not configured."
   fi
 
-  # Note: mounting the host resolv.conf in order to fix a potential issue
-  # related to missing entries when connected via VPN.
   docker run \
     -it \
     $mount_netrc_option \
     -v $ort_home:/ort \
     -v $project_dir:/workspace \
-    -v /etc/resolv.conf:/etc/resolv.conf \
     --entrypoint /bin/bash \
     $ort_docker_image
 }
