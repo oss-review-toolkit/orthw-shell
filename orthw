@@ -230,6 +230,18 @@ advise() {
   rm -rf $temp_dir
 }
 
+create_package_configuration() {
+  local package_id=$1
+
+  orth package-configuration create \
+      --scan-results-storage-dir $scan_results_storage_dir \
+      --package-id $package_id \
+      --create-hierarchical-dirs \
+      --generate-path-excludes \
+      --output-dir $ort_config_package_configuration_dir \
+      --force-overwrite
+}
+
 get_package_configuration_dir_md5_sum() {
   find $ort_config_package_configuration_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
 }
@@ -818,15 +830,10 @@ fi
 
 if [ "$command" = "pc-create" ] && [ "$#" -eq 2 ]; then
   require_initialized
-
   package_id=$2
-  orth package-configuration create \
-    --scan-results-storage-dir $scan_results_storage_dir \
-    --package-id $package_id \
-    --create-hierarchical-dirs \
-    --generate-path-excludes \
-    --output-dir $ort_config_package_configuration_dir \
-    --force-overwrite
+
+  create_package_configuration $package_id
+
   exit 0
 fi
 
