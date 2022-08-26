@@ -411,6 +411,13 @@ ort() {
   $ort $ort_options "$@"
 }
 
+offending_packages() {
+  orth list-packages \
+    --ort-file $evaluation_result_file \
+    --offending-only \
+    --offending-severities ERROR
+}
+
 orth() {
   export ORTH_OPTS="$orth_jvm_options"
 
@@ -817,13 +824,10 @@ fi
 
 if [ "$command" = "offending-packages" ] && [ "$#" -eq 1 ]; then
   require_initialized
-
   evaluate
 
-  orth list-packages \
-    --ort-file $evaluation_result_file \
-    --offending-only \
-    --offending-severities ERROR
+  offending_packages
+
   exit 0
 fi
 
