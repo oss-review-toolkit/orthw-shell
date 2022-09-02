@@ -457,9 +457,9 @@ report() {
     -O EvaluatedModel=output.file.formats=json \
     -O NoticeTemplate=project-types-as-packages="SpdxDocumentFile" \
     $notice_template_path_option
-  mv "$temp_dir/CycloneDX-BOM.xml" $cyclone_dx_report_file > /dev/null 2>&1
-  mv "$temp_dir/document.spdx.json" $spdx_json_report_file > /dev/null 2>&1
-  mv "$temp_dir/document.spdx.yml" $spdx_yaml_report_file > /dev/null 2>&1
+  mv "$temp_dir/bom.cyclonedx.xml" $cyclone_dx_report_file > /dev/null 2>&1
+  mv "$temp_dir/bom.spdx.json" $spdx_json_report_file > /dev/null 2>&1
+  mv "$temp_dir/bom.spdx.yml" $spdx_yaml_report_file > /dev/null 2>&1
   mv "$temp_dir/gl-license-scanning-report.json" $gitlab_license_model_report_file > /dev/null 2>&1
   mv "$temp_dir/evaluated-model.json" $evaluated_model_report_file > /dev/null 2>&1
   mv "$temp_dir/scan-report.html" $html_report_file > /dev/null 2>&1
