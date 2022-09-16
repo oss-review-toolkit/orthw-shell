@@ -104,7 +104,8 @@ gitlab_token=""
 # Options for ORT's CLI and helper CLI binaries, `ort` and `orth`.
 # Please refer to the help instructions of the respective CLI binary for the full list of available options.
 #
-# The logging can be configured e.g. via "--info", "--debug" and "--stacktrace".
+# The log level can be configured e.g. via "--error", "--warn", "--info" and "--debug".
+# The output of stack traces can be enabled with "--stacktrace".
 #
 ort_options="--info"
 orth_options=""
