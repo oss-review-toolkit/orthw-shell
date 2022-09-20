@@ -114,7 +114,7 @@ usage() {
   echo ""
   echo "  pc-clean <package-id>"
   echo "  pc-create <package-id>"
-  echo "  pc-create-offending"
+  echo "  pc-create-all <package ids FILE>"
   echo "  pc-export-curations <package-id> <source-code-dir>"
   echo "  pc-export-path-excludes <package-id> <source-code-dir>"
   echo "  pc-find <package-id>"
@@ -840,16 +840,16 @@ if [ "$command" = "pc-create" ] && [ "$#" -eq 2 ]; then
 fi
 
 
-if [ "$command" = "pc-create-offending" ] && [ "$#" -eq 1 ]; then
+if [ "$command" = "pc-create-all" ] && [ "$#" -le 2 ]; then
   require_initialized
-  evaluate
 
-  packages_ids=$(offending_packages)
+  input_file="${2:-/dev/stdin}"
+  echo "Reading package IDs from '$input_file'..."
 
-  IFS=$'\n'
-  for id in $packages_ids; do
+  while read id
+  do
     create_package_configuration $id
-  done
+  done < $input_file
 
   exit 0
 fi
