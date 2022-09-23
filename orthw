@@ -237,6 +237,8 @@ create_package_configuration() {
       --package-id $package_id \
       --create-hierarchical-dirs \
       --generate-path-excludes \
+      --license-classifications-file $ort_config_license_classifications_file \
+      --non-offending-license-categories "$non_offending_license_categories" \
       --output-dir $ort_config_package_configuration_dir \
       --force-overwrite
 }
