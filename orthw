@@ -240,6 +240,16 @@ create_package_configuration() {
       --force-overwrite
 }
 
+create_package_configurations() {
+  echo "Creating package configurations for $# packages..."
+
+  for (( i=1; i <= "$#"; i++ )); do
+    id=${!i}
+    echo "[$i / $#] $id"
+    create_package_configuration $id
+  done
+}
+
 get_package_configuration_dir_md5_sum() {
   find $ort_config_package_configuration_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
 }
@@ -850,12 +860,8 @@ if [ "$command" = "pc-create-offending" ] && [ "$#" -eq 1 ]; then
   require_initialized
   evaluate
 
-  packages_ids=$(offending_packages)
-
-  IFS=$'\n'
-  for id in $packages_ids; do
-    create_package_configuration $id
-  done
+  readarray -t ids <<<"$(offending_packages)"
+  create_package_configurations ${ids[@]}
 
   exit 0
 fi
