@@ -409,6 +409,10 @@ ort() {
   $ort $ort_options "$@"
 }
 
+packages() {
+  orth list-packages --ort-file $scan_result_file
+}
+
 offending_packages() {
   orth list-packages \
     --ort-file $evaluation_result_file \
@@ -804,7 +808,9 @@ fi
 
 if [ "$command" = "packages" ] && [ "$#" -eq 1 ]; then
   require_initialized
-  orth list-packages --ort-file $scan_result_file
+
+  packages
+
   exit 0
 fi
 
