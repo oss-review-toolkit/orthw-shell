@@ -85,8 +85,6 @@ usage() {
   echo ""
   echo "Commands with scan context:"
   echo ""
-  echo "  analyze <source-code-dir>"
-  echo "  analyze-in-docker <source-code-dir>"
   echo "  clean"
   echo "  check-advisories"
   echo "  copyrights"
