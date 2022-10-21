@@ -46,7 +46,7 @@ ort_config_notice_templates_dir="$configuration_home/notice"
 ort_config_package_configuration_dir="$configuration_home/package-configurations"
 ort_config_package_curations_dir="$configuration_home/curations"
 ort_config_resolutions_file="$configuration_home/resolutions.yml"
-ort_config_rules_file="$configuration_home/evaluator-rules/src/main/resources/example.rules.kts"
+ort_config_rules_file="$configuration_home/evaluator.rules.kts"
 
 ########################################
 # Exports (repository) files:
