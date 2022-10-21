@@ -39,6 +39,7 @@ temp_dir="$dot_dir/tmp"
 # Configuration (repository) files:
 #
 ort_config_copyright_garbage_file="$configuration_home/copyright-garbage.yml"
+ort_config_custom_license_texts_dir="$configuration_home/custom-license-texts"
 ort_config_how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kts"
 ort_config_license_classifications_file="$configuration_home/license-classifications.yml"
 ort_config_notice_templates_dir="$configuration_home/notice"
@@ -46,7 +47,6 @@ ort_config_package_configuration_dir="$configuration_home/package-configurations
 ort_config_package_curations_dir="$configuration_home/curations"
 ort_config_resolutions_file="$configuration_home/resolutions.yml"
 ort_config_rules_file="$configuration_home/evaluator-rules/src/main/resources/example.rules.kts"
-ort_config_custom_license_texts_dir="$configuration_home/custom-license-texts"
 
 ########################################
 # Exports (repository) files:
