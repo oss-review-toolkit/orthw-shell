@@ -451,10 +451,15 @@ report() {
 
   mkdir -p $temp_dir
 
-  local notice_template_files=$(find $ort_config_notice_templates_dir -name "*.ftl" | tr '\n' ',' | sed 's/,*\r*$//')
+  local notice_template_files=""
+  if [ -d $ort_config_notice_templates_dir ]; then
+    notice_template_files=$(find $ort_config_notice_templates_dir -name "*.ftl" | tr '\n' ',' | sed 's/,*\r*$//')
+  fi
 
   if [ -n "$notice_template_files" ]; then
     notice_template_path_option="-O NoticeTemplate=template.path=$notice_template_files"
+  else
+    echo "No notice templates found under '$ort_config_notice_templates_dir'. Using ORT's default template(s)."
   fi
 
   ort report \
