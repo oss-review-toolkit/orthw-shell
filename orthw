@@ -187,12 +187,12 @@ analyze_in_docker() {
   # Setup temporary directories to mount into docker:
   local temp_dir=$(mktemp -d)
 
-  mount_netrc_option=""
+  local mount_netrc_option=""
   if [ -n "$netrc_machine" ] && \
      [ -n "$netrc_login" ] && \
      [ -n "$netrc_password" ]
   then
-    netrc_file="$temp_dir/.netrc"
+    local netrc_file="$temp_dir/.netrc"
     touch $netrc_file
     chmod 0600 $netrc_file
     echo -e "machine $netrc_machine" >> $netrc_file
