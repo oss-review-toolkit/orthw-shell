@@ -237,6 +237,7 @@ create_package_configuration() {
       --generate-path-excludes \
       --license-classifications-file $ort_config_license_classifications_file \
       --non-offending-license-categories "$non_offending_license_categories" \
+      --non-offending-license-ids "$non_offending_license_ids" \
       --output-dir $ort_config_package_configuration_dir \
       --force-overwrite
 }
