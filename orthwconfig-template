@@ -45,10 +45,18 @@ enabled_advisors="osv"
 
 #
 # Comma-separated list of license categories within 'license-classifications.yml' for which no path excludes will be
-# created during package configuration generation (e.g. pc-create, pc-create-offending, pc-create-all commands). If set
-# to empty string, then path excludes will be generated for all file findings within a package.
+# created during package configuration generation (e.g. pc-create, pc-create-offending, pc-create-all commands). If
+# no non-offending license IDs and categories are defined, then path excludes will be generated for all file findings
+# within a package.
 #
 non_offending_license_categories=""
+
+#
+# Comma-separated list of license IDs for which no path excludes will be created during package configuration generation
+# (e.g. pc-create, pc-create-offending, pc-create-all commands). If non non-offending license IDs and categories are
+# defined, then path excludes will be generated for all file findings within a package.
+#
+non_offending_license_ids=""
 
 #
 # The template for the license classification request. Supported placeholders:
