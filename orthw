@@ -377,14 +377,14 @@ init() {
   fi
 
   local filename="${target_url##*/}"
-  local extension="${filename#*\.}"
-  local temp_scan_result_file="$dot_dir/scan-result-temp.$extension"
+  local temp_scan_result_file="$dot_dir/temp-$filename"
+  local extension="${temp_scan_result_file//*.}"
 
   curl -L "${header_options[@]}" $target_url > $temp_scan_result_file
-  if [[ "$extension" == *.xz ]]; then
+  if [[ "$extension" == "xz" ]]; then
     xz -d -f $temp_scan_result_file
-    temp_scan_result_file="${temp_scan_result_file%\.*}"
-    extension="${extension%\.*}"
+    temp_scan_result_file="${temp_scan_result_file%.*}"
+    extension="${temp_scan_result_file//*.}"
   fi
 
   if [[ "$extension" == "json" ]]; then
