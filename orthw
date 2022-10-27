@@ -391,6 +391,9 @@ init() {
     mv $temp_scan_result_file $scan_result_file
   elif [[ "$extension" == "yml" ]]; then
     orth convert-ort-file -i $temp_scan_result_file -o $scan_result_file
+  else
+    echo "Cannot initialize with the given file '$filename'. The file extension is unexpected."
+    exit 1
   fi
 
   orth extract-repository-configuration \
