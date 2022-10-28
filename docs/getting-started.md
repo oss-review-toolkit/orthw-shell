@@ -42,7 +42,7 @@ orthw init file:///<path-to-ort-user-directory>/ort-project/orthw/examples/npm-m
 Note that the second command (`orthw init`) can be given a CI/CD job artifact URL, instead of a path to a local file:
 
 ```bash
-orthw init https://raw.githubusercontent.com/oss-review-toolkit/orthw/examples/npm-mime-types-2.1.26-scan-result.json
+orthw init https://raw.githubusercontent.com/oss-review-toolkit/orthw/main/examples/npm-mime-types-2.1.26-scan-result.json
 ```
 
 Once `orthw init` has successfully finished, `~/ort-scans/mime-types-orthw` should have in it the `ort.yml` file and a
