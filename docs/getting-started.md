@@ -1,7 +1,7 @@
 # Getting Started
 
 This tutorial is an introduction to the `orthw` script. It shows how to run the script on an [ORT][ort] scan
-of the [code repository][mime-types-github] for the NPM package [mime-types][mime-types-npm] 2.1.26.
+of the [code repository][mime-types] for the NPM package [mime-types][mime-types-npm] 2.1.26.
 
 The tutorial covers the following steps, which represent a typical `orthw` workflow:
 
