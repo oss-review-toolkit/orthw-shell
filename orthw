@@ -578,11 +578,11 @@ if [ "$command" = "create-analyzer-result" ] && [ "$#" -eq 2 ]; then
   orth create-analyzer-result \
     --package-ids-file $package_ids_file \
     --scancode-version "$scancode_version" \
-    -P "ort.scanner.storages.postgres.url=jdbc:postgresql://$scandb_host:$scandb_port/$scandb_db" \
-    -P "ort.scanner.storages.postgres.schema=$scandb_schema" \
-    -P "ort.scanner.storages.postgres.username=$scandb_user" \
-    -P "ort.scanner.storages.postgres.password=$scandb_password" \
-    -P "ort.scanner.storages.postgres.sslmode=require" \
+    -P "ort.scanner.storages.postgres.connection.url=jdbc:postgresql://$scandb_host:$scandb_port/$scandb_db" \
+    -P "ort.scanner.storages.postgres.connection.schema=$scandb_schema" \
+    -P "ort.scanner.storages.postgres.connection.username=$scandb_user" \
+    -P "ort.scanner.storages.postgres.connection.password=$scandb_password" \
+    -P "ort.scanner.storages.postgres.connection.sslmode=require" \
     --ort-file ./synthetic-analyzer-result.json
 
   exit 0
