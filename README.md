@@ -4,17 +4,17 @@
 scan results. It supports a number of commands, which can be run in the terminal (e.g. Bash). 
 
 For example:
-- to correct license findings in an open source dependency, you can run `orthw pc-create <package-id>`, which generates
-  a [package configuration][ort-package-configurations] file
-- to indicate that certain items are internal to the project (and so license findings should not be reported against them), you can generate scope excludes for your project's  [.ort.yml][ort-yml] file with the command `orthw  rc-generate-scope-excludes` generates [scope excludes][ort-yml-scope-excludes].
+- To correct license findings in an open source dependency, you can run `orthw pc-create <package-id>`, which generates
+  a [package configuration][ort-package-configurations] file.
+- To indicate that certain items are internal to the project (and so license findings should not be reported against them), you can generate scope excludes for your project's  [.ort.yml][ort-yml] file with the command `orthw  rc-generate-scope-excludes` generates [scope excludes][ort-yml-scope-excludes].
 
 ## Benefits of `orthw`
 
 `orthw`:
-  - simplifies common ORT scan review tasks such as clearing found licenses.
-  - offers easy to remember CLI commands (but should you forget, run `orthw` with no arguments to see a complete list).
-  - includes commands to format, sort, clean up and generate ORT config files such as [.ort.yml][ort-yml] and [package configuration][ort-package-configurations].
-  - is pre-configured to work with the [ort-config] repository allowing you to re-use the work of other ORT users.
+  - Simplifies common ORT scan review tasks such as clearing found licenses.
+  - Offers easy to remember CLI commands (but should you forget, run `orthw` with no arguments to see a complete list).
+  - Includes commands to format, sort, clean up and generate ORT config files such as [.ort.yml][ort-yml] and [package configuration][ort-package-configurations].
+  - Is pre-configured to work with the [ort-config] repository allowing you to re-use the work of other ORT users.
 
 # Installation
 
@@ -109,7 +109,7 @@ orthw_home=~/ort-project/orthw
 To make `orthw` executable everywhere, add a `PATH` export to your terminal configuration file.
 
 - Use a text editor to open either the `~/.bashrc` or `~/.zshrc` file (depending on the shell you use).
-- Add a path export pointing to the `orthw` script e.g. `export PATH=" ~/ort-project/orthw/orthw$PATH"`
+- Add a path export pointing to the `orthw` script e.g. `export PATH=" ~/ort-project/orthw/orthw$PATH"`.
 
 ## 5. Test if Everything Works
 
