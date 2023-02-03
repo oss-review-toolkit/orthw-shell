@@ -634,8 +634,8 @@ if [ "$command" = "find-scans-for-package" ] && [ "$#" -eq 2 ]; then
   package_id=$2
 
   # This command utilizes the following index:
-  # CREATE INDEX tbl_usr_gin_idx2 
-  # ON oso.ossreview 
+  # CREATE INDEX tbl_usr_gin_idx2
+  # ON oso.ossreview
   # USING gin ((result->'analyzer'->'result'->'packages') jsonb_path_ops);
 
   # Disable sequential scan to force using that index, because running `VACUUM ANALYZE`
@@ -647,17 +647,17 @@ if [ "$command" = "find-scans-for-package" ] && [ "$#" -eq 2 ]; then
 	  CONCAT(result->'labels'->'job_parameters.SW_VERSION', result->'labels'->'SW_VERSION') as sw_version,
     (result->'analyzer'->>'start_time')::timestamp as start_time,
     CONCAT(result->'labels'->'job_parameters.JENKINS_URL', result->'labels'->'JENKINS_URL') as job_url
-  FROM 
+  FROM
 	  oso.ossreview
-  WHERE 
+  WHERE
 	  result->'analyzer'->'result'->'packages' @> '[{\"package\": {\"id\": \"$package_id\"}}]'
   ORDER BY sw_name ASC, start_time DESC;
   "
-  
+
   echo "Querying packages..."
   result=$(query_scandb "$query")
   echo "$result"
-  
+
   exit 0
 fi
 
@@ -869,7 +869,7 @@ fi
 
 if [ "$command" = "pc-create-all" ] && [ "$#" -eq 1 ]; then
   require_initialized
-  
+
   readarray -t ids <<<"$(packages)"
   create_package_configurations ${ids[@]}
 
@@ -1247,7 +1247,7 @@ if [ "$command" = "update" ] && [ "$#" -eq 1 ]; then
   echo "Updating orthw..."
   cd $orthw_home || exit 1
   git stash
-  
+
   git fetch
   git rebase origin/master
   git stash pop
