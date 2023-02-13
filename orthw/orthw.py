@@ -9,12 +9,15 @@ from typing import Any, List
 
 import click
 
+from orthw.commandbase import command_group
+from orthw.config import Config
+
 
 class OrtHw:
     """OrtHw main class"""
 
     _plugins: List[Any] = []
-    _commands: List[click.MultiCommand] = []
+    _config: Config = Config()
 
     def __init__(self) -> None:
         # Load plugins is specified
@@ -27,7 +30,6 @@ class OrtHw:
 
         for command in path.iterdir():
             if command.is_file():
-                logging.debug(f"Command entry: {command.name}")
                 command_name = command.stem
                 # We expect that we will find the commands under the name commands/command.py
                 spec = importlib.util.find_spec(f"orthw.commands.{command_name}")
@@ -35,7 +37,6 @@ class OrtHw:
                     module = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(module)  # type: ignore
                     self._plugins.append(module)
-                    self._commands.append(module.command_group)
 
     def run(self) -> None:
         """Main function call"""
@@ -44,4 +45,9 @@ class OrtHw:
     @property
     def commands(self) -> List[click.MultiCommand] | None:
         """Return the dynamic commands from plugins"""
-        return self._commands
+        print(command_group().commands())
+        return command_group().commands()
+
+    # @property
+    # def plugins(self) -> List[Any]:
+    #     return self._plugins
