@@ -12,21 +12,20 @@ import yaml
 class Config:
     """Base config object. Reads default orthw config file or set default"""
 
+    # Set default logger to Rich
+    _log = logging.getLogger("rich")
+
     _ortproject_dir: Path = Path.home() / "ort-project"
+    _configfile: Path = Path.home() / ".config" / "orthw"
 
     # Default config file
-    _config: Dict[str, str] = {
-        "configuration_home": (_ortproject_dir / "ort-project/config").as_posix(),
-        "ort_home": (_ortproject_dir / "ort").as_posix(),
-        "scancode_home": (_ortproject_dir / "scancode-toolkit").as_posix(),
-        "exports_home": (_ortproject_dir / "exports").as_posix(),
-        "orthw_home": (_ortproject_dir / "orthw").as_posix(),
+    _config: Dict[str, Path] = {
+        "configuration_home": _ortproject_dir / "ort-config",
+        "ort_home": _ortproject_dir / "ort",
+        "scancode_home": _ortproject_dir / "scancode-toolkit",
+        "exports_home": _ortproject_dir / "exports",
+        "orthw_home": _ortproject_dir / "orthw",
     }
-
-    _configfile: Path = Path.home() / ".config" / "orthw"
-    _project_default: Path = Path.home() / "ort-project"
-    _dotdir: Path = Path.home() / ".orthw"
-    _log = logging.getLogger("rich")
 
     def __init__(self, configfile: str | None = None) -> None:
         # Point the main configfile to custom
@@ -38,7 +37,9 @@ class Config:
     def __readconfig(self) -> None:
         try:
             with open(self.configfile, "r") as yamlconfig:
-                self._config = yaml.safe_load(yamlconfig)
+                config_file = yaml.safe_load(yamlconfig)
+                for key, value in config_file.items():
+                    self._config[key] = Path(value)
         except IOError:
             self._log.warning(
                 f"Missing the required configuration file {self._configfile}.\n"
@@ -49,28 +50,32 @@ class Config:
             Path.mkdir(Path.home() / ".config", exist_ok=True)
             try:
                 with open(self._configfile, "w") as yamlconfig:
-                    yaml.dump(self._config, yamlconfig)
+                    posix_dict: Dict[str, str] = {}
+                    for key, value in self._config.items():
+                        posix_dict[key] = value.as_posix()
+                    yaml.dump(posix_dict, yamlconfig)
             except IOError:
                 self._log.error(f"Can't create the default config file {self._configfile} !")
                 sys.exit(1)
 
         # Add default variables
         self.populate_defaults()
-        print(self.config)
 
     def populate_defaults(self) -> None:
         # Dot directory files
-        self.__add("evaluation_md5_sum_file", self._dotdir / "evaluation-md5sum.txt")
-        self.__add("evaluation_result_file", self._dotdir / "evaluation-result.json")
-        self.__add("package_configuration_md5_sum_file", self._dotdir / "package-configuration-md5sum.txt")
-        self.__add("package_curations_md5_sum_file", self._dotdir / "package-curations-md5sum.txt")
-        self.__add("scan_result_file", self._dotdir / "scan-result.json")
-        self.__add("scan_results_storage_dir", self._dotdir / "scan-results")
-        self.__add("target_url_file", self._dotdir / "target-url.txt")
-        self.__add("temp_dir", self._dotdir / "tmp")
+        dotdir: Path = Path.home() / ".orthw"
+        self.__add("dotdir", dotdir)
+        self.__add("evaluation_md5_sum_file", dotdir / "evaluation-md5sum.txt")
+        self.__add("evaluation_result_file", dotdir / "evaluation-result.json")
+        self.__add("package_configuration_md5_sum_file", dotdir / "package-configuration-md5sum.txt")
+        self.__add("package_curations_md5_sum_file", dotdir / "package-curations-md5sum.txt")
+        self.__add("scan_result_file", dotdir / "scan-result.json")
+        self.__add("scan_results_storage_dir", dotdir / "scan-results")
+        self.__add("target_url_file", dotdir / "target-url.txt")
+        self.__add("temp_dir", dotdir / "tmp")
 
         # Configuration (repository) files
-        cfg_home = self.get("configuration_home", as_path=True)
+        cfg_home = self.get("configuration_home")
         if isinstance(cfg_home, Path):
             self.__add("ort_config_copyright_garbage_file", cfg_home / "copyright-garbage.yml")
             self.__add("ort_config_custom_license_texts_dir", cfg_home / "custom-license-texts")
@@ -83,7 +88,7 @@ class Config:
             self.__add("ort_config_rules_file", cfg_home / "evaluator.rules.kts")
 
         # Exports (repository) files:
-        exports_home = self.get("exports_home", as_path=True)
+        exports_home = self.get("exports_home")
         if isinstance(exports_home, Path):
             self.__add("exports_license_finding_curations_file", exports_home / "license-finding-curations.yml")
             self.__add("exports_path_excludes_file", exports_home / "path-excludes.yml")
@@ -101,7 +106,7 @@ class Config:
         self.__add("spdx_yaml_report_file", "report.spdx.yml")
         self.__add("webapp_report_file", "webapp.html")
 
-    def get(self, config_entry: str, as_path: bool = False) -> str | Path | None:
+    def get(self, config_entry: str) -> Path | None:
         """Return the value of the configured key
 
         :param config_entry: Desired config parameter
@@ -112,8 +117,6 @@ class Config:
         :rtype: str
         """
         if config_entry in self._config:
-            if as_path:
-                return Path(self._config[config_entry])
             return self._config[config_entry]
         return None
 
@@ -126,7 +129,7 @@ class Config:
         :type path: Path
         """
 
-        self._config[config_entry] = path.as_posix() if isinstance(path, Path) else path
+        self._config[config_entry] = path if isinstance(path, Path) else Path(path)
 
     @property
     def configfile(self) -> str:
@@ -138,7 +141,7 @@ class Config:
         return self._configfile.as_posix()
 
     @property
-    def config(self) -> Dict[str, str]:
+    def config(self) -> Dict[str, Path]:
         """Return the configured dictionaire
 
         :return: Ort config values

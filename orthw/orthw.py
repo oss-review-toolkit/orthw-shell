@@ -10,14 +10,12 @@ from typing import Any, List
 import click
 
 from orthw.commandbase import command_group
-from orthw.config import Config
 
 
 class OrtHw:
     """OrtHw main class"""
 
     _plugins: List[Any] = []
-    _config: Config = Config()
 
     def __init__(self) -> None:
         # Load plugins is specified
