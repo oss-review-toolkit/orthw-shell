@@ -18,7 +18,7 @@ class CleanCommand(CommandBase):
     def __init__(self) -> None:
         pass
 
-    def clean(self) -> None:
+    def process(self) -> None:
         try:
             dotdir = self.config.get("dotdir")
             if dotdir and dotdir.is_dir():
@@ -37,4 +37,4 @@ class CleanCommand(CommandBase):
 
 @command_group.command()
 def clean() -> None:
-    CleanCommand().clean()
+    CleanCommand().process()
