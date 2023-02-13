@@ -5,12 +5,15 @@ import logging
 
 import click
 
+from orthw.config import Config
+
 
 class CommandBase:
     """orthw command base class"""
 
     _command_name: str = "Base Class"
     _log = logging.getLogger("rich")
+    _config: Config = Config()
 
     def __init__(self) -> None:
         self.log.debug(f"Initialized command {self._command_name}")
@@ -18,6 +21,15 @@ class CommandBase:
     @property
     def log(self) -> logging.Logger:
         return logging.getLogger("rich")
+
+    @property
+    def config(self) -> Config:
+        """Return config object
+
+        :return: Config object from OrtHW
+        :rtype: Config
+        """
+        return self._config
 
 
 @click.group()
