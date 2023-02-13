@@ -1,7 +1,7 @@
 # The orthw script
 
 `orthw` is a shell script designed to simplify and speed up common tasks performed when processing [ORT][ort]
-scan results. It supports a number of commands, which can be run in the terminal (e.g. Bash). 
+scan results. It supports a number of commands, which can be run in the terminal (e.g. Bash).
 
 For example:
 - To correct license findings in an open source dependency, you can run `orthw pc-create <package-id>`, which generates
@@ -28,9 +28,9 @@ For example:
 * [xz](https://linux.die.net/man/1/xz)
 
 The installation of these tools depends on the operating system:
-- Ubuntu Linux: 
+- Ubuntu Linux:
   - Run: `sudo apt install curl md5sum openjdk-18-jdk xz-utils -y`
-- MacOS: 
+- MacOS:
   - Install [HomeBrew][homebrew] and run: `brew install curl md5sha1sum openjdk xz`
 - Windows using Chocolatey and [Git Bash][git-bash]
   - Install [Chocolatey][chocolatey]
@@ -90,18 +90,18 @@ cp ~/ort-project/orthw/orthwconfig-template ~/.orthwconfig
   configuration and ScanCode repositories which you cloned in above [Prerequisites](#1-prerequisites), respectively.
 
   If you followed examples in the previous steps and used a `ort-project` directory then
-  the contents of `~/.orthwconfig` file should be as follows:
+  the contents of `~/.config/orthw` file should be as follows:
 
 ```
-configuration_home=~/ort-project/ort-config
+configuration_home: ~/ort-project/ort-config
 
-ort_home=~/ort-project/ort
+ort_home: ~/ort-project/ort
 
-scancode_home=~/ort-project/scancode-toolkit
+scancode_home: ~/ort-project/scancode-toolkit
 
-exports_home=~/ort-project/exports
+exports_home: ~/ort-project/exports
 
-orthw_home=~/ort-project/orthw
+orthw_home: ~/ort-project/orthw
 ```
 
 ## 4. Make `orthw` Script Executable Everywhere
