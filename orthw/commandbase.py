@@ -5,7 +5,7 @@ import logging
 
 import click
 
-from orthw.commands.usage import OrthwClickGroup
+from orthw.usage import OrthwClickGroup
 from orthw.config import Config
 
 
