@@ -43,9 +43,4 @@ class OrtHw:
     @property
     def commands(self) -> List[click.MultiCommand] | None:
         """Return the dynamic commands from plugins"""
-        print(command_group().commands())
         return command_group().commands()
-
-    # @property
-    # def plugins(self) -> List[Any]:
-    #     return self._plugins

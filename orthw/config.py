@@ -6,6 +6,7 @@ from typing import Dict
 import logging
 import sys
 
+from appdirs import AppDirs
 import yaml
 
 
@@ -15,28 +16,31 @@ class Config:
     # Set default logger to Rich
     _log = logging.getLogger("rich")
 
-    _ortproject_dir: Path = Path.home() / "ort-project"
-    _configfile: Path = Path.home() / ".config" / "orthw"
+    _configdir: Path = Path(AppDirs("orthw").user_config_dir)
+    _configfile: Path = _configdir / "config.yaml"
 
     # Default config file
     _config: Dict[str, Path] = {
-        "configuration_home": _ortproject_dir / "ort-config",
-        "ort_home": _ortproject_dir / "ort",
-        "scancode_home": _ortproject_dir / "scancode-toolkit",
-        "exports_home": _ortproject_dir / "exports",
-        "orthw_home": _ortproject_dir / "orthw",
+        "configuration_home": _configdir / "ort-config",
+        "ort_home": _configdir / "ort",
+        "scancode_home": _configdir / "scancode-toolkit",
+        "exports_home": _configdir / "exports",
     }
 
-    def __init__(self, configfile: str | None = None) -> None:
+    def __init__(self, configfile: str | None = None, defaults_only: bool = False) -> None:
         # Point the main configfile to custom
         if configfile:
             self._configfile = Path(configfile)
 
-        self.__readconfig()
+        if not defaults_only:
+            self.__readconfig()
+
+        # Add default variables
+        self.populate_defaults()
 
     def __readconfig(self) -> None:
         try:
-            with open(self.configfile, "r") as yamlconfig:
+            with open(self._configfile, "r") as yamlconfig:
                 config_file = yaml.safe_load(yamlconfig)
                 for key, value in config_file.items():
                     self._config[key] = Path(value)
@@ -47,8 +51,8 @@ class Config:
                 "https://github.com/oss-review-toolkit/orthw#3-create-your-orthw-configuration."
             )
             # Generate the default config file
-            Path.mkdir(Path.home() / ".config", exist_ok=True)
             try:
+                self._configdir.mkdir()
                 with open(self._configfile, "w") as yamlconfig:
                     posix_dict: Dict[str, str] = {}
                     for key, value in self._config.items():
@@ -58,21 +62,18 @@ class Config:
                 self._log.error(f"Can't create the default config file {self._configfile} !")
                 sys.exit(1)
 
-        # Add default variables
-        self.populate_defaults()
-
     def populate_defaults(self) -> None:
-        # Dot directory files
-        dotdir: Path = Path.home() / ".orthw"
-        self.__add("dotdir", dotdir)
-        self.__add("evaluation_md5_sum_file", dotdir / "evaluation-md5sum.txt")
-        self.__add("evaluation_result_file", dotdir / "evaluation-result.json")
-        self.__add("package_configuration_md5_sum_file", dotdir / "package-configuration-md5sum.txt")
-        self.__add("package_curations_md5_sum_file", dotdir / "package-curations-md5sum.txt")
-        self.__add("scan_result_file", dotdir / "scan-result.json")
-        self.__add("scan_results_storage_dir", dotdir / "scan-results")
-        self.__add("target_url_file", dotdir / "target-url.txt")
-        self.__add("temp_dir", dotdir / "tmp")
+        # Config directory files
+        cfgdir = self._configdir
+        self.__add("cfgdir", cfgdir)
+        self.__add("evaluation_md5_sum_file", cfgdir / "evaluation-md5sum.txt")
+        self.__add("evaluation_result_file", cfgdir / "evaluation-result.json")
+        self.__add("package_configuration_md5_sum_file", cfgdir / "package-configuration-md5sum.txt")
+        self.__add("package_curations_md5_sum_file", cfgdir / "package-curations-md5sum.txt")
+        self.__add("scan_result_file", cfgdir / "scan-result.json")
+        self.__add("scan_results_storage_dir", cfgdir / "scan-results")
+        self.__add("target_url_file", cfgdir / "target-url.txt")
+        self.__add("temp_dir", cfgdir / "tmp")
 
         # Configuration (repository) files
         cfg_home = self.get("configuration_home")
@@ -130,15 +131,6 @@ class Config:
         """
 
         self._config[config_entry] = path if isinstance(path, Path) else Path(path)
-
-    @property
-    def configfile(self) -> str:
-        """Return a string representation of configfile path
-
-        :return: String from _configfile
-        :rtype: str
-        """
-        return self._configfile.as_posix()
 
     @property
     def config(self) -> Dict[str, Path]:

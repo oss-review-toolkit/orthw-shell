@@ -5,6 +5,7 @@ import logging
 
 import click
 
+from orthw.commands.usage import OrthwClickGroup
 from orthw.config import Config
 
 
@@ -35,7 +36,7 @@ class CommandBase:
         return self._config
 
 
-@click.group()
+@click.group(cls=OrthwClickGroup)
 @click.option("-d", "--debug/--no-debug", default=False)
 def command_group(debug: bool) -> None:
     if debug:
