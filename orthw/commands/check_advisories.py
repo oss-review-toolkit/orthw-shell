@@ -15,6 +15,9 @@ class CheckAdvisoriesCommand(CommandBase):
     def __init__(self) -> None:
         pass
 
+    def process(self) -> None:
+        pass
+
 
 @command_group.command()
 def check_advisories() -> None:
