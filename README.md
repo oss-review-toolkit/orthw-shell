@@ -90,7 +90,15 @@ cp ~/ort-project/orthw/orthwconfig-template ~/.orthwconfig
   configuration and ScanCode repositories which you cloned in above [Prerequisites](#1-prerequisites), respectively.
 
   If you followed examples in the previous steps and used a `ort-project` directory then
-  the contents of `~/.config/orthw` file should be as follows:
+  the contents of `config.yaml` file.
+
+  The file is present in follow OS directories:
+
+  * **Linux**  ~/.config/orthw
+  * **Mac OS X** ~/Library/Application Support/orthw
+  * **Windows** C:\\Users\\<userid>\\Local\\orthw\\Config
+
+   should in thebe as follows:
 
 ```
 configuration_home: ~/ort-project/ort-config
