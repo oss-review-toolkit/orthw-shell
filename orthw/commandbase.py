@@ -18,9 +18,6 @@ class CommandBase:
     def __init__(self) -> None:
         self.log.debug(f"Initialized command {self._command_name}")
 
-    def process(self) -> None:
-        self.log.warning("This command don't do anything at this moment.")
-
     @property
     def log(self) -> logging.Logger:
         return logging.getLogger("rich")
