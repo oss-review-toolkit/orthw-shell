@@ -13,7 +13,6 @@ class CommandBase:
     """orthw command base class"""
 
     _command_name: str = "Base Class"
-    _log = logging.getLogger("rich")
     _config: Config = Config()
 
     def __init__(self) -> None:
