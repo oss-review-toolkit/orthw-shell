@@ -14,9 +14,9 @@ class OrthwClickGroup(click.Group):
         console.print(
             "\n[bright_white]Usage:\n"
             "\nConfiguration:\n\n"
-            f"[bright_green]configuration-home:[/bright_green] {config.config['configuration_home']}\n"
-            f"[bright_green]ort-home:[/bright_green] {config.config['ort_home']}\n"
-            f"[bright_green]scancode-home:[/bright_green] {config.config['scancode_home']}\n"
-            f"[bright_green]exports_home:[/bright_green] {config.config['exports_home']}\n"
+            f"[bright_green]configuration-home:[/bright_green] {config.get('configuration_home')}\n"
+            f"[bright_green]ort-home:[/bright_green] {config.get('ort_home')}\n"
+            f"[bright_green]scancode-home:[/bright_green] {config.get('scancode_home')}\n"
+            f"[bright_green]exports_home:[/bright_green] {config.get('exports_home')}\n"
             "[/bright_white]"
         )
