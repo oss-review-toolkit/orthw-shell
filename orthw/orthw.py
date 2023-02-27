@@ -4,12 +4,14 @@
 import importlib.util
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import Any, List
 
 import click
 
 from orthw.commandbase import command_group
+from orthw.utils.required import bootstrap_commands
 
 
 class OrtHw:
@@ -38,7 +40,8 @@ class OrtHw:
 
     def run(self) -> None:
         """Main function call"""
-        pass
+        if not bootstrap_commands():
+            sys.exit(1)
 
     @property
     def commands(self) -> List[click.MultiCommand] | None:
