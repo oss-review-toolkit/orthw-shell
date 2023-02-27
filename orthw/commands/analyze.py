@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 
-from rich import print
+from pathlib import Path
+
+import click
 
 from orthw.commandbase import CommandBase, command_group
-
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.logging import log
+from orthw.utils.process import run
 
 
 class OrtHWCommand(CommandBase):
@@ -15,10 +15,37 @@ class OrtHWCommand(CommandBase):
 
     _command_name: str = "analyze"
 
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+    def analyze(self, source_code_dir: str, format: str) -> None:
+        """Use Ort analyzer command on provided source dir
+
+        :param source_code_dir: Source directory to be evaluated
+        :type source_code_dir: str
+        """
+
+        args: list[str] = [
+            "ort",
+            "analyze",
+            "--input-dir",
+            source_code_dir,
+            "--output-dir",
+            Path.cwd().as_posix(),
+            "--output-formats",
+            format,
+        ]
+
+        pcd = self.config.get("ort_config_package_curations_dir")
+        if pcd and pcd.exists():
+            args.append("--package-curations-dir")
+            args.append(pcd.as_posix())
+        else:
+            log.warning("No curations folder available. Running without curations.")
+
+        # Execute external run
+        run(args=args, live_output=True)
 
 
 @command_group.command()
-def analyze() -> None:
-    OrtHWCommand().process()
+@click.option("--format", "-f", default="JSON")
+@click.argument("source_code_dir", type=click.Path(exists=True))
+def analyze(source_code_dir: str, format: str) -> None:
+    OrtHWCommand().analyze(source_code_dir, format)
