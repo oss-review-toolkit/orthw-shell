@@ -5,8 +5,9 @@ import logging
 
 import click
 
-from orthw.usage import OrthwClickGroup
 from orthw.config import Config
+from orthw.utils.logging import log
+from orthw.utils.usage import OrthwClickGroup
 
 
 class CommandBase:
@@ -14,13 +15,6 @@ class CommandBase:
 
     _command_name: str = "Base Class"
     _config: Config = Config()
-
-    def __init__(self) -> None:
-        self.log.debug(f"Initialized command {self._command_name}")
-
-    @property
-    def log(self) -> logging.Logger:
-        return logging.getLogger("rich")
 
     @property
     def config(self) -> Config:
@@ -36,4 +30,4 @@ class CommandBase:
 @click.option("-d", "--debug/--no-debug", default=False)
 def command_group(debug: bool) -> None:
     if debug:
-        logging.getLogger("rich").setLevel(logging.DEBUG)
+        log.setLevel(logging.DEBUG)
