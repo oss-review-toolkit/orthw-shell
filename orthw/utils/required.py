@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 
-import logging
 import shutil
+
+from orthw.utils import logging
 
 
 required_commands = ["curl", "md5sum", "xz"]

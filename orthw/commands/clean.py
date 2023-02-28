@@ -4,13 +4,14 @@
 import os
 
 from orthw.commandbase import CommandBase, command_group
+from orthw.utils import logging
 
 
 # ----------------------------------
 # Command Line options and arguments
 
 
-class CleanCommand(CommandBase):
+class Command(CommandBase):
     """orthw commnand - clean"""
 
     _command_name: str = "clean"
@@ -23,18 +24,18 @@ class CleanCommand(CommandBase):
             dotdir = self.config.get("dotdir")
             if dotdir and dotdir.is_dir():
                 os.removedirs(dotdir)
-                self.log.info(f"Removed directory {dotdir}")
+                logging.info(f"Removed directory {dotdir}")
         except OSError:
-            self.log.error(f"Removing directory {dotdir}")
+            logging.error(f"Removing directory {dotdir}")
         try:
             config_file = self.config.get("repository_configuration_file")
             if config_file and config_file.is_file():
                 config_file.unlink(missing_ok=True)
-                self.log.info(f"Removed file {config_file}")
+                logging.info(f"Removed file {config_file}")
         except OSError:
-            self.log.error(f"Error removing directory {self.config.get('repository_configuration_file')}")
+            logging.error(f"Error removing directory {self.config.get('repository_configuration_file')}")
 
 
 @command_group.command()
 def clean() -> None:
-    CleanCommand().process()
+    Command().process()

@@ -4,7 +4,7 @@
 import subprocess  # nosec
 from typing import Any
 
-from orthw.utils.logging import log, console
+from orthw.utils import logging, console
 from orthw.utils.required import required_command
 
 
@@ -26,9 +26,9 @@ def run(args: list[str], live_output: bool = False) -> int | Any:
     # Replace main command with path qualified one
     args[0] = main_cmd
 
-    log.debug(f"command line: [bright_green]{' '.join(args)}[/]", extra={"markup": True})
+    logging.debug(f"command line: [bright_green]{' '.join(args)}[/]", extra={"markup": True})
 
-    proc = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # nosec
+    proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # nosec
     if live_output:
         if proc.stdout:
             while True:
@@ -36,8 +36,12 @@ def run(args: list[str], live_output: bool = False) -> int | Any:
                 if proc.poll() is not None:
                     break
                 if output:
-                    console.print(output.decode("utf-8").strip(), style="bright_white")
+                    line = output.decode("utf-8").strip()
+                    # Avoid funny ort log output that ressemble markup closing tag
+                    if "[/" in line:
+                        line = line.replace("[", "").replace("]", "")
+                    console.print(line, style="bright_white")
 
     res = proc.wait()
-    log.debug(f"Return code: {res}")
+    logging.debug(f"Return code: {res}")
     return res
