@@ -6,11 +6,11 @@ from pathlib import Path
 import click
 
 from orthw.commandbase import CommandBase, command_group
-from orthw.utils.logging import log
+from orthw.utils import logging
 from orthw.utils.process import run
 
 
-class OrtHWCommand(CommandBase):
+class Command(CommandBase):
     """orthw command - analyze"""
 
     _command_name: str = "analyze"
@@ -38,7 +38,7 @@ class OrtHWCommand(CommandBase):
             args.append("--package-curations-dir")
             args.append(pcd.as_posix())
         else:
-            log.warning("No curations folder available. Running without curations.")
+            logging.warning("No curations folder available. Running without curations.")
 
         # Execute external run
         run(args=args, live_output=True)
@@ -48,4 +48,4 @@ class OrtHWCommand(CommandBase):
 @click.option("--format", "-f", default="JSON")
 @click.argument("source_code_dir", type=click.Path(exists=True))
 def analyze(source_code_dir: str, format: str) -> None:
-    OrtHWCommand().analyze(source_code_dir, format)
+    Command().analyze(source_code_dir, format)

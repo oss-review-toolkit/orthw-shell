@@ -1,13 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 
-import logging
-
 import click
+import logging as stdlogger
 
 from orthw.config import Config
-from orthw.utils.logging import log
-from orthw.utils.usage import OrthwClickGroup
+from orthw.utils import logging
+from orthw.utils.orthwclickgroup import OrthwClickGroup
 
 
 class CommandBase:
@@ -30,4 +29,4 @@ class CommandBase:
 @click.option("-d", "--debug/--no-debug", default=False)
 def command_group(debug: bool) -> None:
     if debug:
-        log.setLevel(logging.DEBUG)
+        logging.setLevel(stdlogger.DEBUG)
