@@ -461,7 +461,7 @@ report() {
   fi
 
   if [ -n "$notice_template_files" ]; then
-    notice_template_path_option="-O NoticeTemplate=template.path=$notice_template_files"
+    notice_template_path_option="-O PlainTextTemplate=template.path=$notice_template_files"
   else
     echo "No notice templates found under '$ort_config_notice_templates_dir'. Using ORT's default template(s)."
   fi
@@ -479,7 +479,7 @@ report() {
     --resolutions-file $ort_config_resolutions_file \
     -O SpdxDocument=output.file.formats=json,yaml \
     -O EvaluatedModel=output.file.formats=json \
-    -O NoticeTemplate=project-types-as-packages="SpdxDocumentFile" \
+    -O PlainTextTemplate=project-types-as-packages="SpdxDocumentFile" \
     $notice_template_path_option
   mv "$temp_dir/bom.cyclonedx.xml" $cyclone_dx_report_file > /dev/null 2>&1
   mv "$temp_dir/bom.spdx.json" $spdx_json_report_file > /dev/null 2>&1
@@ -1162,7 +1162,7 @@ fi
 
 if [ "$command" = "report" ] && [ "$#" -eq 1 ]; then
   require_initialized
-  report "EvaluatedModel,GitLabLicenseModel,NoticeTemplate,SpdxDocument,StaticHtml,WebApp"
+  report "EvaluatedModel,GitLabLicenseModel,PlainTextTemplate,SpdxDocument,StaticHtml,WebApp"
   exit 0
 fi
 
@@ -1197,7 +1197,7 @@ fi
 
 if [ "$command" = "report-notices" ] && [ "$#" -eq 1 ]; then
   require_initialized
-  report NoticeTemplate
+  report PlainTextTemplate
   exit 0
 fi
 
