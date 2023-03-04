@@ -18,6 +18,8 @@ def run(args: list[str], live_output: bool = False, output_file: Path | None = N
     :type args: list[str]
     :param live_output: If you want to have log output, defaults to False
     :type live_output: bool, optional
+    :param output_file: If the output need to be redirected to a file
+    :type output_file: Path | None, optional
     :return: Process resulting code
     :rtype: int | Any
     """
