@@ -6,10 +6,10 @@ import logging
 import psycopg2
 from rich.pretty import pprint
 
-from orthw.config import Config
+from orthw import config
 
 
-def query_scandb(config: Config, sql: str) -> list[tuple[str, str]] | None:
+def query_scandb(sql: str) -> list[tuple[str, str]] | None:
     try:
         conn = psycopg2.connect(
             database=config.get("scandb_db"),
@@ -34,10 +34,10 @@ def query_scandb(config: Config, sql: str) -> list[tuple[str, str]] | None:
     return data
 
 
-def list_scan_results(config: Config, package_id: str) -> None:
+def list_scan_results(package_id: str) -> None:
     # Prevent SQL injection with literals
     safe_pid = psycopg2.sql.Literal(package_id)
     sql = "SELECT ROW_NUMBER() OVER (ORDER BY identifier) as index,identifier"
     f"FROM scan_results WHERE identifier LIKE {safe_pid}"  # nosec B606
 
-    pprint(query_scandb(config, sql))
+    pprint(query_scandb(sql))

@@ -5,6 +5,7 @@ from pathlib import Path
 
 import click
 
+from orthw import config
 from orthw.commandbase import CommandBase, command_group
 from orthw.utils import logging
 from orthw.utils.process import run
@@ -15,7 +16,7 @@ class Command(CommandBase):
 
     _command_name: str = "analyze"
 
-    def analyze(self, source_code_dir: str, format: str) -> None:
+    def analyze(self, source_code_dir: str, format: str = "JSON") -> None:
         """Use Ort analyzer command on provided source dir
 
         :param source_code_dir: Source directory to be evaluated
@@ -33,7 +34,7 @@ class Command(CommandBase):
             format,
         ]
 
-        pcd = self.config.get("ort_config_package_curations_dir")
+        pcd = config.get("ort_config_package_curations_dir")
         if pcd and pcd.exists():
             args.append("--package-curations-dir")
             args.append(pcd.as_posix())

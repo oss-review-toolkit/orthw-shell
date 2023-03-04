@@ -9,11 +9,7 @@ from orthw.commandbase import CommandBase, command_group
 from orthw.utils.database import list_scan_results, query_scandb
 
 
-# ----------------------------------
-# Command Line options and arguments
-
-
-class OrtHWCommand(CommandBase):
+class Command(CommandBase):
     """orthw command - delete-scan-results"""
 
     _command_name: str = "delete-scan-results"
@@ -22,10 +18,10 @@ class OrtHWCommand(CommandBase):
         # Prevent SQL injection assigning as literal
         safe_pid = sql.Literal(package_id)
 
-        list_scan_results(config=self.config, package_id=package_id)
+        list_scan_results(package_id=package_id)
 
         count_sql: str = f"SELECT COUNT(*) FROM scan_results WHERE identifier LIKE '{safe_pid}'"  # nosec B608
-        count: list[tuple[str, str]] | None = query_scandb(config=self.config, sql=count_sql)
+        count: list[tuple[str, str]] | None = query_scandb(sql=count_sql)
 
         if not count:
             print("[bright_yellow]No results were found with this package id.[/bright_yellow]")
@@ -35,10 +31,10 @@ class OrtHWCommand(CommandBase):
         input()
 
         delete_sql: str = f"DELETE FROM scan_results WHERE identifier LIKE {safe_pid}"  # nosec B608
-        query_scandb(config=self.config, sql=delete_sql)
+        query_scandb(sql=delete_sql)
 
 
 @command_group.command()
 @click.argument("package_id")
 def delete_scan_results(package_id: str) -> None:
-    OrtHWCommand().process(package_id)
+    Command().process(package_id)
