@@ -3,21 +3,10 @@
 
 import click
 
+from orthw import config
 from orthw.commandbase import CommandBase, command_group
 from orthw.utils.process import run
-
-#   package_id=$2
-#   require_initialized
-
-#   evaluate
-#   echo "Downloading sources for $2."
-#   orth list-licenses \
-#     --ort-file $evaluation_result_file \
-#     --package-id $package_id \
-#     --repository-configuration-file $repository_configuration_file \
-#     --package-configuration-dir $ort_config_package_configuration_dir \
-#     --apply-license-finding-curations \
-#     --omit-excluded
+from orthw.utils.required import require_initialized
 
 
 class Command(CommandBase):
@@ -32,6 +21,8 @@ class Command(CommandBase):
         :type package_id: str
         """
 
+        require_initialized()
+
         args: list[str] = [
             "ort",
             "list-licenses",
@@ -41,15 +32,15 @@ class Command(CommandBase):
             "--omit-excluded",
         ]
 
-        evaluation_result_file = self.config.get("evaluation_result_file")
+        evaluation_result_file = config.get("evaluation_result_file")
         if evaluation_result_file:
             args += ["--ort-file", evaluation_result_file.as_posix()]
 
-        repository_configuration_file = self.config.get("repository_configuration_file")
+        repository_configuration_file = config.get("repository_configuration_file")
         if repository_configuration_file:
             args += ["--repository-configuration-file", repository_configuration_file.as_posix()]
 
-        ort_config_package_configuration_dir = self.config.get("ort_config_package_configuration_dir")
+        ort_config_package_configuration_dir = config.get("ort_config_package_configuration_dir")
         if ort_config_package_configuration_dir:
             args += ["--package-configuration-dir", ort_config_package_configuration_dir.as_posix()]
 

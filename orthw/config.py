@@ -21,6 +21,7 @@ class Config:
 
     # Default config file
     _config: Dict[str, Path] = {
+        "dot_dir": _configfile,
         "configuration_home": _configdir / "ort-config",
         "ort_home": _configdir / "ort",
         "scancode_home": _configdir / "scancode-toolkit",
@@ -131,12 +132,3 @@ class Config:
         """
 
         self._config[config_entry] = path if isinstance(path, Path) else Path(path)
-
-    @property
-    def config(self) -> Dict[str, Path]:
-        """Return the configured dictionaire
-
-        :return: Ort config values
-        :rtype: Dict[str, str]
-        """
-        return self._config
