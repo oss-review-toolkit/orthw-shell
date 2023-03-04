@@ -1,12 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 
-import logging
+import sys
 
 import psycopg2
+from dict2obj import Dict2Obj
 from rich.pretty import pprint
 
 from orthw import config
+from orthw.utils import logging
 
 
 def query_scandb(sql: str) -> list[tuple[str, str]] | None:
@@ -41,3 +43,21 @@ def list_scan_results(package_id: str) -> None:
     f"FROM scan_results WHERE identifier LIKE {safe_pid}"  # nosec B606
 
     pprint(query_scandb(sql))
+
+
+def ort_postgres_config() -> object:
+    scandb = {
+        "db": config.env("SCANDB_DB"),
+        "host": config.env("SCANDB_HOST"),
+        "port": config.env("SCANDB_PORT"),
+        "schema": config.env("SCANDB_SCHEMA"),
+        "user": config.env("SCANDB_USER"),
+        "password": config.env("SCANDB_PASSWORD"),
+    }
+
+    for key, value in scandb.items():
+        if value is None:
+            logging.error(f"No env value [bright_white]SCANDB_{key.upper()}[/] !", extra={"markup": True})
+            sys.exit(1)
+
+    return Dict2Obj(scandb)
