@@ -4,17 +4,16 @@
 from pathlib import Path
 from typing import Dict
 import logging
+import os
 import sys
 
 from appdirs import AppDirs
+from dotenv import load_dotenv
 import yaml
 
 
 class Config:
     """Base config object. Reads default orthw config file or set default"""
-
-    # Set default logger to Rich
-    _log = logging.getLogger("rich")
 
     _configdir: Path = Path(AppDirs("orthw").user_config_dir)
     _configfile: Path = _configdir / "config.yaml"
@@ -39,6 +38,9 @@ class Config:
         # Add default variables
         self.populate_defaults()
 
+        # Read .env for secrets and dynamic info
+        load_dotenv()
+
     def __readconfig(self) -> None:
         try:
             with open(self._configfile, "r") as yamlconfig:
@@ -46,7 +48,7 @@ class Config:
                 for key, value in config_file.items():
                     self._config[key] = Path(value)
         except IOError:
-            self._log.warning(
+            logging.warning(
                 f"Missing the required configuration file {self._configfile}.\n"
                 "The default config file will be created. Please customize it according to\n"
                 "https://github.com/oss-review-toolkit/orthw#3-create-your-orthw-configuration."
@@ -60,7 +62,7 @@ class Config:
                         posix_dict[key] = value.as_posix()
                     yaml.dump(posix_dict, yamlconfig)
             except IOError:
-                self._log.error(f"Can't create the default config file {self._configfile} !")
+                logging.error(f"Can't create the default config file {self._configfile} !")
                 sys.exit(1)
 
     def populate_defaults(self) -> None:
@@ -121,6 +123,16 @@ class Config:
         if config_entry in self._config:
             return self._config[config_entry]
         return None
+
+    def env(self, env_entry: str) -> str | None:
+        """Return entries that user provide in environment like secrets
+
+        :param env_entry: The env variable
+        :type env_entry: str
+        :return: Value or none
+        :rtype: str | None
+        """
+        return os.getenv(env_entry)
 
     def __add(self, config_entry: str, path: str | Path) -> None:
         """Add entry in the default config to be used
