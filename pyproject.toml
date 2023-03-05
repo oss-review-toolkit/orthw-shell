@@ -46,8 +46,8 @@ line-length = 120
 include = '\.pyi?$'
 exclude = '''
 (
-  /(
-      \.eggs         # exclude a few common directories in the
+    /(
+    \.eggs         # exclude a few common directories in the
     | \.git          # root of the project
     | \.hg
     | \.mypy_cache
@@ -57,9 +57,9 @@ exclude = '''
     | buck-out
     | build
     | dist
-  )/
-  | foo.py           # also separately exclude a file named foo.py in
-                     # the root of the project
+    )/
+    | foo.py          # also separately exclude a file named foo.py in
+                    # the root of the project
 )
 '''
 
@@ -109,7 +109,7 @@ disable = [
 ]
 
 [tool.mypy]
-follow_imports = false
+follow_imports = "silent"
 strict_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
