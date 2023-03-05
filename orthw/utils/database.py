@@ -8,10 +8,15 @@ from dict2obj import Dict2Obj
 from rich.pretty import pprint
 
 from orthw import config
+from orthw.utils import admin
 from orthw.utils import logging
 
 
 def query_scandb(sql: str) -> list[tuple[str, str]] | None:
+    if admin():
+        logging.error("This script is not allowed to run as admin.")
+        sys.exit(1)
+
     try:
         conn = psycopg2.connect(
             database=config.get("scandb_db"),
