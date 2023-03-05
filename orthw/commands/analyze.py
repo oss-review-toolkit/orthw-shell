@@ -42,7 +42,7 @@ class Command(CommandBase):
             logging.warning("No curations folder available. Running without curations.")
 
         # Execute external run
-        run(args=args, live_output=True)
+        run(args=args)
 
 
 @command_group.command()

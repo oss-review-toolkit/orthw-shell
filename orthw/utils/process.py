@@ -11,13 +11,13 @@ from orthw.utils import admin, logging, console
 from orthw.utils.required import required_command
 
 
-def run(args: list[str], live_output: bool = False, output_file: Path | None = None) -> int | Any:
+def run(args: list[str], console_output: bool = True, output_file: Path | None = None) -> int | Any:
     """Run a process with defined arguments
 
     :param args: Arguments
     :type args: list[str]
-    :param live_output: If you want to have log output, defaults to False
-    :type live_output: bool, optional
+    :param console_output: If you want to have command output, defaults to True
+    :type console_output: bool, optional
     :param output_file: If the output need to be redirected to a file
     :type output_file: Path | None, optional
     :return: Process resulting code
@@ -25,7 +25,7 @@ def run(args: list[str], live_output: bool = False, output_file: Path | None = N
     """
 
     if admin():
-        logging.error("This scrip is not allowed to run as admin.")
+        logging.error("This script is not allowed to run as admin.")
         sys.exit(1)
 
     # Expect first argument be the required command
@@ -47,7 +47,7 @@ def run(args: list[str], live_output: bool = False, output_file: Path | None = N
             logging.error(f"Can't open file {output_file} to write.")
     else:
         proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # nosec
-        if live_output:
+        if console_output:
             if proc.stdout:
                 while True:
                     output = proc.stdout.readline()
