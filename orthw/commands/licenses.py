@@ -48,7 +48,7 @@ class Command(CommandBase):
             args += ["--source-code-dir", source_code_dir]
 
         # Execute external run
-        run(args=args, live_output=True)
+        run(args=args)
 
 
 @command_group.command()
