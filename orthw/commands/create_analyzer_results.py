@@ -28,6 +28,8 @@ class Command(CommandBase):
         scandb = ort_postgres_config()
 
         args: list[str] = [
+            "orth",
+            "create-analyzer-result",
             "--package-ids-file",
             package_ids_file.as_posix(),
             "--scancode-version",
