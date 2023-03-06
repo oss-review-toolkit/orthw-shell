@@ -6,7 +6,11 @@ import os
 import logging as stdlogger
 
 from rich.console import Console
+from rich.logging import RichHandler
 
+
+# Setup the main logger message
+stdlogger.basicConfig(level="INFO", format="%(message)s", datefmt="[%X]", handlers=[RichHandler(markup=True)])
 # Global log variable
 logging = stdlogger.getLogger("rich")
 
