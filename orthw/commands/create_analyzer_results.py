@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 
-import sys
 from pathlib import Path
 
 import click
@@ -21,8 +20,8 @@ class Command(CommandBase):
     def create_analyzer_results(self, package_ids_file: Path) -> None:
         scancode_version = config.env("SCANCODE_VERSION")
         if not scancode_version:
-            logging.error("Missing [bright_white]SCANCODE_VERSION[/] env.", extra={"markup": True})
-            sys.exit(1)
+            logging.error("Missing [bright_white]SCANCODE_VERSION[/] env.")
+            return
 
         # Get database config
         scandb = ort_postgres_config()
