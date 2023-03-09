@@ -19,12 +19,12 @@ class Config:
     _configfile: Path = _configdir / "config.yaml"
 
     # Default config file
-    _config: Dict[str, Path] = {
-        "dot_dir": _configfile,
-        "configuration_home": _configdir / "ort-config",
-        "ort_home": _configdir / "ort",
-        "scancode_home": _configdir / "scancode-toolkit",
-        "exports_home": _configdir / "exports",
+    _config: Dict[str, str] = {
+        "dot_dir": _configfile.as_posix(),
+        "configuration_home": Path(_configdir / "ort-config").as_posix(),
+        "ort_home": Path(_configdir / "ort").as_posix(),
+        "scancode_home": Path(_configdir / "scancode-toolkit").as_posix(),
+        "exports_home": Path(_configdir / "exports").as_posix(),
     }
 
     def __init__(self, configfile: str | None = None, defaults_only: bool = False) -> None:
@@ -46,7 +46,7 @@ class Config:
             with open(self._configfile, "r") as yamlconfig:
                 config_file = yaml.safe_load(yamlconfig)
                 for key, value in config_file.items():
-                    self._config[key] = Path(value)
+                    self._config[key] = value
         except IOError:
             logging.warning(
                 f"Missing the required configuration file {self._configfile}.\n"
@@ -59,7 +59,7 @@ class Config:
                 with open(self._configfile, "w") as yamlconfig:
                     posix_dict: Dict[str, str] = {}
                     for key, value in self._config.items():
-                        posix_dict[key] = value.as_posix()
+                        posix_dict[key] = value
                     yaml.dump(posix_dict, yamlconfig)
             except IOError:
                 logging.error(f"Can't create the default config file {self._configfile} !")
@@ -110,7 +110,7 @@ class Config:
         self.__add("spdx_yaml_report_file", "report.spdx.yml")
         self.__add("webapp_report_file", "webapp.html")
 
-    def get(self, config_entry: str) -> Path | None:
+    def get(self, config_entry: str) -> str:
         """Return the value of the configured key
 
         :param config_entry: Desired config parameter
@@ -122,7 +122,12 @@ class Config:
         """
         if config_entry in self._config:
             return self._config[config_entry]
-        return None
+        else:
+            logging.error(
+                f"Config value {config_entry} is not available."
+                f"Please verify correct value in {self._configfile.as_posix()}."
+            )
+            sys.exit(1)
 
     def env(self, env_entry: str) -> str | None:
         """Return entries that user provide in environment like secrets
@@ -143,4 +148,4 @@ class Config:
         :type path: Path
         """
 
-        self._config[config_entry] = path if isinstance(path, Path) else Path(path)
+        self._config[config_entry] = path.as_posix() if isinstance(path, Path) else path

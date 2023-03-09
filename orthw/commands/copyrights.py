@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 
-from pathlib import Path
-
 import click
 
 from orthw import config
@@ -10,30 +8,6 @@ from orthw.commandbase import CommandBase, command_group
 from orthw.utils import logging
 from orthw.utils.process import run
 from orthw.utils.required import require_initialized
-
-
-#   orth list-copyrights \
-#     --ort-file $scan_result_file \
-#     --package-configuration-dir $ort_config_package_configuration_dir \
-#     --copyright-garbage-file $ort_config_copyright_garbage_file \
-#     --show-raw-statements \
-#     > $copyrights_debug_file
-
-#   echo "Results written to: $copyrights_file, $copyrights_debug_file."
-#   exit 0
-# fi
-
-
-# if [ "$command" = "copyrights" ] && [ "$#" -eq 2 ]; then
-#   package_id=$2
-#   require_initialized
-
-#   orth list-copyrights \
-#     --ort-file $scan_result_file \
-#     --package-id $package_id
-
-#   exit 0
-# fi
 
 
 class Command(CommandBase):
@@ -50,14 +24,14 @@ class Command(CommandBase):
 
         require_initialized()
 
-        ort_config_copyright_garbage_file: Path | None = config.get("ort_config_copyright_garbage_file")
-        ort_config_package_configuration_dir: Path | None = config.get("ort_config_package_configuration_dir")
-        scan_result_file: Path | None = config.get("scan_result_file")
+        ort_config_copyright_garbage_file: str = config.get("ort_config_copyright_garbage_file")
+        ort_config_package_configuration_dir: str = config.get("ort_config_package_configuration_dir")
+        scan_result_file: str = config.get("scan_result_file")
         if not scan_result_file or not ort_config_package_configuration_dir or not ort_config_copyright_garbage_file:
             logging.error("Invalid configuration.")
             return
 
-        args: list[str] = ["orth", "list-copyrights", "--ort-file", scan_result_file.as_posix()]
+        args: list[str] = ["orth", "list-copyrights", "--ort-file", scan_result_file]
 
         if package_id:
             args += ["--package-id", package_id]
@@ -65,9 +39,9 @@ class Command(CommandBase):
         else:
             args += [
                 "--package-configuration-dir",
-                ort_config_package_configuration_dir.as_posix(),
+                ort_config_package_configuration_dir,
                 "--copyright-garbage-file",
-                ort_config_package_configuration_dir.as_posix(),
+                ort_config_package_configuration_dir,
             ]
 
             run(args=args, output_file=config.get("copyrights_file"))

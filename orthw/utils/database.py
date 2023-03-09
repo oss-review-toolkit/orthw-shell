@@ -17,13 +17,15 @@ def query_scandb(sql: str) -> list[tuple[str, str]] | None:
         logging.error("This script is not allowed to run as admin.")
         sys.exit(1)
 
+    scandb = ort_postgres_config()
+
     try:
         conn = psycopg2.connect(
-            database=config.get("scandb_db"),
-            user=config.get("scandb_user"),
-            password=config.get("scandb_password"),
-            host=config.get("scandb_host"),
-            port=config.get("scandb_port"),
+            database=scandb.db,  # type: ignore
+            user=scandb.user,  # type: ignore
+            password=scandb.password,  # type: ignore
+            host=scandb.host,  # type: ignore
+            port=scandb.port,  # type: ignore
         )
     except psycopg2.Error as e:
         logging.error("Fail to connect to Postgres database.")
@@ -52,17 +54,17 @@ def list_scan_results(package_id: str) -> None:
 
 def ort_postgres_config() -> object:
     scandb = {
-        "db": config.env("SCANDB_DB"),
-        "host": config.env("SCANDB_HOST"),
-        "port": config.env("SCANDB_PORT"),
-        "schema": config.env("SCANDB_SCHEMA"),
-        "user": config.env("SCANDB_USER"),
-        "password": config.env("SCANDB_PASSWORD"),
+        "db": config.get("scandb_db"),
+        "host": config.get("scandb_host"),
+        "port": config.get("scandb_port"),
+        "schema": config.get("scandb_schema"),
+        "user": config.get("scandb_user"),
+        "password": config.get("scandb_password"),
     }
 
     for key, value in scandb.items():
         if value is None:
-            logging.error(f"No env value [bright_white]SCANDB_{key.upper()}[/] !", extra={"markup": True})
+            logging.error(f"No env value [bright_white]SCANDB_{key.upper()}[/] !")
             sys.exit(1)
 
     return Dict2Obj(scandb)

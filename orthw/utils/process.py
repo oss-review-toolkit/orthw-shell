@@ -11,7 +11,7 @@ from orthw.utils import admin, logging, console
 from orthw.utils.required import required_command
 
 
-def run(args: list[str], console_output: bool = True, output_file: Path | None = None) -> int | Any:
+def run(args: list[str], console_output: bool = True, output_file: Path | str | None = None) -> int | Any:
     """Run a process with defined arguments
 
     :param args: Arguments
@@ -19,7 +19,7 @@ def run(args: list[str], console_output: bool = True, output_file: Path | None =
     :param console_output: If you want to have command output, defaults to True
     :type console_output: bool, optional
     :param output_file: If the output need to be redirected to a file
-    :type output_file: Path | None, optional
+    :type output_file: Path | str | None, optional
     :return: Process resulting code
     :rtype: int | Any
     """
