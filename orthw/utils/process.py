@@ -36,7 +36,7 @@ def run(args: list[str], console_output: bool = True, output_file: Path | str | 
     # Replace main command with path qualified one
     args[0] = main_cmd
 
-    logging.debug(f"command line: [bright_green]{' '.join(args)}[/]", extra={"markup": True})
+    logging.debug(f"command line: [bright_green]{' '.join(args)}[/]")
 
     if output_file:
         try:

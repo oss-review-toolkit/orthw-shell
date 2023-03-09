@@ -3,13 +3,14 @@
 
 from pathlib import Path
 from typing import Dict
-import logging
 import os
 import sys
 
 from appdirs import AppDirs
 from dotenv import load_dotenv
 import yaml
+
+from orthw.utils import logging
 
 
 class Config:
@@ -20,7 +21,7 @@ class Config:
 
     # Default config file
     _config: Dict[str, str] = {
-        "dot_dir": _configfile.as_posix(),
+        "dot_dir": _configdir.as_posix(),
         "configuration_home": Path(_configdir / "ort-config").as_posix(),
         "ort_home": Path(_configdir / "ort").as_posix(),
         "scancode_home": Path(_configdir / "scancode-toolkit").as_posix(),
@@ -67,7 +68,7 @@ class Config:
 
     def populate_defaults(self) -> None:
         # Config directory files
-        cfgdir = self._configdir
+        cfgdir: Path = Path(self._configdir)
         self.__add("cfgdir", cfgdir)
         self.__add("evaluation_md5_sum_file", cfgdir / "evaluation-md5sum.txt")
         self.__add("evaluation_result_file", cfgdir / "evaluation-result.json")
@@ -79,24 +80,22 @@ class Config:
         self.__add("temp_dir", cfgdir / "tmp")
 
         # Configuration (repository) files
-        cfg_home = self.get("configuration_home")
-        if isinstance(cfg_home, Path):
-            self.__add("ort_config_copyright_garbage_file", cfg_home / "copyright-garbage.yml")
-            self.__add("ort_config_custom_license_texts_dir", cfg_home / "custom-license-texts")
-            self.__add("ort_config_how_to_fix_text_provider_script", cfg_home / "how-to-fix-text-provider.kts")
-            self.__add("ort_config_license_classifications_file", cfg_home / "license-classifications.yml")
-            self.__add("ort_config_notice_templates_dir", cfg_home / "notice-templates")
-            self.__add("ort_config_package_configuration_dir", cfg_home / "package-configurations")
-            self.__add("ort_config_package_curations_dir", cfg_home / "curations")
-            self.__add("ort_config_resolutions_file", cfg_home / "resolutions.yml")
-            self.__add("ort_config_rules_file", cfg_home / "evaluator.rules.kts")
+        cfg_home: Path = Path(self.get("configuration_home"))
+        self.__add("ort_config_copyright_garbage_file", cfg_home / "copyright-garbage.yml")
+        self.__add("ort_config_custom_license_texts_dir", cfg_home / "custom-license-texts")
+        self.__add("ort_config_how_to_fix_text_provider_script", cfg_home / "how-to-fix-text-provider.kts")
+        self.__add("ort_config_license_classifications_file", cfg_home / "license-classifications.yml")
+        self.__add("ort_config_notice_templates_dir", cfg_home / "notice-templates")
+        self.__add("ort_config_package_configuration_dir", cfg_home / "package-configurations")
+        self.__add("ort_config_package_curations_dir", cfg_home / "curations")
+        self.__add("ort_config_resolutions_file", cfg_home / "resolutions.yml")
+        self.__add("ort_config_rules_file", cfg_home / "evaluator.rules.kts")
 
         # Exports (repository) files:
-        exports_home = self.get("exports_home")
-        if isinstance(exports_home, Path):
-            self.__add("exports_license_finding_curations_file", exports_home / "license-finding-curations.yml")
-            self.__add("exports_path_excludes_file", exports_home / "path-excludes.yml")
-            self.__add("exports_vcs_url_mapping_file", exports_home / "vcs-url-mapping.yml")
+        exports_home: Path = Path(self.get("exports_home"))
+        self.__add("exports_license_finding_curations_file", exports_home / "license-finding-curations.yml")
+        self.__add("exports_path_excludes_file", exports_home / "path-excludes.yml")
+        self.__add("exports_vcs_url_mapping_file", exports_home / "vcs-url-mapping.yml")
 
         # Initialized orthw directory input / output files:
         self.__add("copyrights_file", "copyrights.txt")
@@ -115,13 +114,28 @@ class Config:
 
         :param config_entry: Desired config parameter
         :type config_entry: str
-        :param as_path: If you want real Path object instead of pure posix
-        :type as_path: bool
-        :return: Configured value|
-        :rtype: str
+        :return: Configured value
+        :rtype: str | Path
         """
         if config_entry in self._config:
             return self._config[config_entry]
+        else:
+            logging.error(
+                f"Config value {config_entry} is not available."
+                f"Please verify correct value in {self._configfile.as_posix()}."
+            )
+            sys.exit(1)
+
+    def path(self, config_entry: str) -> Path:
+        """Return the value of the configured key
+
+        :param config_entry: Desired config parameter
+        :type config_entry: str
+        :return: Configured value
+        :rtype: str | Path
+        """
+        if config_entry in self._config:
+            return Path(self._config[config_entry])
         else:
             logging.error(
                 f"Config value {config_entry} is not available."

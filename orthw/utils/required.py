@@ -8,7 +8,7 @@ from pathlib import Path
 from orthw import config
 from orthw.utils import logging
 
-required_commands = ["curl", "md5sum", "xz"]
+required_commands = ["md5sum"]
 
 
 def required_command(command: str) -> str:
@@ -22,7 +22,7 @@ def required_command(command: str) -> str:
     try:
         cmd = shutil.which(command)
         if not cmd:
-            logging.error(f"Missing required command [bright_yellow]{command}[/].", extra={"markup": True})
+            logging.error(f"Missing required command [bright_yellow]{command}[/].")
             sys.exit(1)
         return cmd
     except shutil.Error as ex:
