@@ -22,7 +22,7 @@ class Command(CommandBase):
         """Command export-copyright-garbage"""
         require_initialized()
 
-        copyrights_file = config.get("copyrights_file")
+        copyrights_file: str = config.get("copyrights_file")
         ort_config_copyright_garbage_file = config.get("ort_config_copyright_garbage_file")
         scan_result_file = config.get("scan_result_file")
         if copyrights_file is None or ort_config_copyright_garbage_file is None or scan_result_file is None:
@@ -38,11 +38,11 @@ class Command(CommandBase):
             "orth",
             "map-copyrights",
             "--input-copyrights-file",
-            copyrights_file.as_posix(),
+            copyrights_file,
             "--output-copyrights-file",
             mapped_copyrights_file.as_posix(),
             "--ort-file",
-            scan_result_file.as_posix(),
+            scan_result_file,
         ]
         run(args=args)
 
@@ -57,7 +57,7 @@ class Command(CommandBase):
             "--input-copyright-garbage-file",
             mapped_copyrights_file.as_posix(),
             "--output-copyright-garbage-file",
-            ort_config_copyright_garbage_file.as_posix(),
+            ort_config_copyright_garbage_file,
         ]
         run(args=args)
 

@@ -34,8 +34,9 @@ class Command(CommandBase):
             format,
         ]
 
-        pcd = config.get("ort_config_package_curations_dir")
-        if pcd and pcd.exists():
+        pcd = Path(config.get("ort_config_package_curations_dir"))
+
+        if pcd.exists():
             args.append("--package-curations-dir")
             args.append(pcd.as_posix())
         else:

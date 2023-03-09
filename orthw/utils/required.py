@@ -44,9 +44,9 @@ def bootstrap_commands() -> bool:
 
 def require_initialized() -> None:
     """Check the base config directories required for operations"""
-    dot_dir: Path | None = config.get("dot_dir")
-    target_url_file: Path | None = config.get("target_url_file")
-    scan_result_file: Path | None = config.get("scan_result_file")
+    dot_dir: Path = Path(config.get("dot_dir"))
+    target_url_file: Path = Path(config.get("target_url_file"))
+    scan_result_file: Path = Path(config.get("scan_result_file"))
 
     if (
         dot_dir is None
