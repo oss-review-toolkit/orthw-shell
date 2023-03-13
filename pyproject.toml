@@ -20,11 +20,12 @@ dict2obj = "^1.2.0"
 appdirs = "^1.4.4"
 psycopg2-binary = "^2.9.5"
 python-dotenv = "^1.0.0"
+gitpython = "^3.1.31"
 
 [tool.poetry.group.dev.dependencies]
 pytest-cov = "^4.0.0"
 pre-commit = "^2.20.0"
-mypy = "^0.991"
+mypy = "1.0.0"
 isort = "^5.11.4"
 pycodestyle = "^2.10.0"
 pylint = "^2.15.8"
