@@ -1,24 +1,30 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 
-from rich import print
-
+from orthw import config
 from orthw.commandbase import CommandBase, command_group
+from orthw.utils.process import run
 
 
-# ----------------------------------
-# Command Line options and arguments
+class Command(CommandBase):
+    """orthw command - handled-licenses"""
 
-
-class OrtHWCommand(CommandBase):
-    """orthw command - handled-licenses-by-category"""
-
-    _command_name: str = "handled-licenses-by-category"
+    _command_name: str = "handled-licenses"
 
     def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+        """_summary_"""
+
+        args: list[str] = [
+            "orth",
+            "list-license-categories",
+            "--license-classifications-file",
+            config.get("ort_config_license_classifications_file"),
+            "--group-by-category",
+        ]
+
+        run(args)
 
 
 @command_group.command()
 def handled_licenses_by_category() -> None:
-    OrtHWCommand().process()
+    Command().process()

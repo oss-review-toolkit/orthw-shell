@@ -43,9 +43,11 @@ repos:
         args: []
 
 -   repo: https://github.com/python-poetry/poetry
-    rev: '1.3'
+    rev: '1.4'
     hooks:
     -   id: poetry-check
+        verbose: true
     -   id: poetry-lock
     -   id: poetry-export
-        args: ["-f", "requirements.txt", "-o", "requirements.txt"]
+        args: ["--dev", "-f", "requirements.txt", "-o", "requirements.txt"]
+        verbose: true
