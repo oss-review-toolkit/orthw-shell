@@ -8,7 +8,6 @@ import git
 
 from orthw import config
 from orthw.commandbase import CommandBase, command_group
-from orthw.utils import console
 
 
 class Command(CommandBase):
@@ -16,7 +15,7 @@ class Command(CommandBase):
 
     _command_name: str = "find-license-url"
 
-    def find_license_text_url(self, license_id: str) -> None:
+    def find_license_text_url(self, license_id: str) -> str:
         if license_id.startswith("LicenseRef-scancode-"):
             key = license_id.strip("LicenseRef-scancode-")
             license_file_path = f"src/licensedcode/data/licenses/{key}.LICENSE"
@@ -25,9 +24,9 @@ class Command(CommandBase):
             if license_file.exists():
                 git_repo = git.Repo(config.get("scancode_home"))
                 revision = git_repo.git.rev_parse("HEAD")
-                console.print(f"https://github.com/nexB/scancode-toolkit/blob/{revision}/{license_file_path}")
-        else:
-            console.print(f"https://spdx.org/licenses/{license_id}.html")
+                return f"https://github.com/nexB/scancode-toolkit/blob/{revision}/{license_file_path}"
+
+        return f"https://spdx.org/licenses/{license_id}.html"
 
 
 @command_group.command()
