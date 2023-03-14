@@ -26,6 +26,30 @@ class Config:
         "ort_home": Path(_configdir / "ort").as_posix(),
         "scancode_home": Path(_configdir / "scancode-toolkit").as_posix(),
         "exports_home": Path(_configdir / "exports").as_posix(),
+        "ignore_excluded_rule_ids": "",
+        "scancode_version": "30.1.0",
+        "enabled_advisors": "osv",
+        "non_offending_license_categories": "",
+        "non_offending_license_ids": "",
+        "scandb_host": "",
+        "scandb_port": "",
+        "scandb_db": "",
+        "scandb_schema": "",
+        "scandb_user": "",
+        "scandb_password": "",
+        "ort_docker_registry_server": "",
+        "ort_docker_registry_username": "",
+        "ort_docker_registry_password": "",
+        "ort_docker_image": "registry.gitlab.com/oss-review-toolkit/ort-gitlab-ci/ort:latest",
+        "netrc_machine": "",
+        "netrc_login": "",
+        "netrc_password": "",
+        "gitlab_host": "gitlab.example.com",
+        "gitlab_token": "",
+        "ort_options": "--info",
+        "orth_options": "",
+        "ort_jvm_options": "-Xmx16G",
+        "orth_jvm_options": "-Xmx16G",
     }
 
     def __init__(self, configfile: str | None = None, defaults_only: bool = False) -> None:
@@ -52,16 +76,18 @@ class Config:
             logging.warning(
                 f"Missing the required configuration file {self._configfile}.\n"
                 "The default config file will be created. Please customize it according to\n"
-                "https://github.com/oss-review-toolkit/orthw#3-create-your-orthw-configuration."
+                "https://github.com/oss-review-toolkit/orthw#3-create-your-orthw-configuration.\n"
+                "Please edit your config file to edit the default options before run it again.\n"
             )
             # Generate the default config file
             try:
-                self._configdir.mkdir()
+                self._configdir.mkdir(exist_ok=True)
                 with open(self._configfile, "w") as yamlconfig:
                     posix_dict: Dict[str, str] = {}
                     for key, value in self._config.items():
                         posix_dict[key] = value
                     yaml.dump(posix_dict, yamlconfig)
+                    sys.exit(0)
             except IOError:
                 logging.error(f"Can't create the default config file {self._configfile} !")
                 sys.exit(1)
