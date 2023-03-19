@@ -81,7 +81,7 @@ class Config:
             )
             # Generate the default config file
             try:
-                self._configdir.mkdir(exist_ok=True)
+                self._configdir.mkdir(exist_ok=True, parents=True)
                 with open(self._configfile, "w") as yamlconfig:
                     posix_dict: Dict[str, str] = {}
                     for key, value in self._config.items():
