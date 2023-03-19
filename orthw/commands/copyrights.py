@@ -4,13 +4,13 @@
 import click
 
 from orthw import config
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 from orthw.utils import logging
 from orthw.utils.process import run
 from orthw.utils.required import require_initialized
 
 
-class Command(CommandBase):
+class Command:
     """orthw command - copyrights"""
 
     _command_name: str = "copyrights"

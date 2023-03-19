@@ -7,10 +7,10 @@ import click
 import git
 
 from orthw import config
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 
 
-class Command(CommandBase):
+class Command:
     """orthw command - find-license-url"""
 
     _command_name: str = "find-license-url"

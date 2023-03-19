@@ -3,7 +3,7 @@
 
 import click
 
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 
 
 from orthw.commands.find_license_url import Command as orthw_command
@@ -11,7 +11,7 @@ from orthw.utils import console
 from orthw.templates import render_txt
 
 
-class Command(CommandBase):
+class Command:
     """orthw command - generate-license-classification-request"""
 
     _command_name: str = "generate-license-classification-request"

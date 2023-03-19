@@ -2,11 +2,11 @@
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 
 from orthw import config
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 from orthw.utils.process import run
 
 
-class Command(CommandBase):
+class Command:
     """orthw command - handled-licenses"""
 
     _command_name: str = "handled-licenses"

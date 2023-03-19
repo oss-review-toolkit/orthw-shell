@@ -3,14 +3,14 @@
 
 from rich import print
 
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 
 
 # ----------------------------------
 # Command Line options and arguments
 
 
-class OrtHWCommand(CommandBase):
+class OrtHWCommand:
     """orthw command - offending-packages"""
 
     _command_name: str = "offending-packages"
