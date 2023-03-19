@@ -1,0 +1,36 @@
+{
+	"name": "orthw",
+	"image": "ort",
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			// Set *default* container specific settings.json values on container create.
+			"settings": {
+				"editor.formatOnSave": true,
+				"eslint.alwaysShowStatus": true
+			},
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"2gua.rainbow-brackets",
+				"aaron-bond.better-comments",
+				"davidanson.vscode-markdownlint",
+				"naumovs.color-highlight",
+				"oderwat.indent-rainbow",
+				"shardulm94.trailing-spaces",
+				"streetsidesoftware.code-spell-checker",
+				"VisualStudioExptTeam.vscodeintellicode",
+				"vivaxy.vscode-conventional-commits",
+				"ms-python.python"
+			]
+		}
+	},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [
+		8000
+	],
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": ".devcontainer/scripts/postCreateCommand.sh",
+	// Set `remoteUser` to `root` to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "ort"
+}
