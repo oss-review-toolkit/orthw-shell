@@ -11,12 +11,12 @@ import yaml
 import json
 
 from orthw import config
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 from orthw.utils import logging
 from orthw.utils.process import run
 
 
-class OrtHWCommand(CommandBase):
+class OrtHWCommand:
     """orthw command - init"""
 
     _command_name: str = "init"

@@ -5,11 +5,11 @@ import click
 from psycopg2 import sql
 from rich import print
 
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 from orthw.utils.database import list_scan_results, query_scandb
 
 
-class Command(CommandBase):
+class Command:
     """orthw command - delete-scan-results"""
 
     _command_name: str = "delete-scan-results"

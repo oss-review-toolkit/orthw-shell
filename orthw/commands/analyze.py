@@ -6,12 +6,12 @@ from pathlib import Path
 import click
 
 from orthw import config
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 from orthw.utils import logging
 from orthw.utils.process import run
 
 
-class Command(CommandBase):
+class Command:
     """orthw command - analyze"""
 
     _command_name: str = "analyze"

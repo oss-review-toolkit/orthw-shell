@@ -6,11 +6,11 @@ from psycopg2 import sql
 from rich import print
 from rich.pretty import pprint
 
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 from orthw.utils.database import list_scan_results, query_scandb
 
 
-class Command(CommandBase):
+class Command:
     """orthw command - find-scans-for-package"""
 
     _command_name: str = "find-scans-for-package"

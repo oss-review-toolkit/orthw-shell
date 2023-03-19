@@ -10,7 +10,7 @@ from typing import Any, List
 
 import click
 
-from orthw.commandbase import command_group
+from orthw.commands import command_group
 from orthw.utils.required import bootstrap_commands
 
 

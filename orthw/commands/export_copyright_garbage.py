@@ -8,12 +8,12 @@ from rich.pretty import pprint
 
 from orthw import config
 from orthw.utils import logging
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 from orthw.utils.process import run
 from orthw.utils.required import require_initialized
 
 
-class Command(CommandBase):
+class Command:
     """orthw command - export-copyright-garbage"""
 
     _command_name: str = "export-copyright-garbage"

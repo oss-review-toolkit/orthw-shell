@@ -4,11 +4,11 @@
 from pathlib import Path
 
 from orthw import config
-from orthw.commandbase import CommandBase, command_group
+from orthw.commands import command_group
 from orthw.utils import logging
 
 
-class Command(CommandBase):
+class Command:
     """orthw commnand - clean"""
 
     _command_name: str = "clean"
