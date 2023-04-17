@@ -43,7 +43,7 @@ ort_config_custom_license_texts_dir="$configuration_home/custom-license-texts"
 ort_config_how_to_fix_text_provider_script="$configuration_home/how-to-fix-text-provider.kts"
 ort_config_license_classifications_file="$configuration_home/license-classifications.yml"
 ort_config_notice_templates_dir="$configuration_home/text-templates"
-ort_config_package_configuration_dir="$configuration_home/package-configurations"
+ort_config_package_configurations_dir="$configuration_home/package-configurations"
 ort_config_package_curations_dir="$configuration_home/curations"
 ort_config_resolutions_file="$configuration_home/resolutions.yml"
 ort_config_rules_file="$configuration_home/evaluator.rules.kts"
@@ -238,7 +238,7 @@ create_package_configuration() {
       --license-classifications-file $ort_config_license_classifications_file \
       --non-offending-license-categories "$non_offending_license_categories" \
       --non-offending-license-ids "$non_offending_license_ids" \
-      --output-dir $ort_config_package_configuration_dir \
+      --output-dir $ort_config_package_configurations_dir \
       --force-overwrite
 }
 
@@ -253,7 +253,7 @@ create_package_configurations() {
 }
 
 get_package_configuration_dir_md5_sum() {
-  find $ort_config_package_configuration_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
+  find $ort_config_package_configurations_dir -type f -name "*.yml" | sort | xargs md5sum | md5sum
 }
 
 get_package_curations_dir_md5_sum() {
@@ -312,7 +312,7 @@ evaluate() {
     --repository-configuration-file $repository_configuration_file \
     --rules-file $ort_config_rules_file \
     --license-classifications-file $ort_config_license_classifications_file \
-    --package-configuration-dir $ort_config_package_configuration_dir
+    --package-configurations-dir $ort_config_package_configurations_dir
 
   if [[ $? -eq "1" ]]; then
     echo "Error running the evaluator."
@@ -351,7 +351,7 @@ find_package_configuration() {
   local package_id=$1
 
   orth package-configuration find \
-    --package-configuration-dir $ort_config_package_configuration_dir \
+    --package-configurations-dir $ort_config_package_configurations_dir \
     --package-id $package_id
 }
 
@@ -471,7 +471,7 @@ report() {
     --custom-license-texts-dir $ort_config_custom_license_texts_dir \
     --how-to-fix-text-provider-script $ort_config_how_to_fix_text_provider_script \
     --license-classifications-file $ort_config_license_classifications_file \
-    --package-configuration-dir $ort_config_package_configuration_dir \
+    --package-configurations-dir $ort_config_package_configurations_dir \
     --ort-file $evaluation_result_file \
     --output-dir $temp_dir \
     --report-formats $report_formats \
@@ -594,13 +594,13 @@ if [ "$command" = "copyrights" ] && [ "$#" -eq 1 ]; then
 
   orth list-copyrights \
     --ort-file $scan_result_file \
-    --package-configuration-dir $ort_config_package_configuration_dir \
+    --package-configurations-dir $ort_config_package_configurations_dir \
     --copyright-garbage-file $ort_config_copyright_garbage_file \
     > $copyrights_file
 
   orth list-copyrights \
     --ort-file $scan_result_file \
-    --package-configuration-dir $ort_config_package_configuration_dir \
+    --package-configurations-dir $ort_config_package_configurations_dir \
     --copyright-garbage-file $ort_config_copyright_garbage_file \
     --show-raw-statements \
     > $copyrights_debug_file
@@ -760,7 +760,7 @@ if [ "$command" = "licenses" ] && [ "$#" -eq 2 ]; then
     --ort-file $evaluation_result_file \
     --package-id $package_id \
     --repository-configuration-file $repository_configuration_file \
-    --package-configuration-dir $ort_config_package_configuration_dir \
+    --package-configurations-dir $ort_config_package_configurations_dir \
     --apply-license-finding-curations \
     --omit-excluded
   exit 0
@@ -777,7 +777,7 @@ if [ "$command" = "licenses" ] && [ "$#" -eq 3 ]; then
     --ort-file $evaluation_result_file \
     --package-id $package_id \
     --repository-configuration-file $repository_configuration_file \
-    --package-configuration-dir $ort_config_package_configuration_dir \
+    --package-configurations-dir $ort_config_package_configurations_dir \
     --source-code-dir $source_code_dir \
     --apply-license-finding-curations \
     --omit-excluded
@@ -796,7 +796,7 @@ if [ "$command" = "offending-licenses" ] && [ "$#" -eq 2 ]; then
     --package-id $package_id \
     --ignore-excluded-rule-ids "$ignore_excluded_rule_ids" \
     --repository-configuration-file $repository_configuration_file \
-    --package-configuration-dir $ort_config_package_configuration_dir \
+    --package-configurations-dir $ort_config_package_configurations_dir \
     --apply-license-finding-curations \
     --offending-only \
     --offending-severities ERROR \
@@ -816,7 +816,7 @@ if [ "$command" = "offending-licenses" ] && [ "$#" -eq 3 ]; then
     --package-id $package_id \
     --ignore-excluded-rule-ids "$ignore_excluded_rule_ids" \
     --repository-configuration-file $repository_configuration_file \
-    --package-configuration-dir $ort_config_package_configuration_dir \
+    --package-configurations-dir $ort_config_package_configurations_dir \
     --source-code-dir $source_code_dir \
     --apply-license-finding-curations \
     --offending-only \
