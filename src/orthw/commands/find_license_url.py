@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import click
-from git import Repo
+import git
 
 from orthw import config
 from orthw.commands import command_group
@@ -23,7 +23,7 @@ class Command:
 
             license_file: Path = config.path("scancode_home") / license_file_path
             if license_file.exists():
-                git_repo = Repo(config.get("scancode_home"))
+                git_repo = git.repo.Repo(config.get("scancode_home"))
                 revision = git_repo.git.rev_parse("HEAD")
                 return f"https://github.com/nexB/scancode-toolkit/blob/{revision}/{license_file_path}"
 
