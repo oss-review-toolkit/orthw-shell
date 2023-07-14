@@ -4,7 +4,7 @@
 import click
 from rich.console import Console
 
-from orthw.config import Config as OrtHWConfig
+from orthw.utils.config import Config as OrtHWConfig
 
 
 class OrthwClickGroup(click.Group):
