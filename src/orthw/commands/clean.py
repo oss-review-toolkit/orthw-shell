@@ -31,6 +31,9 @@ class Command:
             logging.error(f"Error removing directory {config.get('repository_configuration_file')}")
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "SCAN_CONTEXT"},
+    short_help="Clean arifact outputs.",
+)
 def clean() -> None:
     Command().process()

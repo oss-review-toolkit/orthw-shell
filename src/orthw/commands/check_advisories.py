@@ -20,6 +20,9 @@ class CheckAdvisoriesCommand:
         pass
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "SCAN_CONTEXT"},
+    short_help="Check the advisories.",
+)
 def check_advisories() -> None:
     CheckAdvisoriesCommand().process()
