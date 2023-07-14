@@ -51,7 +51,9 @@ class Command:
             run(args=args, output_file=config.path("copyrights_debug_file"))
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "SCAN_CONTEXT"},
+)
 @click.argument("package-id", type=str, default="")
 def copyrights(package_id: str) -> None:
     Command().copyrights(package_id)

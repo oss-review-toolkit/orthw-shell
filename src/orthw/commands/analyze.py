@@ -49,7 +49,7 @@ class OrtHwCommand:
 
 @command_group.command(
     context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
-    short_help="Run ort analyze command on provided source code directory",
+    short_help="Run ort analyze command on provided source code directory.",
 )
 @click.option("--format", "-f", "format_", default="JSON")
 @click.argument("source_code_dir", type=click.Path(exists=True))

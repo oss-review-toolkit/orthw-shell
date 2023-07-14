@@ -27,7 +27,9 @@ class Command:
         return output
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+)
 @click.argument("license-id")
 def generate_license_classification_request(license_id: str) -> None:
     Command().process(license_id)

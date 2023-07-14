@@ -16,6 +16,8 @@ class OrtHWCommand:
         print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+)
 def analyze_in_docker() -> None:
     OrtHWCommand().process()

@@ -19,6 +19,8 @@ class OrtHWCommand:
         print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "PACKAGE_CONFIG"},
+)
 def pc_clean() -> None:
     OrtHWCommand().process()

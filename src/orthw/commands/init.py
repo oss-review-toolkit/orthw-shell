@@ -99,7 +99,9 @@ class OrtHWCommand:
         return 0
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "SCAN_CONTEXT"},
+)
 @click.argument("target_url")
 def init(target_url: str) -> None:
     OrtHWCommand().init(target_url=target_url)
