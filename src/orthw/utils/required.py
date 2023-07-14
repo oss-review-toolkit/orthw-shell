@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import shutil
 import sys
@@ -36,10 +37,7 @@ def bootstrap_commands() -> bool:
     :return: _description_
     :rtype: bool
     """
-    for command in required_commands:
-        if not required_command(command):
-            return False
-    return True
+    return all(required_command(command) for command in required_commands)
 
 
 def require_initialized() -> None:

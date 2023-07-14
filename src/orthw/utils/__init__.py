@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import ctypes
-import os
 import logging as stdlogger
+import os
 
 from rich.console import Console
 from rich.logging import RichHandler
-
 
 # Setup the main logger message
 stdlogger.basicConfig(level="INFO", format="%(message)s", datefmt="[%X]", handlers=[RichHandler(markup=True)])

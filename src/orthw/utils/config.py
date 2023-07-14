@@ -1,14 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
-from pathlib import Path
-from typing import Dict
 import os
 import sys
+from pathlib import Path
 
+import yaml
 from appdirs import AppDirs
 from dotenv import load_dotenv
-import yaml
 
 from orthw.utils import logging
 
@@ -20,7 +20,7 @@ class Config:
     _configfile: Path = _configdir / "config.yaml"
 
     # Default config file
-    _config: Dict[str, str] = {
+    _config: dict[str, str] = {
         "dot_dir": _configdir.as_posix(),
         "configuration_home": Path(_configdir / "ort-config").as_posix(),
         "ort_home": Path(_configdir / "ort").as_posix(),
@@ -68,27 +68,27 @@ class Config:
 
     def __readconfig(self) -> None:
         try:
-            with open(self._configfile, "r") as yamlconfig:
+            with Path.open(self._configfile) as yamlconfig:
                 config_file = yaml.safe_load(yamlconfig)
                 for key, value in config_file.items():
                     self._config[key] = value
-        except IOError:
+        except OSError:
             logging.warning(
                 f"Missing the required configuration file {self._configfile}.\n"
                 "The default config file will be created. Please customize it according to\n"
                 "https://github.com/oss-review-toolkit/orthw#3-create-your-orthw-configuration.\n"
-                "Please edit your config file to edit the default options before run it again.\n"
+                "Please edit your config file to edit the default options before run it again.\n",
             )
             # Generate the default config file
             try:
                 self._configdir.mkdir(exist_ok=True, parents=True)
-                with open(self._configfile, "w") as yamlconfig:
-                    posix_dict: Dict[str, str] = {}
+                with Path.open(self._configfile, "w") as yamlconfig:
+                    posix_dict: dict[str, str] = {}
                     for key, value in self._config.items():
                         posix_dict[key] = value
                     yaml.dump(posix_dict, yamlconfig)
                     sys.exit(0)
-            except IOError:
+            except OSError:
                 logging.error(f"Can't create the default config file {self._configfile} !")
                 sys.exit(1)
 
@@ -148,7 +148,7 @@ class Config:
         else:
             logging.error(
                 f"Config value {config_entry} is not available."
-                f"Please verify correct value in {self._configfile.as_posix()}."
+                f"Please verify correct value in {self._configfile.as_posix()}.",
             )
             sys.exit(1)
 
@@ -165,7 +165,7 @@ class Config:
         else:
             logging.error(
                 f"Config value {config_entry} is not available."
-                f"Please verify correct value in {self._configfile.as_posix()}."
+                f"Please verify correct value in {self._configfile.as_posix()}.",
             )
             sys.exit(1)
 

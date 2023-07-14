@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import click
 from rich.console import Console
@@ -18,5 +19,5 @@ class OrthwClickGroup(click.Group):
             f"[bright_green]ort-home:[/bright_green] {config.get('ort_home')}\n"
             f"[bright_green]scancode-home:[/bright_green] {config.get('scancode_home')}\n"
             f"[bright_green]exports_home:[/bright_green] {config.get('exports_home')}\n"
-            "[/bright_white]"
+            "[/bright_white]",
         )

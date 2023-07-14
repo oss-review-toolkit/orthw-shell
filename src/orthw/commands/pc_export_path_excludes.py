@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 from rich import print
 
 from orthw.commands import command_group
-
 
 # ----------------------------------
 # Command Line options and arguments

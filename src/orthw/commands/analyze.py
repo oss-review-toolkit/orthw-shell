@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 from pathlib import Path
 
@@ -16,7 +17,7 @@ class Command:
 
     _command_name: str = "analyze"
 
-    def analyze(self, source_code_dir: str, format: str = "JSON") -> None:
+    def analyze(self, source_code_dir: str, format_: str = "JSON") -> None:
         """Use Ort analyzer command on provided source dir
 
         :param source_code_dir: Source directory to be evaluated
@@ -31,7 +32,7 @@ class Command:
             "--output-dir",
             Path.cwd().as_posix(),
             "--output-formats",
-            format,
+            format_,
         ]
 
         pcd = Path(config.get("ort_config_package_curations_dir"))
@@ -47,7 +48,7 @@ class Command:
 
 
 @command_group.command()
-@click.option("--format", "-f", default="JSON")
+@click.option("--format", "-f", "format_", default="JSON")
 @click.argument("source_code_dir", type=click.Path(exists=True))
-def analyze(source_code_dir: str, format: str) -> None:
-    Command().analyze(source_code_dir, format)
+def analyze(source_code_dir: str, format_: str) -> None:
+    Command().analyze(source_code_dir, format_)

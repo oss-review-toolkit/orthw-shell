@@ -1,17 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
-
+from __future__ import annotations
 
 import subprocess  # nosec
 import sys
 from pathlib import Path
 from typing import Any
 
-from orthw.utils import admin, logging, console
+from orthw.utils import admin, console, logging
 from orthw.utils.required import required_command
 
 
-def run(args: list[str], console_output: bool = True, output_file: Path | str | None = None) -> int | Any:
+def run(args: list[str], console_output: bool = True, output_file: Path | None = None) -> int | Any:
     """Run a process with defined arguments
 
     :param args: Arguments
@@ -40,25 +40,24 @@ def run(args: list[str], console_output: bool = True, output_file: Path | str | 
 
     if output_file:
         try:
-            with open(output_file, "w") as f:
-                proc = subprocess.Popen(args, stdout=f)  # nosec
+            with Path.open(output_file, "w") as f:
+                proc = subprocess.Popen(args, stdout=f)  # noqa: S603
                 f.close()
-        except IOError:
+        except OSError:
             logging.error(f"Can't open file {output_file} to write.")
     else:
-        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # nosec
-        if console_output:
-            if proc.stdout:
-                while True:
-                    output = proc.stdout.readline()
-                    if proc.poll() is not None:
-                        break
-                    if output:
-                        line = output.decode("utf-8").strip()
-                        # Avoid funny ort log output that ressemble markup closing tag
-                        if "[/" in line:
-                            line = line.replace("[", "").replace("]", "")
-                        console.print(line, style="bright_white")
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # noqa: S603
+        if console_output and proc.stdout:
+            while True:
+                output = proc.stdout.readline()
+                if proc.poll() is not None:
+                    break
+                if output:
+                    line = output.decode("utf-8").strip()
+                    # Avoid funny ort log output that ressemble markup closing tag
+                    if "[/" in line:
+                        line = line.replace("[", "").replace("]", "")
+                    console.print(line, style="bright_white")
 
     res = proc.wait()
     logging.debug(f"Return code: {res}")

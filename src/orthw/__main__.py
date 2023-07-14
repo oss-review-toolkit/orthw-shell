@@ -6,6 +6,6 @@ from __future__ import annotations
 import sys
 
 if __name__ == "__main__":
-    from orhw.orthw import main
+    from orthw.orthw import main
 
     sys.exit(main())
