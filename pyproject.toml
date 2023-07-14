@@ -4,12 +4,25 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "orthw"
-version = "0.0.1"
+version = "0.2"
 description = "orthw is a python app designed to simplify and speed up common tasks performed when processing ort scan results. It supports a number of commands, which can be run in the terminal."
 authors = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
 maintainers = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
 readme = "README.md"
-license = "BSD-Clause-3"
+license = "Apache-2.0"
+packages = [ { include = "orthw", from = "src" } ]
+keywords = ["ort", "orthw", "compliance", "automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "License :: OSI Approved :: Apache 2.0 License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -20,26 +33,25 @@ dict2obj = "^1.2.0"
 psycopg2-binary = "^2.9.5"
 gitpython = "^3.1.31"
 jinja2 = "^3.1.2"
-fastapi = "^0.94.1"
 pyaml = "^21.10.1"
 python-dotenv = "^1.0.0"
 appdirs = "^1.4.4"
 uvicorn = {extras = ["standard"], version = "^0.21.0"}
 pydantic = "^1.10.6"
+toml = "^0.10.2"
 
 [tool.poetry.group.dev.dependencies]
-pytest-cov = "^4.0.0"
-pre-commit = "^2.20.0"
-isort = "^5.11.4"
-pycodestyle = "^2.10.0"
-pylint = "^2.15.8"
-bandit = "^1.7.4"
-pytest-mypy = "^0.10.3"
-ruff = "^0.0.224"
-mkdocs-material = "^9.1.0"
-black = "^23.1.0"
-types-pyyaml = "^6.0.12.8"
-mypy = "^1.1.1"
+pytest-cov = "*"
+pre-commit = "*"
+pycodestyle = "*"
+pylint = "*"
+pytest-mypy = "*"
+ruff = "*"
+mkdocs-material = "*"
+black = "*"
+types-pyyaml = "*"
+mypy = "*"
+urllib3 = "1.26.16"
 
 [tool.isort]
 multi_line_output = 3
@@ -49,12 +61,13 @@ use_parentheses = true
 line_length = 120
 
 [tool.black]
+target-version = ["py310"]
 line-length = 120
 include = '\.pyi?$'
 exclude = '''
 (
-    /(
-    \.eggs         # exclude a few common directories in the
+  /(
+      \.eggs         # exclude a few common directories in the
     | \.git          # root of the project
     | \.hg
     | \.mypy_cache
@@ -64,9 +77,9 @@ exclude = '''
     | buck-out
     | build
     | dist
-    )/
-    | foo.py          # also separately exclude a file named foo.py in
-                    # the root of the project
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
 )
 '''
 
@@ -116,7 +129,7 @@ disable = [
 ]
 
 [tool.mypy]
-follow_imports = "silent"
+follow_imports = "normal"
 strict_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
@@ -126,18 +139,32 @@ no_implicit_reexport = true
 disallow_untyped_defs = true
 ignore_missing_imports = true
 
-[tool.bandit]
-skips = ["B408"]
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
 
 [tool.ruff]
+fix = true
 line-length = 120
-
-# Enable Pyflakes `E` and `F` codes by default.
-select = ["E", "F"]
 ignore = []
+extend-select = [
+    "E",   # pycodestyle error
+    "W",   # pycodestyle warning
+    "F",   # pyflakes
+    "A",   # flakes8-builtins
+    "COM", # flakes8-commas
+    "C4",  # flake8-comprehensions
+    "Q",   # flake8-quotes
+    "SIM", # flake8-simplify
+    "PTH", # flake8-use-pathlib
+    "I",   # isort
+    "N",   # pep8 naming
+    "UP",  # pyupgrade
+    "S",   # bandit
+]
 
 # Exclude a variety of commonly ignored directories.
-exclude = [
+extend-exclude = [
     ".bzr",
     ".direnv",
     ".eggs",
@@ -166,6 +193,8 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 # Assume Python 3.10.
 target-version = "py310"
 
-[tool.ruff.mccabe]
-# Unlike Flake8, default to a complexity level of 10.
-max-complexity = 10
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.isort]
+required-imports = ["from __future__ import annotations"]
