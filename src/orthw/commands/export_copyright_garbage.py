@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import tempfile
 from pathlib import Path
@@ -7,8 +8,8 @@ from pathlib import Path
 from rich.pretty import pprint
 
 from orthw import config
-from orthw.utils import logging
 from orthw.commands import command_group
+from orthw.utils import logging
 from orthw.utils.process import run
 from orthw.utils.required import require_initialized
 
@@ -48,7 +49,7 @@ class Command:
 
         logging.info("Mapped the given processed statements to the following unprocessed ones:")
         if mapped_copyrights_file.exists():
-            with open(mapped_copyrights_file, "r") as f:
+            with Path.open(mapped_copyrights_file) as f:
                 pprint(f.readlines())
 
         args = [

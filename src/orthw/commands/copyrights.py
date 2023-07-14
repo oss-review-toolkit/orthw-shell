@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import click
 
@@ -44,10 +45,10 @@ class Command:
                 ort_config_package_configuration_dir,
             ]
 
-            run(args=args, output_file=config.get("copyrights_file"))
+            run(args=args, output_file=config.path("copyrights_file"))
 
             args += ["--show-raw-statements"]
-            run(args=args, output_file=config.get("copyrights_debug_file"))
+            run(args=args, output_file=config.path("copyrights_debug_file"))
 
 
 @command_group.command()

@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import hashlib
 from enum import Enum
@@ -23,19 +24,24 @@ def check_evaluation_md5_sum() -> bool:
     if evaluation_md5_sum_file.exists():
         md5_res = get_folder_md5(FolderType.CONFIGURATION)
         if md5_res:
-            with open(package_configuration_md5_sum_file, "w") as md5file:
+            with Path.open(package_configuration_md5_sum_file, "w") as md5file:
                 md5file.write(md5_res)
         md5_res = get_folder_md5(FolderType.CURATIONS)
         if md5_res:
-            with open(package_curations_md5_sum_file, "w") as md5file:
+            with Path.open(package_curations_md5_sum_file, "w") as md5file:
                 md5file.write(md5_res)
 
-        with open(evaluation_md5_sum_file, "r") as md5file:
+        with Path.open(evaluation_md5_sum_file) as md5file:
             hashes = md5file.readlines()
 
         for entry in hashes:
             filehash, filename = entry.split("  ")
-            if not filehash == hashlib.md5(open(filename, "rb").read()).hexdigest():  # nosec
+
+            try:
+                with Path.open(Path(filename), mode="rb") as file_:
+                    hashlib.md5(file_.read()).hexdigest()  # noqa: S324
+            except OSError:
+                logging.error(f"File {filename} not found.")
                 return False
 
         # Remove package configuration, but why ?
@@ -72,11 +78,11 @@ def get_folder_md5(folder_type: str | FolderType) -> str | None:
     if folder:
         sorted_file_list: list[Path] = sorted(folder.glob("**/*.yml"))
 
-        hashed_file_list = hashlib.md5()  # nosec
+        hashed_file_list = hashlib.md5()  # noqa: S324
         for file in sorted_file_list:
-            with open(file, "rb") as f:
+            with Path.open(file, mode="rb") as f:
                 digest = hashlib.file_digest(f, "md5")
-                logging.debug(f"{digest.hexdigest()}  {file.as_posix()}".encode("utf-8"))
-                hashed_file_list.update(f"{digest.hexdigest()}  {file.as_posix()}".encode("utf-8"))
+                logging.debug(f"{digest.hexdigest()}  {file.as_posix()}".encode())
+                hashed_file_list.update(f"{digest.hexdigest()}  {file.as_posix()}".encode())
 
     return hashed_file_list.hexdigest()

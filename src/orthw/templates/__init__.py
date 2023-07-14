@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import sys
 from pathlib import Path
@@ -22,10 +23,10 @@ def get_template(template: str) -> str:
     template_filename: Path = template_dir / f"{template}.jinja2"
 
     try:
-        with open(template_filename, "r") as inputfile:
+        with Path.open(template_filename) as inputfile:
             template_file = "\n".join(inputfile.readlines())
         return template_file
-    except IOError:
+    except OSError:
         logging.error(f"Can't find template file {template}.")
         sys.exit(1)
 

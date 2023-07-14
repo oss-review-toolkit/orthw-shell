@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import click
 from psycopg2 import sql
@@ -20,7 +21,9 @@ class Command:
 
         list_scan_results(package_id=package_id)
 
-        count_sql: str = f"SELECT COUNT(*) FROM scan_results WHERE identifier LIKE '{safe_pid}'"  # nosec B608
+        count_sql: str = (
+            f"SELECT COUNT(*) FROM scan_results WHERE identifier LIKE '{safe_pid}'"  # nosec B608  # noqa: S608
+        )
         count: list[tuple[str, str]] | None = query_scandb(sql=count_sql)
 
         if not count:
@@ -30,7 +33,7 @@ class Command:
         print("[bright_blue]Press enter to delete them.[/bright_blue]")
         input()
 
-        delete_sql: str = f"DELETE FROM scan_results WHERE identifier LIKE {safe_pid}"  # nosec B608
+        delete_sql: str = f"DELETE FROM scan_results WHERE identifier LIKE {safe_pid}"  # nosec B608  # noqa: S608
         query_scandb(sql=delete_sql)
 
 

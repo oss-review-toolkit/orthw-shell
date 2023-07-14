@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import sys
 from tempfile import TemporaryDirectory
@@ -9,8 +10,8 @@ import click
 from orthw import config
 from orthw.commands import command_group
 from orthw.utils import logging
-from orthw.utils.process import run
 from orthw.utils.checksum import check_evaluation_md5_sum
+from orthw.utils.process import run
 
 
 class Command:
@@ -18,7 +19,7 @@ class Command:
 
     _command_name: str = "analyze"
 
-    def evaluate(self, format: str = "JSON") -> None:
+    def evaluate(self, format_: str = "JSON") -> None:
         """Use Ort analyzer command on provided source dir
 
         :param source_code_dir: Source directory to be evaluated
@@ -61,6 +62,6 @@ class Command:
 
 
 @command_group.command()
-@click.option("--format", "-f", default="JSON")
-def evaluate(format: str) -> None:
+@click.option("--format", "-f", "format_", default="JSON")
+def evaluate(format_: str) -> None:
     Command().evaluate()

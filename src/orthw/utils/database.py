@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
 import sys
 
@@ -8,8 +9,7 @@ from dict2obj import Dict2Obj
 from rich.pretty import pprint
 
 from orthw import config
-from orthw.utils import admin
-from orthw.utils import logging
+from orthw.utils import admin, logging
 
 
 def query_scandb(sql: str) -> list[tuple[str, str]] | None:

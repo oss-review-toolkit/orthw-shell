@@ -1,14 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+from __future__ import annotations
 
+import json
+import lzma
 from pathlib import Path
 from urllib import request
 from urllib.parse import urlparse
 
 import click
-import lzma
 import yaml
-import json
 
 from orthw import config
 from orthw.commands import command_group
@@ -21,7 +22,7 @@ class OrtHWCommand:
 
     _command_name: str = "init"
 
-    def init(self, target_url: str) -> None:
+    def init(self, target_url: str) -> int:
         target_url_file: Path = Path(config.get("target_url_file"))
         temp_file = Path(urlparse(target_url).path)
         filename: str = temp_file.name
@@ -37,35 +38,41 @@ class OrtHWCommand:
             evaluation_md5_sum_file.unlink()
 
         # Early check of the file naming and extensions
-        if ".xz" not in filename and ".json" not in filename and ".yml" not in filename and ".yaml" not in filename:
+        if extension not in [".xz", ".json", ".yml", ".yaml"]:
             logging.error(f"Cannot initialize with the given file {filename}. The file extension is unexpected.")
-            return
+            return 1
 
         try:
-            with open(target_url_file, "w") as output:
+            with Path.open(target_url_file, "w") as output:
                 output.write(target_url)
-        except IOError:
+        except OSError:
             logging.error(f"Unable to create output file {target_url_file.as_posix()}.")
-            return
+            return 1
 
         # Retrieve target scan result file
-        response = request.urlopen(target_url)  # nosec
+        parsed_url = urlparse(target_url)
+        if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"] or not parsed_url.netloc:
+            logging.error(f"Cannot retrieve {target_url}.")
+            return 1
 
-        if extension == ".xz":
-            data = lzma.decompress(response.read())
-        else:
-            data = response.read()
+        parsed_url = urlparse(target_url)
+        if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"]:
+            logging.error(f"Cannot retrieve {target_url}.")
+            return 1
+        response = request.urlopen(target_url)  # noqa: S310
+
+        data = lzma.decompress(response.read()) if extension == ".xz" else response.read()
 
         if ".yml" in filename or ".yaml" in filename:
             data = yaml.safe_load(data)
 
         scan_result_file: Path = config.path("scan_result_file")
         try:
-            with open(scan_result_file, "w") as output:
+            with Path.open(scan_result_file, "w") as output:
                 json.dump(data, output)
-        except IOError:
+        except OSError:
             logging.error(f"Cannot open {scan_result_file.as_posix()} to write.")
-            return
+            return 1
 
         args: list[str] = [
             "orth",
@@ -88,6 +95,8 @@ class OrtHWCommand:
         ]
 
         run(args)
+
+        return 0
 
 
 @command_group.command()
