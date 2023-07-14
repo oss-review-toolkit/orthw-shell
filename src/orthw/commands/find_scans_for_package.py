@@ -38,7 +38,9 @@ class Command:
             pprint(result)
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+)
 @click.argument("package_id")
 def find_scans_for_package(package_id: str) -> None:
     Command().process(package_id=package_id)

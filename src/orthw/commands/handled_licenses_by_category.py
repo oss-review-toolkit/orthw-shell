@@ -26,6 +26,8 @@ class Command:
         run(args)
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+)
 def handled_licenses_by_category() -> None:
     Command().process()

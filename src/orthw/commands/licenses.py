@@ -49,7 +49,9 @@ class Command:
         run(args=args)
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "SCAN_CONTEXT"},
+)
 @click.option("--source-code-dir", default=None)
 @click.argument("package_id")
 def licenses(package_id: str, source_code_dir: str | None) -> None:

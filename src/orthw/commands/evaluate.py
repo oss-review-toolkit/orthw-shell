@@ -61,7 +61,9 @@ class Command:
             sys.exit(1)
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+)
 @click.option("--format", "-f", "format_", default="JSON")
 def evaluate(format_: str) -> None:
     Command().evaluate()

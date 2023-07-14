@@ -11,7 +11,7 @@ from rich.console import Console
 from rich.padding import Padding
 from rich.table import Table
 
-from orthw.utils.config import Config as OrtHWConfig
+from orthw import config
 
 
 class OrtHwClickGroup(click.Group):
@@ -24,7 +24,6 @@ class OrtHwClickGroup(click.Group):
         """
         sio = io.StringIO()
         console = Console(file=sio, force_terminal=True)
-        config = OrtHWConfig(defaults_only=True)
 
         console.print(
             "\n[bright_white]Usage:\n"
@@ -60,9 +59,9 @@ class OrtHwClickGroup(click.Group):
         # We will use the first entry as the group description
         custom_cmd: dict[str, dict[str, Any]] = {
             "SCAN_CONTEXT": {"title": "Commands with scan context", "content": []},
-            "NO_SCAN_CONTEXT": {"title": "Commands for package configurations", "content": []},
+            "NO_SCAN_CONTEXT": {"title": "Commands without scan context", "content": []},
             "REPOSITORY_CONFIG": {"title": "Commands for repository configurations (ort.yml)", "content": []},
-            "PACKAGE_CONFIG": {"title": "Commands without scan context", "content": []},
+            "PACKAGE_CONFIG": {"title": "Commands for package configurations", "content": []},
         }
         for subcommand in self.list_commands(ctx):
             cmd = self.get_command(ctx, subcommand)
@@ -88,9 +87,9 @@ class OrtHwClickGroup(click.Group):
                 title_justify="left",
                 show_header=False,
                 box=HORIZONTALS,
-                padding=(0, 4),
+                min_width=80,
             )
-            table.add_column()
+            table.add_column(style="bold green")
             table.add_column()
 
             # console.rule(f"[bold bright_yellow]{header}:[/bold bright_yellow]\n")

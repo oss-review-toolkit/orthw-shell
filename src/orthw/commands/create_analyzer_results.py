@@ -52,7 +52,9 @@ class Command:
         run(args=args)
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+)
 @click.argument("package-ids-file", type=click.Path(exists=True))
 def create_analyzer_results(package_ids_file: Path) -> None:
     Command().create_analyzer_results(package_ids_file)
