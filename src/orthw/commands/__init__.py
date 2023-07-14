@@ -8,10 +8,10 @@ import click
 
 from orthw.__version__ import __version__
 from orthw.utils import logging
-from orthw.utils.orthwclickgroup import OrthwClickGroup
+from orthw.utils.orthwclickgroup import OrtHwClickGroup
 
 
-@click.group(cls=OrthwClickGroup)
+@click.group(cls=OrtHwClickGroup)
 @click.version_option(__version__, "-v", "--version", prog_name="OrthHW", message="%(prog)s version %(version)s")
 @click.option("-d", "--debug/--no-debug", default=False, help="Enable debug mode.")
 @click.option("--logfile", required=False, help="Set the log output to specified file.")

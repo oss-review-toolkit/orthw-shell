@@ -12,7 +12,7 @@ from orthw.utils import logging
 from orthw.utils.process import run
 
 
-class Command:
+class OrtHwCommand:
     """orthw command - analyze"""
 
     _command_name: str = "analyze"
@@ -47,8 +47,12 @@ class Command:
         run(args=args)
 
 
-@command_group.command()
+@command_group.command(
+    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+    short_help="Run ort analyze command on provided source code directory",
+)
 @click.option("--format", "-f", "format_", default="JSON")
 @click.argument("source_code_dir", type=click.Path(exists=True))
 def analyze(source_code_dir: str, format_: str) -> None:
-    Command().analyze(source_code_dir, format_)
+    """Run ort analyze command on provided source code directory"""
+    OrtHwCommand().analyze(source_code_dir, format_)
