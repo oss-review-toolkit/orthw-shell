@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "orthw"
-version = "0.3.1"
+version = "0.3.2"
 description = "orthw is a python app designed to simplify and speed up common tasks performed when processing ort scan results. It supports a number of commands, which can be run in the terminal."
 authors = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
 maintainers = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
