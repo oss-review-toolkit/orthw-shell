@@ -42,10 +42,11 @@ class OrtHwClickGroup(click.Group):
         console.print(
             "\n[bright_white]Usage:\n"
             "\nConfiguration:\n\n"
-            f"[bright_green]configuration-home:[/bright_green] {config.get('configuration_home')}\n"
-            f"[bright_green]ort-home:[/bright_green] {config.get('ort_home')}\n"
-            f"[bright_green]scancode-home:[/bright_green] {config.get('scancode_home')}\n"
-            f"[bright_green]exports_home:[/bright_green] {config.get('exports_home')}\n"
+            f"[bright_green]Main config::[/bright_green] {config.get('dot_dir')}/config.yml\n"
+            f"[bright_green]Configuration home:[/bright_green] {config.get('configuration_home')}\n"
+            f"[bright_green]Ort home:[/bright_green] {config.get('ort_home')}\n"
+            f"[bright_green]Scancode home:[/bright_green] {config.get('scancode_home')}\n"
+            f"[bright_green]Exports home:[/bright_green] {config.get('exports_home')}\n"
             "[/bright_white]",
         )
 

@@ -31,7 +31,7 @@ class Config:
     """Base config object. Reads default orthw config file or set default"""
 
     _configdir: Path = Path(AppDirs("orthw").user_config_dir)
-    _configfile: Path = _configdir / "config.yaml"
+    _configfile: Path = _configdir / "config.yml"
 
     # Default config file
     _config: dict[str, str] = {
@@ -71,6 +71,7 @@ class Config:
         if configfile:
             self._configfile = Path(configfile)
 
+        print(self._configfile)
         if not defaults_only:
             self.__readconfig()
 
