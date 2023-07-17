@@ -18,7 +18,7 @@
 header:
     license:
         spdx-id: Apache-2.0
-        copyright-owner: The ORTHW Project Authors
+        copyright-owner: The ORTHW Project Authors (see <https://github.com/oss-review-toolkit/orthw/blob/main/NOTICE>)
         copyright-year: 2023
         software-name: orthw
         pattern: |
