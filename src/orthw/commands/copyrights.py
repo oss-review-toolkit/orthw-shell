@@ -66,7 +66,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "SCAN_CONTEXT"},
+    options_metavar="SCAN_CONTEXT",
 )
 @click.argument("package-id", type=str, default="")
 def copyrights(package_id: str) -> None:

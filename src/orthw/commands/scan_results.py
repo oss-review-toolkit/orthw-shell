@@ -33,6 +33,8 @@ class OrtHWCommand:
         print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command()
+@command_group.command(
+    options_metavar="SCAN_CONTEXT",
+)
 def scan_results() -> None:
     OrtHWCommand().process()

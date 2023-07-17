@@ -52,7 +52,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+    options_metavar="NO_SCAN_CONTEXT",
 )
 @click.argument("package_id")
 def delete_scan_results(package_id: str) -> None:

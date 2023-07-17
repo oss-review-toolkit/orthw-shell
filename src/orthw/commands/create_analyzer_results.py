@@ -67,7 +67,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+    options_metavar="NO_SCAN_CONTEXT",
 )
 @click.argument("package-ids-file", type=click.Path(exists=True))
 def create_analyzer_results(package_ids_file: Path) -> None:

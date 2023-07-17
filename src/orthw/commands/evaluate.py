@@ -76,7 +76,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+    options_metavar="NO_SCAN_CONTEXT",
 )
 @click.option("--format", "-f", "format_", default="JSON")
 def evaluate(format_: str) -> None:

@@ -62,7 +62,7 @@ class OrtHwCommand:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+    options_metavar="NO_SCAN_CONTEXT",
     short_help="Run ort analyze command on provided source code directory.",
 )
 @click.option("--format", "-f", "format_", default="JSON")

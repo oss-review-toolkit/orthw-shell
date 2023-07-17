@@ -34,7 +34,7 @@ class OrtHWCommand:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "PACKAGE_CONFIG"},
+    options_metavar="PACKAGE_CONFIG",
 )
 def pc_format() -> None:
     OrtHWCommand().process()

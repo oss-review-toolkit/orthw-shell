@@ -34,7 +34,7 @@ class OrtHWCommand:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "SCAN_CONTEXT"},
+    options_metavar="SCAN_CONTEXT",
 )
 def report() -> None:
     OrtHWCommand().process()

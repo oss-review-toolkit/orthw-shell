@@ -53,7 +53,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+    options_metavar="NO_SCAN_CONTEXT",
 )
 @click.argument("package_id")
 def find_scans_for_package(package_id: str) -> None:

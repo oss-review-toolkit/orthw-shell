@@ -70,7 +70,6 @@ class OrtHwClickGroup(click.Group):
             with formatter.section("Options"):
                 formatter.write_dl(opts)
 
-        # We will use the first entry as the group description
         custom_cmd: dict[str, dict[str, Any]] = {
             "SCAN_CONTEXT": {"title": "Commands with scan context", "content": []},
             "NO_SCAN_CONTEXT": {"title": "Commands without scan context", "content": []},
@@ -82,15 +81,11 @@ class OrtHwClickGroup(click.Group):
             if cmd is None or cmd.hidden:
                 continue
 
-            if (
-                cmd.context_settings
-                and "orthw_group" in cmd.context_settings
-                and cmd.context_settings["orthw_group"] in custom_cmd
-            ):
+            if cmd.options_metavar and cmd.options_metavar in custom_cmd:
                 cmd_description = {}
                 cmd_description["short_help"] = cmd.short_help if cmd.short_help else ""
                 cmd_description["subcommand"] = subcommand
-                custom_cmd[cmd.context_settings["orthw_group"]]["content"].append(cmd_description)
+                custom_cmd[cmd.options_metavar]["content"].append(cmd_description)
 
         for key, value in custom_cmd.items():
             if not len(value["content"]):

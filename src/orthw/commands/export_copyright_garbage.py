@@ -78,7 +78,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "SCAN_CONTEXT"},
+    options_metavar="SCAN_CONTEXT",
 )
 def export_copyright_garbage() -> None:
     Command().export_copyright_garbage()
