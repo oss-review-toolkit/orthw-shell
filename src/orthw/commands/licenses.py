@@ -64,7 +64,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "SCAN_CONTEXT"},
+    options_metavar="SCAN_CONTEXT",
 )
 @click.option("--source-code-dir", default=None)
 @click.argument("package_id")

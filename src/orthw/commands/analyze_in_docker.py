@@ -31,7 +31,7 @@ class OrtHWCommand:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+    options_metavar="NO_SCAN_CONTEXT",
 )
 def analyze_in_docker() -> None:
     OrtHWCommand().process()

@@ -45,7 +45,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+    options_metavar="NO_SCAN_CONTEXT",
 )
 @click.argument("license-id")
 def find_license_url(license_id: str) -> None:

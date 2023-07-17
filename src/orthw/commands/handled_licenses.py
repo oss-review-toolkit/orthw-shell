@@ -40,7 +40,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "NO_SCAN_CONTEXT"},
+    options_metavar="NO_SCAN_CONTEXT",
 )
 def handled_licenses() -> None:
     Command().process()

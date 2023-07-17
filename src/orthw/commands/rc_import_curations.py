@@ -34,7 +34,7 @@ class OrtHWCommand:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "REPOSITORY_CONFIG"},
+    options_metavar="REPOSITORY_CONFIG",
 )
 def rc_import_curations() -> None:
     OrtHWCommand().process()

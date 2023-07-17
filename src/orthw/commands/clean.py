@@ -46,7 +46,7 @@ class Command:
 
 
 @command_group.command(
-    context_settings={"orthw_group": "SCAN_CONTEXT"},
+    options_metavar="SCAN_CONTEXT",
     short_help="Clean arifact outputs.",
 )
 def clean() -> None:
