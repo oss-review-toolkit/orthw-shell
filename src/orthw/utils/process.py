@@ -32,7 +32,7 @@ def run(
     args: list[str],
     console_output: bool = True,
     output_file: Path | None = None,
-    input_dir: Path | None = None,
+    workdir: Path | None = None,
     output_dir: Path | None = None,
     is_docker: bool = False,
 ) -> int:
@@ -42,7 +42,7 @@ def run(
         args (list[str]): Command and arguments
         console_output (bool, optional): If you want to have command output. Defaults to True.
         output_file (Path | None, optional): If the output need to be redirected to a file. Defaults to None.
-        input_dir (Path | None, optional): Input dir is necessary to pass along.
+        workdir (Path | None, optional): Work directory.
         output_dir (Path | None, optional): Output dir is necessary to pass along.
         docker (bool, optional): If the command need to be run inside docker container. Defaults to False.
 
@@ -50,12 +50,12 @@ def run(
         int: result code
     """
 
-    if input_dir:
+    if workdir:
         # We need expand user since docker can't resolve it
-        input_dir = Path(input_dir).expanduser()
-        logging.debug(f"Input dir: {input_dir}")
-        if not input_dir.exists():
-            logging.error(f"Input dir {input_dir} do not exists. Bailing out.")
+        workdir = Path(workdir).expanduser()
+        logging.debug(f"Work dir: {workdir}")
+        if not workdir.exists():
+            logging.error(f"Work dir {workdir} do not exists. Bailing out.")
     if output_dir:
         # We need expand user since docker can't resolve it
         output_dir = Path(output_dir).expanduser()
@@ -69,16 +69,28 @@ def run(
                 sys.exit(1)
 
     if is_docker:
-        return __run_in_docker(args, console_output, output_file, input_dir, output_dir)
+        return __run_in_docker(
+            args,
+            console_output=console_output,
+            output_file=output_file,
+            workdir=workdir,
+            output_dir=output_dir,
+        )
     else:
-        return __run_bare_metal(args, console_output, output_file, input_dir, output_dir)
+        return __run_host(
+            args,
+            console_output=console_output,
+            output_file=output_file,
+            workdir=workdir,
+            output_dir=output_dir,
+        )
 
 
-def __run_bare_metal(
+def __run_host(
     args: list[str],
     console_output: bool = True,
     output_file: Path | None = None,
-    input_dir: Path | None = None,
+    workdir: Path | None = None,
     output_dir: Path | None = None,
 ) -> int:
     """Run the requested command in bare metal
@@ -87,7 +99,7 @@ def __run_bare_metal(
         args (list[str]): Command and arguments
         console_output (bool, optional): If you want to have command output. Defaults to True.
         output_file (Path | None, optional): If the output need to be redirected to a file. Defaults to None.
-        input_dir (Path | None, optional): Input dir is necessary to pass along.
+        workdir (Path | None, optional): Work directory.
         output_dir (Path | None, optional): Output dir is necessary to pass along.
     Returns:
         int: _description_
@@ -104,11 +116,7 @@ def __run_bare_metal(
     # Replace main command with path qualified one
     args[0] = main_cmd
 
-    # Append input and output dirs if provided
-    if input_dir:
-        args.append("--input-dir")
-        args.append(input_dir.as_posix())
-
+    # Append output dirs if provided
     if output_dir:
         args.append("--output-dir")
         args.append(output_dir.as_posix())
@@ -146,7 +154,7 @@ def __run_in_docker(
     args: list[str],
     console_output: bool = True,
     output_file: Path | None = None,
-    input_dir: Path | None = None,
+    workdir: Path | None = None,
     output_dir: Path | None = None,
 ) -> int:
     """_summary_
@@ -155,7 +163,7 @@ def __run_in_docker(
         args (list[str]): Command and arguments
         console_output (bool, optional): If you want to have command output. Defaults to True.
         output_file (Path | None, optional): If the output need to be redirected to a file. Defaults to None.
-        input_dir (Path | None, optional): Input dir is necessary to pass along.
+        workdir (Path | None, optional): Work directory.
         output_dir (Path | None, optional): Output dir is necessary to pass along.
     Returns:
         int: result code
@@ -165,10 +173,12 @@ def __run_in_docker(
     docker_image = config.get("ort_docker_image")
 
     # Mount proper dirs
-    if input_dir:
-        mounts.append(Mount("/workspace", input_dir.as_posix(), type="bind"))
-        args.append("--input-dir")
-        args.append("/workspace")
+    if workdir:
+        mounts.append(Mount("/workspace", workdir.as_posix(), type="bind"))
+        # Replace workdir for workspace if exists on path
+        args = ["/workspace" if entry == workdir.as_posix() else entry for entry in args]
+    else:
+        mounts.append(Mount("/workspace", Path.cwd(), type="bind"))
     if output_dir:
         mounts.append(Mount("/output", output_dir.as_posix(), type="bind"))
         args.append("--output-dir")
@@ -190,6 +200,7 @@ def __run_in_docker(
         entrypoint=entrypoint,
         command=arguments,
         mounts=mounts,
+        working_dir="/workspace",
         detach=True,
     )
 
