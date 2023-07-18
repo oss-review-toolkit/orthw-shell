@@ -20,56 +20,51 @@ from pathlib import Path
 
 import click
 
-from orthw import config
 from orthw.commands import command_group
 from orthw.utils import logging
 from orthw.utils.process import run
 
 
 class OrtHwCommand:
-    """orthw command - analyze"""
+    """orthw command - scan"""
 
-    _command_name: str = "analyze"
+    _command_name: str = "scan"
 
-    def analyze(
+    def scan(
         self,
-        workdir: str,
+        ort_file: str,
         output_dir: str | None = None,
         format_: str = "JSON",
         docker: bool = False,
-    ) -> None:
+    ) -> int:
         """Use Ort analyzer command on provided source dir
 
         Args:
-            source_code_dir (str): Source directory to be analyzed.
+            ort_file (str): Analyzer file.
             format_ (str, optional): Format of the result output. Defaults to "JSON".
             output_dir (str | None, optional): Specified output dir or cuurent dir
             docker (bool, optional): If is runing on docker. Defaults to False.
         """
 
+        if not Path(ort_file):
+            logging.error(f"Path for ort file {ort_file} do not exists. Bailing out.")
+            return 1
+        workdir = Path(ort_file).parent
+
         args: list[str] = [
             "ort",
-            "analyze",
+            "scan",
             "--output-formats",
             format_,
-            "--input-dir",
-            Path(workdir).expanduser().as_posix(),
+            "--ort-file",
+            "analyzer-result.json",
         ]
 
-        if not docker:
-            pcd = Path(config.get("ort_config_package_curations_dir"))
-
-            if pcd.exists():
-                args.append("--package-curations-dir")
-                args.append(pcd.as_posix())
-            else:
-                logging.warning("No curations folder available. Running without curations.")
-
         # Execute external run
-        run(
+        return run(
             args=args,
             is_docker=docker,
-            workdir=Path(workdir),
+            workdir=workdir,
             output_dir=Path(output_dir) if output_dir else Path.cwd(),
         )
 
@@ -77,11 +72,15 @@ class OrtHwCommand:
 @command_group.command(
     options_metavar="NO_SCAN_CONTEXT",
     short_help="Run ort analyze command on provided source code directory.",
+    context_settings={
+        "allow_extra_args": True,
+        "ignore_unknown_options": True,
+    },
 )
 @click.option("--format", "-f", "format_", default="JSON")
-@click.option("--output_dir", type=click.Path(exists=False), required=False)
-@click.option("--workdir", type=click.Path(), required=True)
+@click.option("--output-dir", type=click.Path(exists=False), required=False)
+@click.option("--ort-file", type=click.Path(exists=False), required=True)
 @click.pass_context
-def analyze(ctx: click.Context, workdir: str, format_: str, output_dir: str) -> None:
+def scan(ctx: click.Context, ort_file: str, format_: str, output_dir: str) -> None:
     """Run ort analyze command on provided source code directory"""
-    OrtHwCommand().analyze(workdir=workdir, format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))
+    OrtHwCommand().scan(ort_file=ort_file, format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))
