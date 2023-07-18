@@ -51,9 +51,22 @@ def run(
     """
 
     if input_dir:
-        logging.debug(f"Input dir: {input_dir.absolute().as_posix()}")
+        # We need expand user since docker can't resolve it
+        input_dir = Path(input_dir).expanduser()
+        logging.debug(f"Input dir: {input_dir}")
+        if not input_dir.exists():
+            logging.error(f"Input dir {input_dir} do not exists. Bailing out.")
     if output_dir:
-        logging.debug(f"Output dir: {output_dir.absolute().as_posix()}")
+        # We need expand user since docker can't resolve it
+        output_dir = Path(output_dir).expanduser()
+        logging.debug(f"Output dir: {output_dir}")
+        if not output_dir.exists():
+            # Try create output dir if not exists or fail
+            try:
+                output_dir.mkdir(parents=True)
+            except OSError:
+                logging.error(f"Can't create output dir {output_dir}. Bailing out.")
+                sys.exit(1)
 
     if is_docker:
         return __run_in_docker(args, console_output, output_file, input_dir, output_dir)
