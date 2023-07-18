@@ -27,11 +27,18 @@ from orthw.utils.orthwclickgroup import OrtHwClickGroup
 
 @click.group(cls=OrtHwClickGroup)
 @click.version_option(__version__, "-v", "--version", prog_name="OrthHW", message="%(prog)s version %(version)s")
-@click.option("-d", "--debug/--no-debug", default=False, help="Enable debug mode.")
+@click.option("-d", "--debug", is_flag=True, default=False, help="Enable debug mode.")
+@click.option("--docker", is_flag=True, default=False, help="Run inside docker container.")
 @click.option("--logfile", required=False, help="Set the log output to specified file.")
-def command_group(debug: bool, logfile: str) -> None:
+@click.pass_context
+def command_group(ctx: click.Context, debug: bool, docker: bool, logfile: str) -> None:
+    ctx.obj = {}
     if debug:
         logging.setLevel(stdlogger.DEBUG)
+        ctx.obj["debug"] = True
+    # Set the operations to run with configured container
+    if docker:
+        ctx.obj["docker"] = True
     if logfile:
         filehandler = stdlogger.FileHandler(
             logfile,
