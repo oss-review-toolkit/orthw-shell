@@ -19,25 +19,66 @@ from __future__ import annotations
 import subprocess  # nosec
 import sys
 from pathlib import Path
-from typing import Any
 
+import docker
+from docker.types import Mount
+
+from orthw import config
 from orthw.utils import admin, console, logging
 from orthw.utils.required import required_command
 
 
-def run(args: list[str], console_output: bool = True, output_file: Path | None = None) -> int | Any:
-    """Run a process with defined arguments
+def run(
+    args: list[str],
+    console_output: bool = True,
+    output_file: Path | None = None,
+    input_dir: Path | None = None,
+    output_dir: Path | None = None,
+    is_docker: bool = False,
+) -> int:
+    """Run a process with defined arguments in the proper setting for bare metal or docker
 
-    :param args: Arguments
-    :type args: list[str]
-    :param console_output: If you want to have command output, defaults to True
-    :type console_output: bool, optional
-    :param output_file: If the output need to be redirected to a file
-    :type output_file: Path | str | None, optional
-    :return: Process resulting code
-    :rtype: int | Any
+    Args:
+        args (list[str]): Command and arguments
+        console_output (bool, optional): If you want to have command output. Defaults to True.
+        output_file (Path | None, optional): If the output need to be redirected to a file. Defaults to None.
+        input_dir (Path | None, optional): Input dir is necessary to pass along.
+        output_dir (Path | None, optional): Output dir is necessary to pass along.
+        docker (bool, optional): If the command need to be run inside docker container. Defaults to False.
+
+    Returns:
+        int: result code
     """
 
+    if input_dir:
+        logging.debug(f"Input dir: {input_dir.absolute().as_posix()}")
+    if output_dir:
+        logging.debug(f"Output dir: {output_dir.absolute().as_posix()}")
+
+    if is_docker:
+        return __run_in_docker(args, console_output, output_file, input_dir, output_dir)
+    else:
+        return __run_bare_metal(args, console_output, output_file, input_dir, output_dir)
+
+
+def __run_bare_metal(
+    args: list[str],
+    console_output: bool = True,
+    output_file: Path | None = None,
+    input_dir: Path | None = None,
+    output_dir: Path | None = None,
+) -> int:
+    """Run the requested command in bare metal
+
+    Args:
+        args (list[str]): Command and arguments
+        console_output (bool, optional): If you want to have command output. Defaults to True.
+        output_file (Path | None, optional): If the output need to be redirected to a file. Defaults to None.
+        input_dir (Path | None, optional): Input dir is necessary to pass along.
+        output_dir (Path | None, optional): Output dir is necessary to pass along.
+    Returns:
+        int: _description_
+    """
     if admin():
         logging.error("This script is not allowed to run as admin.")
         sys.exit(1)
@@ -45,10 +86,19 @@ def run(args: list[str], console_output: bool = True, output_file: Path | None =
     # Expect first argument be the required command
     main_cmd = required_command(args[0])
     if not main_cmd:
-        return None
+        return 1
 
     # Replace main command with path qualified one
     args[0] = main_cmd
+
+    # Append input and output dirs if provided
+    if input_dir:
+        args.append("--input-dir")
+        args.append(input_dir.as_posix())
+
+    if output_dir:
+        args.append("--output-dir")
+        args.append(output_dir.as_posix())
 
     logging.debug(f"command line: [bright_green]{' '.join(args)}[/]")
 
@@ -59,6 +109,7 @@ def run(args: list[str], console_output: bool = True, output_file: Path | None =
                 f.close()
         except OSError:
             logging.error(f"Can't open file {output_file} to write.")
+            sys.exit(1)
     else:
         proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # noqa: S603
         if console_output and proc.stdout:
@@ -76,3 +127,61 @@ def run(args: list[str], console_output: bool = True, output_file: Path | None =
     res = proc.wait()
     logging.debug(f"Return code: {res}")
     return res
+
+
+def __run_in_docker(
+    args: list[str],
+    console_output: bool = True,
+    output_file: Path | None = None,
+    input_dir: Path | None = None,
+    output_dir: Path | None = None,
+) -> int:
+    """_summary_
+
+    Args:
+        args (list[str]): Command and arguments
+        console_output (bool, optional): If you want to have command output. Defaults to True.
+        output_file (Path | None, optional): If the output need to be redirected to a file. Defaults to None.
+        input_dir (Path | None, optional): Input dir is necessary to pass along.
+        output_dir (Path | None, optional): Output dir is necessary to pass along.
+    Returns:
+        int: result code
+    """
+    mounts: list[Mount] = []
+    client = docker.from_env()
+    docker_image = config.get("ort_docker_image")
+
+    # Mount proper dirs
+    if input_dir:
+        mounts.append(Mount("/workspace", input_dir.as_posix(), type="bind"))
+        args.append("--input-dir")
+        args.append("/workspace")
+    if output_dir:
+        mounts.append(Mount("/output", output_dir.as_posix(), type="bind"))
+        args.append("--output-dir")
+        args.append("/output")
+
+    # Get main command as entrypoint
+    entrypoint = args.pop(0)
+    # Join arguments as string
+    arguments = " ".join(args)
+
+    # Run container with proper mounts and command
+    logging.debug(
+        f"Running [bright_green]{docker_image}[/bright_green] container with:\n"
+        f"[green]entrypoint:[/green] {entrypoint}\n"
+        f"[green]arguments:[/green] {arguments}\n",
+    )
+    container = client.containers.run(
+        docker_image,
+        entrypoint=entrypoint,
+        command=arguments,
+        mounts=mounts,
+        detach=True,
+    )
+
+    container.wait()
+    thelog = map(chr, container.logs())
+    print("".join(thelog).replace("|", "\n"))
+
+    return 0

@@ -71,7 +71,6 @@ class Config:
         if configfile:
             self._configfile = Path(configfile)
 
-        print(self._configfile)
         if not defaults_only:
             self.__readconfig()
 
