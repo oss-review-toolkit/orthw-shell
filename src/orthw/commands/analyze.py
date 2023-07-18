@@ -77,8 +77,8 @@ class OrtHwCommand:
     short_help="Run ort analyze command on provided source code directory.",
 )
 @click.option("--format", "-f", "format_", default="JSON")
-@click.argument("source_code_dir", type=click.Path(exists=True))
-@click.argument("output_dir", type=click.Path(exists=True), required=False)
+@click.option("--output_dir", type=click.Path(exists=False), required=False)
+@click.argument("source_code_dir", type=click.Path(exists=True), required=True)
 @click.pass_context
 def analyze(ctx: click.Context, source_code_dir: str, format_: str, output_dir: str) -> None:
     """Run ort analyze command on provided source code directory"""
