@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import package_config_group
 
 
-class OrtHWCommand:
-    """orthw command - rc-generate-scopt-excludes"""
-
-    _command_name: str = "rc-generate-scopt-excludes"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def import_path_excludes() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command(
-    options_metavar="REPOSITORY_CONFIG",
+@package_config_group.command(
+    name="import-path-excludes",
+    options_metavar="PACKAGE_CONFIG",
 )
-def rc_generate_scopt_excludes() -> None:
-    OrtHWCommand().process()
+def __import_path_excludes() -> None:
+    import_path_excludes()

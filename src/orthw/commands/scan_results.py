@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import command_group
 
 
-class OrtHWCommand:
-    """orthw command - scan-results"""
-
-    _command_name: str = "scan-results"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def scan_results() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
 @command_group.command(
+    name="scan-results",
     options_metavar="SCAN_CONTEXT",
 )
-def scan_results() -> None:
-    OrtHWCommand().process()
+def __scan_results() -> None:
+    scan_results()

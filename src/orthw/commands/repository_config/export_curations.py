@@ -18,13 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.utils.cmdgroups import command_group
+from orthw.utils.cmdgroups import repository_group
 
 
-def update() -> None:
+def export_curations() -> None:
     print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command()
-def __update() -> None:
-    update()
+@repository_group.command(
+    name="export-curations",
+    options_metavar="REPOSITORY_CONFIG",
+)
+def __export_curations() -> None:
+    export_curations()

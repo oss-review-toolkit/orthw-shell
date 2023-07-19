@@ -19,55 +19,51 @@ from __future__ import annotations
 import click
 
 from orthw import config
-from orthw.commands import command_group
 from orthw.utils import logging
+from orthw.utils.cmdgroups import command_group
 from orthw.utils.process import run
 from orthw.utils.required import require_initialized
 
 
-class Command:
-    """orthw command - copyrights"""
+def copyrights(package_id: str = "") -> None:
+    """OrtHW Command
 
-    _command_name: str = "copyrights"
+    :param package_id: Package ID, defaults to ""
+    :type package_id: str, optional
+    """
 
-    def copyrights(self, package_id: str = "") -> None:
-        """OrtHW Command
+    require_initialized()
 
-        :param package_id: Package ID, defaults to ""
-        :type package_id: str, optional
-        """
+    ort_config_copyright_garbage_file: str = config.get("ort_config_copyright_garbage_file")
+    ort_config_package_configuration_dir: str = config.get("ort_config_package_configuration_dir")
+    scan_result_file: str = config.get("scan_result_file")
+    if not scan_result_file or not ort_config_package_configuration_dir or not ort_config_copyright_garbage_file:
+        logging.error("Invalid configuration.")
+        return
 
-        require_initialized()
+    args: list[str] = ["orth", "list-copyrights", "--ort-file", scan_result_file]
 
-        ort_config_copyright_garbage_file: str = config.get("ort_config_copyright_garbage_file")
-        ort_config_package_configuration_dir: str = config.get("ort_config_package_configuration_dir")
-        scan_result_file: str = config.get("scan_result_file")
-        if not scan_result_file or not ort_config_package_configuration_dir or not ort_config_copyright_garbage_file:
-            logging.error("Invalid configuration.")
-            return
+    if package_id:
+        args += ["--package-id", package_id]
+        run(args=args)
+    else:
+        args += [
+            "--package-configuration-dir",
+            ort_config_package_configuration_dir,
+            "--copyright-garbage-file",
+            ort_config_package_configuration_dir,
+        ]
 
-        args: list[str] = ["orth", "list-copyrights", "--ort-file", scan_result_file]
+        run(args=args, output_file=config.path("copyrights_file"))
 
-        if package_id:
-            args += ["--package-id", package_id]
-            run(args=args)
-        else:
-            args += [
-                "--package-configuration-dir",
-                ort_config_package_configuration_dir,
-                "--copyright-garbage-file",
-                ort_config_package_configuration_dir,
-            ]
-
-            run(args=args, output_file=config.path("copyrights_file"))
-
-            args += ["--show-raw-statements"]
-            run(args=args, output_file=config.path("copyrights_debug_file"))
+        args += ["--show-raw-statements"]
+        run(args=args, output_file=config.path("copyrights_debug_file"))
 
 
 @command_group.command(
+    name="copyrigths",
     options_metavar="SCAN_CONTEXT",
 )
 @click.argument("package-id", type=str, default="")
-def copyrights(package_id: str) -> None:
-    Command().copyrights(package_id)
+def __copyrights(package_id: str) -> None:
+    copyrights(package_id)

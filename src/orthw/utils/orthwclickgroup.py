@@ -77,10 +77,14 @@ class OrtHwClickGroup(click.Group):
             "REPOSITORY_CONFIG": {"title": "Commands for repository configurations (ort.yml)", "content": []},
             "PACKAGE_CONFIG": {"title": "Commands for package configurations", "content": []},
         }
+
         for subcommand in self.list_commands(ctx):
-            cmd = self.get_command(ctx, subcommand)
+            cmd: click.Command | None = self.get_command(ctx, subcommand)
+
             if cmd is None or cmd.hidden:
                 continue
+
+            self.group
 
             if cmd.options_metavar and cmd.options_metavar in custom_cmd:
                 cmd_description = {}

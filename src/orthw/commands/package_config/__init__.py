@@ -16,25 +16,12 @@
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 from __future__ import annotations
 
-from rich import print
-
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
-
-
-class OrtHWCommand:
-    """orthw command - pc-clean"""
-
-    _command_name: str = "pc-clean"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
-
-
-@command_group.command(
-    options_metavar="PACKAGE_CONFIG",
-)
-def pc_clean() -> None:
-    OrtHWCommand().process()
+from .clean import clean  # noqa: F401
+from .create import create  # noqa: F401
+from .export_curations import export_curations  # noqa: F401
+from .export_path_excludes import export_path_excludes  # noqa: F401
+from .find import find as package_find  # noqa: F401
+from .format import format_ as package_format  # noqa: F401
+from .import_curations import import_curations  # noqa: F401
+from .import_path_excludes import import_path_excludes  # noqa: F401
+from .sort import sort_ as package_sort  # noqa: F401

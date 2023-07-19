@@ -22,63 +22,59 @@ from pathlib import Path
 from rich.pretty import pprint
 
 from orthw import config
-from orthw.commands import command_group
 from orthw.utils import logging
+from orthw.utils.cmdgroups import command_group
 from orthw.utils.process import run
 from orthw.utils.required import require_initialized
 
 
-class Command:
-    """orthw command - export-copyright-garbage"""
+def export_copyright_garbage() -> None:
+    """Command export-copyright-garbage"""
+    require_initialized()
 
-    _command_name: str = "export-copyright-garbage"
+    copyrights_file: str = config.get("copyrights_file")
+    ort_config_copyright_garbage_file = config.get("ort_config_copyright_garbage_file")
+    scan_result_file = config.get("scan_result_file")
+    if copyrights_file is None or ort_config_copyright_garbage_file is None or scan_result_file is None:
+        logging.error("Configuration invalid.")
+        return
 
-    def export_copyright_garbage(self) -> None:
-        """Command export-copyright-garbage"""
-        require_initialized()
+    logging.info(f"Exporting from {copyrights_file} to {ort_config_copyright_garbage_file}.")
 
-        copyrights_file: str = config.get("copyrights_file")
-        ort_config_copyright_garbage_file = config.get("ort_config_copyright_garbage_file")
-        scan_result_file = config.get("scan_result_file")
-        if copyrights_file is None or ort_config_copyright_garbage_file is None or scan_result_file is None:
-            logging.error("Configuration invalid.")
-            return
+    tmpdir = tempfile.TemporaryDirectory(prefix="orthw_")
+    mapped_copyrights_file: Path = Path(tmpdir.name / "copyrights-mapped.txt")  # type: ignore
 
-        logging.info(f"Exporting from {copyrights_file} to {ort_config_copyright_garbage_file}.")
+    args: list[str] = [
+        "orth",
+        "map-copyrights",
+        "--input-copyrights-file",
+        copyrights_file,
+        "--output-copyrights-file",
+        mapped_copyrights_file.as_posix(),
+        "--ort-file",
+        scan_result_file,
+    ]
+    run(args=args)
 
-        tmpdir = tempfile.TemporaryDirectory(prefix="orthw_")
-        mapped_copyrights_file: Path = Path(tmpdir.name / "copyrights-mapped.txt")  # type: ignore
+    logging.info("Mapped the given processed statements to the following unprocessed ones:")
+    if mapped_copyrights_file.exists():
+        with Path.open(mapped_copyrights_file) as f:
+            pprint(f.readlines())
 
-        args: list[str] = [
-            "orth",
-            "map-copyrights",
-            "--input-copyrights-file",
-            copyrights_file,
-            "--output-copyrights-file",
-            mapped_copyrights_file.as_posix(),
-            "--ort-file",
-            scan_result_file,
-        ]
-        run(args=args)
-
-        logging.info("Mapped the given processed statements to the following unprocessed ones:")
-        if mapped_copyrights_file.exists():
-            with Path.open(mapped_copyrights_file) as f:
-                pprint(f.readlines())
-
-        args = [
-            "orth",
-            "import-copyright-garbage",
-            "--input-copyright-garbage-file",
-            mapped_copyrights_file.as_posix(),
-            "--output-copyright-garbage-file",
-            ort_config_copyright_garbage_file,
-        ]
-        run(args=args)
+    args = [
+        "orth",
+        "import-copyright-garbage",
+        "--input-copyright-garbage-file",
+        mapped_copyrights_file.as_posix(),
+        "--output-copyright-garbage-file",
+        ort_config_copyright_garbage_file,
+    ]
+    run(args=args)
 
 
 @command_group.command(
+    name="export-copyright-garbage",
     options_metavar="SCAN_CONTEXT",
 )
-def export_copyright_garbage() -> None:
-    Command().export_copyright_garbage()
+def __export_copyright_garbage() -> None:
+    export_copyright_garbage()

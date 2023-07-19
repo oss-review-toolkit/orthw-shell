@@ -16,25 +16,11 @@
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 from __future__ import annotations
 
-from rich import print
-
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
-
-
-class OrtHWCommand:
-    """orthw command - rc-sort"""
-
-    _command_name: str = "rc-sort"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
-
-
-@command_group.command(
-    options_metavar="REPOSITORY_CONFIG",
-)
-def rc_sort() -> None:
-    OrtHWCommand().process()
+from .clean import clean  # noqa: F401
+from .format import format_ as format  # noqa: F401, A001
+from .generate_project_excludes import generate_project_excludes  # noqa: F401
+from .generate_rule_violation_resolutions import generate_rule_violation_resolutions  # noqa: F401
+from .generate_scope_excludes import generate_scope_excludes  # noqa: F401
+from .import_curations import import_curations  # noqa: F401
+from .import_path_excludes import import_path_excludes  # noqa: F401
+from .sort import sort_ as sort  # noqa: F401

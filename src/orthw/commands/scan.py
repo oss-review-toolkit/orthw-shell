@@ -20,56 +20,51 @@ from pathlib import Path
 
 import click
 
-from orthw.commands import command_group
 from orthw.utils import logging
+from orthw.utils.cmdgroups import command_group
 from orthw.utils.process import run
 
 
-class OrtHwCommand:
-    """orthw command - scan"""
+def scan(
+    ort_file: str,
+    output_dir: str | None = None,
+    format_: str = "JSON",
+    docker: bool = False,
+) -> int:
+    """Use Ort analyzer command on provided source dir
 
-    _command_name: str = "scan"
+    Args:
+        ort_file (str): Analyzer file.
+        format_ (str, optional): Format of the result output. Defaults to "JSON".
+        output_dir (str | None, optional): Specified output dir or cuurent dir
+        docker (bool, optional): If is runing on docker. Defaults to False.
+    """
 
-    def scan(
-        self,
-        ort_file: str,
-        output_dir: str | None = None,
-        format_: str = "JSON",
-        docker: bool = False,
-    ) -> int:
-        """Use Ort analyzer command on provided source dir
+    if not Path(ort_file):
+        logging.error(f"Path for ort file {ort_file} do not exists. Bailing out.")
+        return 1
+    workdir = Path(ort_file).parent
 
-        Args:
-            ort_file (str): Analyzer file.
-            format_ (str, optional): Format of the result output. Defaults to "JSON".
-            output_dir (str | None, optional): Specified output dir or cuurent dir
-            docker (bool, optional): If is runing on docker. Defaults to False.
-        """
+    args: list[str] = [
+        "ort",
+        "scan",
+        "--output-formats",
+        format_,
+        "--ort-file",
+        "analyzer-result.json",
+    ]
 
-        if not Path(ort_file):
-            logging.error(f"Path for ort file {ort_file} do not exists. Bailing out.")
-            return 1
-        workdir = Path(ort_file).parent
-
-        args: list[str] = [
-            "ort",
-            "scan",
-            "--output-formats",
-            format_,
-            "--ort-file",
-            "analyzer-result.json",
-        ]
-
-        # Execute external run
-        return run(
-            args=args,
-            is_docker=docker,
-            workdir=workdir,
-            output_dir=Path(output_dir) if output_dir else Path.cwd(),
-        )
+    # Execute external run
+    return run(
+        args=args,
+        is_docker=docker,
+        workdir=workdir,
+        output_dir=Path(output_dir) if output_dir else Path.cwd(),
+    )
 
 
 @command_group.command(
+    name="scan",
     options_metavar="NO_SCAN_CONTEXT",
     short_help="Run ort analyze command on provided source code directory.",
     context_settings={
@@ -81,6 +76,6 @@ class OrtHwCommand:
 @click.option("--output-dir", type=click.Path(exists=False), required=False)
 @click.option("--ort-file", type=click.Path(exists=False), required=True)
 @click.pass_context
-def scan(ctx: click.Context, ort_file: str, format_: str, output_dir: str) -> None:
+def __scan(ctx: click.Context, ort_file: str, format_: str, output_dir: str) -> None:
     """Run ort analyze command on provided source code directory"""
-    OrtHwCommand().scan(ort_file=ort_file, format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))
+    scan(ort_file=ort_file, format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))
