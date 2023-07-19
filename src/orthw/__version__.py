@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 version: Callable[[str], str] = metadata.version
 
 try:
-    __version__ = version("otto")
+    __version__ = version("orthw")
 except metadata.PackageNotFoundError:
     # We are running from a git checkout, so we don't have metada
     from pathlib import Path
