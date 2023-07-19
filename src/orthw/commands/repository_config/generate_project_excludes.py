@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import repository_group
 
 
-class OrtHWCommand:
-    """orthw command - rc-generate-project-excludes"""
-
-    _command_name: str = "rc-generate-project-excludes"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def generate_project_excludes() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command(
+@repository_group.command(
+    name="generate-project-excludes",
     options_metavar="REPOSITORY_CONFIG",
 )
-def rc_generate_project_excludes() -> None:
-    OrtHWCommand().process()
+def ___generate_project_excludes() -> None:
+    generate_project_excludes()

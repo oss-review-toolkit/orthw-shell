@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import repository_group
 
 
-class OrtHWCommand:
-    """orthw command - rc-format"""
-
-    _command_name: str = "rc-format"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def import_path_excludes() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command(
+@repository_group.command(
+    name="import-path-excludes",
     options_metavar="REPOSITORY_CONFIG",
 )
-def rc_format() -> None:
-    OrtHWCommand().process()
+def __import_path_excludes() -> None:
+    import_path_excludes()

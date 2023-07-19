@@ -18,32 +18,28 @@ from __future__ import annotations
 
 import click
 
-from orthw.commands import command_group
-from orthw.commands.find_license_url import Command as OrtHwCommand
+from orthw.commands.find_license_url import find_license_url
 from orthw.templates import render_txt
 from orthw.utils import console
+from orthw.utils.cmdgroups import command_group
 
 
-class Command:
-    """orthw command - generate-license-classification-request"""
-
-    _command_name: str = "generate-license-classification-request"
-
-    def process(self, license_id: str, stdout: bool = True) -> str:
-        # Template data to replace
-        data: dict[str, str] = {
-            "license_id": license_id,
-            "license_url": OrtHwCommand().find_license_text_url(license_id),
-        }
-        output = render_txt("license_classification_request", data)
-        if stdout:
-            console.print(output)
-        return output
+def generate_license_classification_request(license_id: str, stdout: bool = True) -> str:
+    # Template data to replace
+    data: dict[str, str] = {
+        "license_id": license_id,
+        "license_url": find_license_url(license_id),
+    }
+    output = render_txt("license_classification_request", data)
+    if stdout:
+        console.print(output)
+    return output
 
 
 @command_group.command(
+    name="generate-license-classification-request",
     options_metavar="NO_SCAN_CONTEXT",
 )
 @click.argument("license-id")
-def generate_license_classification_request(license_id: str) -> None:
-    Command().process(license_id)
+def __generate_license_classification_request(license_id: str) -> None:
+    generate_license_classification_request(license_id)

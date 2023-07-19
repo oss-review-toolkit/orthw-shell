@@ -18,13 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.utils.cmdgroups import command_group
+from orthw.utils.cmdgroups import package_config_group
 
 
-def update() -> None:
+def format_() -> None:
     print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command()
-def __update() -> None:
-    update()
+@package_config_group.command(
+    name="format",
+    options_metavar="PACKAGE_CONFIG",
+)
+def __format() -> None:
+    format_()

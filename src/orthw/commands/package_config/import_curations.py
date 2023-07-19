@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import package_config_group
 
 
-class OrtHWCommand:
-    """orthw command - rc-import-curations"""
-
-    _command_name: str = "rc-import-curations"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def import_curations() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command(
-    options_metavar="REPOSITORY_CONFIG",
+@package_config_group.command(
+    name="import-curations",
+    options_metavar="PACKAGE_CONFIG",
 )
-def rc_import_curations() -> None:
-    OrtHWCommand().process()
+def __import_curations() -> None:
+    import_curations()

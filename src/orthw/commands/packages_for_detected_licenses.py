@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import command_group
 
 
-class OrtHWCommand:
-    """orthw command - packages-for-detected-licenses"""
-
-    _command_name: str = "packages-for-detected-licenses"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def packages_for_detected_licenses() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
 @command_group.command(
+    name="packages-for-detected-licenses",
     options_metavar="SCAN_CONTEXT",
 )
-def packages_for_detected_licenses() -> None:
-    OrtHWCommand().process()
+def __packages_for_detected_licenses() -> None:
+    packages_for_detected_licenses()

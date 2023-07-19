@@ -16,35 +16,25 @@
 # SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
 from __future__ import annotations
 
-import logging as stdlogger
-
-import click
-
-from orthw.__version__ import __version__
-from orthw.utils import logging
-from orthw.utils.orthwclickgroup import OrtHwClickGroup
-
-
-@click.group(cls=OrtHwClickGroup)
-@click.version_option(__version__, "-v", "--version", prog_name="OrthHW", message="%(prog)s version %(version)s")
-@click.option("-d", "--debug", is_flag=True, default=False, help="Enable debug mode.")
-@click.option("--docker", is_flag=True, default=False, help="Run inside docker container.")
-@click.option("--logfile", required=False, help="Set the log output to specified file.")
-@click.pass_context
-def command_group(ctx: click.Context, debug: bool, docker: bool, logfile: str) -> None:
-    ctx.obj = {}
-    if debug:
-        logging.setLevel(stdlogger.DEBUG)
-        ctx.obj["debug"] = True
-    # Set the operations to run with configured container
-    if docker:
-        ctx.obj["docker"] = True
-    if logfile:
-        filehandler = stdlogger.FileHandler(
-            logfile,
-            mode="w",
-            encoding="UTF-8",
-        )
-        if debug:
-            filehandler.setLevel(stdlogger.DEBUG)
-        logging.addHandler(filehandler)
+from .analyze import analyze  # noqa: F401
+from .check_advisories import check_advisories  # noqa: F401
+from .clean import clean  # noqa: F401
+from .copyrights import copyrights  # noqa: F401
+from .create_analyzer_results import create_analyzer_results  # noqa: F401
+from .delete_scan_results import delete_scan_results  # noqa: F401
+from .evaluate import evaluate  # noqa: F401
+from .find_license_url import find_license_url  # noqa: F401
+from .find_scans_for_package import find_scans_for_package  # noqa: F401
+from .generate_license_classification_request import generate_license_classification_request  # noqa: F401
+from .handled_licenses import handled_licenses  # noqa: F401
+from .handled_licenses_by_category import handled_licenses_by_category  # noqa: F401
+from .init import init  # noqa: F401
+from .licenses import licenses  # noqa: F401
+from .offending_licenses import offending_licenses  # noqa: F401
+from .offending_packages import offending_packages  # noqa: F401
+from .packages import packages  # noqa: F401
+from .packages_for_detected_licenses import packages_for_detected_licenses  # noqa: F401
+from .raw_licenses import raw_licenses  # noqa: F401
+from .scan import scan  # noqa: F401
+from .scan_results import scan_results  # noqa: F401
+from .update import update  # noqa: F401

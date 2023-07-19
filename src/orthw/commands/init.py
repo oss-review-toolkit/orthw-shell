@@ -26,96 +26,90 @@ import click
 import yaml
 
 from orthw import config
-from orthw.commands import command_group
 from orthw.utils import logging
+from orthw.utils.cmdgroups import command_group
 from orthw.utils.process import run
 
 
-class OrtHWCommand:
-    """orthw command - init"""
+def init(target_url: str) -> int:
+    target_url_file: Path = Path(config.get("target_url_file"))
+    temp_file = Path(urlparse(target_url).path)
+    filename: str = temp_file.name
+    extension: str = temp_file.suffix
 
-    _command_name: str = "init"
+    logging.debug(f"target_url_file: {target_url_file}")
+    logging.debug(f"temp_file: {temp_file}")
+    logging.debug(f"filename: {filename}")
+    logging.debug(f"extension: {extension}")
 
-    def init(self, target_url: str) -> int:
-        target_url_file: Path = Path(config.get("target_url_file"))
-        temp_file = Path(urlparse(target_url).path)
-        filename: str = temp_file.name
-        extension: str = temp_file.suffix
+    evaluation_md5_sum_file: Path = Path(config.get("evaluation_md5_sum_file"))
+    if evaluation_md5_sum_file.exists():
+        evaluation_md5_sum_file.unlink()
 
-        logging.debug(f"target_url_file: {target_url_file}")
-        logging.debug(f"temp_file: {temp_file}")
-        logging.debug(f"filename: {filename}")
-        logging.debug(f"extension: {extension}")
+    # Early check of the file naming and extensions
+    if extension not in [".xz", ".json", ".yml", ".yaml"]:
+        logging.error(f"Cannot initialize with the given file {filename}. The file extension is unexpected.")
+        return 1
 
-        evaluation_md5_sum_file: Path = Path(config.get("evaluation_md5_sum_file"))
-        if evaluation_md5_sum_file.exists():
-            evaluation_md5_sum_file.unlink()
+    try:
+        with Path.open(target_url_file, "w") as output:
+            output.write(target_url)
+    except OSError:
+        logging.error(f"Unable to create output file {target_url_file.as_posix()}.")
+        return 1
 
-        # Early check of the file naming and extensions
-        if extension not in [".xz", ".json", ".yml", ".yaml"]:
-            logging.error(f"Cannot initialize with the given file {filename}. The file extension is unexpected.")
-            return 1
+    # Retrieve target scan result file
+    parsed_url = urlparse(target_url)
+    if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"] or not parsed_url.netloc:
+        logging.error(f"Cannot retrieve {target_url}.")
+        return 1
 
-        try:
-            with Path.open(target_url_file, "w") as output:
-                output.write(target_url)
-        except OSError:
-            logging.error(f"Unable to create output file {target_url_file.as_posix()}.")
-            return 1
+    parsed_url = urlparse(target_url)
+    if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"]:
+        logging.error(f"Cannot retrieve {target_url}.")
+        return 1
+    response = request.urlopen(target_url)  # noqa: S310
 
-        # Retrieve target scan result file
-        parsed_url = urlparse(target_url)
-        if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"] or not parsed_url.netloc:
-            logging.error(f"Cannot retrieve {target_url}.")
-            return 1
+    data = lzma.decompress(response.read()) if extension == ".xz" else response.read()
 
-        parsed_url = urlparse(target_url)
-        if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"]:
-            logging.error(f"Cannot retrieve {target_url}.")
-            return 1
-        response = request.urlopen(target_url)  # noqa: S310
+    if ".yml" in filename or ".yaml" in filename:
+        data = yaml.safe_load(data)
 
-        data = lzma.decompress(response.read()) if extension == ".xz" else response.read()
+    scan_result_file: Path = config.path("scan_result_file")
+    try:
+        with Path.open(scan_result_file, "w") as output:
+            json.dump(data, output)
+    except OSError:
+        logging.error(f"Cannot open {scan_result_file.as_posix()} to write.")
+        return 1
 
-        if ".yml" in filename or ".yaml" in filename:
-            data = yaml.safe_load(data)
+    args: list[str] = [
+        "orth",
+        "extract-repository-configuration",
+        "--repository-configuration-file",
+        config.get("repository_configuration_file"),
+        "--ort-file",
+        scan_result_file.as_posix(),
+    ]
 
-        scan_result_file: Path = config.path("scan_result_file")
-        try:
-            with Path.open(scan_result_file, "w") as output:
-                json.dump(data, output)
-        except OSError:
-            logging.error(f"Cannot open {scan_result_file.as_posix()} to write.")
-            return 1
+    run(args)
 
-        args: list[str] = [
-            "orth",
-            "extract-repository-configuration",
-            "--repository-configuration-file",
-            config.get("repository_configuration_file"),
-            "--ort-file",
-            scan_result_file.as_posix(),
-        ]
+    args = [
+        "orth",
+        "import-scan-results",
+        "--ort-file",
+        scan_result_file.as_posix(),
+        "--scan-results-storage-dir",
+        config.get("scan_results_storage_dir"),
+    ]
 
-        run(args)
-
-        args = [
-            "orth",
-            "import-scan-results",
-            "--ort-file",
-            scan_result_file.as_posix(),
-            "--scan-results-storage-dir",
-            config.get("scan_results_storage_dir"),
-        ]
-
-        run(args)
-
-        return 0
+    return run(args)
 
 
 @command_group.command(
+    name="init",
     options_metavar="SCAN_CONTEXT",
 )
 @click.argument("target_url")
-def init(target_url: str) -> None:
-    OrtHWCommand().init(target_url=target_url)
+def __init(target_url: str) -> None:
+    init(target_url=target_url)

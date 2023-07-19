@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import command_group
 
 
-class OrtHWCommand:
-    """orthw command - offending-packages"""
-
-    _command_name: str = "offending-packages"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def offending_packages() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
 @command_group.command(
+    name="offending-packages",
     options_metavar="SCAN_CONTEXT",
 )
-def offending_packages() -> None:
-    OrtHWCommand().process()
+def __offending_packages() -> None:
+    offending_packages()

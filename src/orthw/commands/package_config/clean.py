@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import package_config_group
 
 
-class OrtHWCommand:
-    """orthw command - pc-import-curations"""
-
-    _command_name: str = "pc-import-curations"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def clean() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command(
+@package_config_group.command(
+    name="clean",
     options_metavar="PACKAGE_CONFIG",
 )
-def pc_import_curations() -> None:
-    OrtHWCommand().process()
+def __clean() -> None:
+    clean()

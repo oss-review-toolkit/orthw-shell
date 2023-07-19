@@ -23,8 +23,8 @@ from pathlib import Path
 
 import click
 
-from orthw.commands import command_group
 from orthw.utils import logging
+from orthw.utils.cmdgroups import command_group
 from orthw.utils.required import bootstrap_commands
 
 
@@ -43,11 +43,25 @@ class OrtHw:
         for module in pkgutil.iter_modules():
             if module.name.startswith("orthw") and hasattr(module.module_finder, "path"):
                 path = Path(module.module_finder.path) / module.name / "commands"
-                for command in path.iterdir():
-                    if command.is_file():
-                        command_name = command.stem
-                        # We expect that we will find the commands under the name commands/command.py
-                        importlib.import_module(f"orthw.commands.{command_name}")
+                self.module_import(path)
+
+    def module_import(self, path: Path) -> None:
+        """Iterate over the commands directory and import the commands
+
+        Args:
+            path (Path): Start path to iterate
+        """
+        for command in path.iterdir():
+            if command.is_file():
+                command_name = command.stem
+                import_path = command.parent.as_posix()[command.as_posix().index("commands") :].replace("/", ".")
+                # We expect that we will find the commands under orthw.commands
+                importlib.import_module(f"orthw.{import_path}.{command_name}")
+            elif command.is_dir():
+                # Ignore pycache
+                if command.stem == "__pycache__":
+                    continue
+                self.module_import(command)
 
     def run(self) -> int:
         """Main function call"""

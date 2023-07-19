@@ -19,54 +19,50 @@ from __future__ import annotations
 import click
 
 from orthw import config
-from orthw.commands import command_group
+from orthw.utils.cmdgroups import command_group
 from orthw.utils.process import run
 from orthw.utils.required import require_initialized
 
 
-class Command:
-    """orthw command - licenses"""
+def licenses(package_id: str, source_code_dir: str | None = None) -> None:
+    """licenses
 
-    _command_name: str = "licenses"
+    :param package_id: Id of package
+    :type package_id: str
+    """
 
-    def licenses(self, package_id: str, source_code_dir: str | None = None) -> None:
-        """licenses
+    require_initialized()
 
-        :param package_id: Id of package
-        :type package_id: str
-        """
+    args: list[str] = [
+        "ort",
+        "list-licenses",
+        "--package-id",
+        package_id,
+        "--apply-license-finding-curations",
+        "--omit-excluded",
+    ]
 
-        require_initialized()
+    evaluation_result_file: str = config.get("evaluation_result_file")
+    args += ["--ort-file", evaluation_result_file]
 
-        args: list[str] = [
-            "ort",
-            "list-licenses",
-            "--package-id",
-            package_id,
-            "--apply-license-finding-curations",
-            "--omit-excluded",
-        ]
+    repository_configuration_file: str = config.get("repository_configuration_file")
+    args += ["--repository-configuration-file", repository_configuration_file]
 
-        evaluation_result_file: str = config.get("evaluation_result_file")
-        args += ["--ort-file", evaluation_result_file]
+    ort_config_package_configuration_dir: str = config.get("ort_config_package_configuration_dir")
+    args += ["--package-configuration-dir", ort_config_package_configuration_dir]
 
-        repository_configuration_file: str = config.get("repository_configuration_file")
-        args += ["--repository-configuration-file", repository_configuration_file]
+    if source_code_dir:
+        args += ["--source-code-dir", source_code_dir]
 
-        ort_config_package_configuration_dir: str = config.get("ort_config_package_configuration_dir")
-        args += ["--package-configuration-dir", ort_config_package_configuration_dir]
-
-        if source_code_dir:
-            args += ["--source-code-dir", source_code_dir]
-
-        # Execute external run
-        run(args=args)
+    # Execute external run
+    run(args=args)
 
 
 @command_group.command(
+    name="licenses",
     options_metavar="SCAN_CONTEXT",
 )
 @click.option("--source-code-dir", default=None)
 @click.argument("package_id")
-def licenses(package_id: str, source_code_dir: str | None) -> None:
-    Command().licenses(package_id, source_code_dir=source_code_dir)
+def __licenses(package_id: str, source_code_dir: str | None) -> None:
+    licenses(package_id, source_code_dir=source_code_dir)

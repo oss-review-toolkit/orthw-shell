@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import repository_group
 
 
-class OrtHWCommand:
-    """orthw command - rc-export-path-excludes"""
-
-    _command_name: str = "rc-export-path-excludes"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def generate_rule_violation_resolutions() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command(
+@repository_group.command(
+    name="generate-rule-violation-resolutions",
     options_metavar="REPOSITORY_CONFIG",
 )
-def rc_export_path_excludes() -> None:
-    OrtHWCommand().process()
+def __generate_rule_violation_resolutions() -> None:
+    generate_rule_violation_resolutions()

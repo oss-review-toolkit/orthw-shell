@@ -21,54 +21,50 @@ from pathlib import Path
 import click
 
 from orthw import config
-from orthw.commands import command_group
 from orthw.utils import logging
+from orthw.utils.cmdgroups import command_group
 from orthw.utils.database import ort_postgres_config
 from orthw.utils.process import run
 
 
-class Command:
-    """orthw command - create-analyzer-results"""
+def create_analyzer_results(package_ids_file: Path) -> None:
+    scancode_version = config.env("SCANCODE_VERSION")
+    if not scancode_version:
+        logging.error("Missing [bright_white]SCANCODE_VERSION[/] env.")
+        return
 
-    _command_name: str = "create-analyzer-results"
+    # Get database config
+    scandb = ort_postgres_config()
 
-    def create_analyzer_results(self, package_ids_file: Path) -> None:
-        scancode_version = config.env("SCANCODE_VERSION")
-        if not scancode_version:
-            logging.error("Missing [bright_white]SCANCODE_VERSION[/] env.")
-            return
+    args: list[str] = [
+        "orth",
+        "create-analyzer-result",
+        "--package-ids-file",
+        package_ids_file.as_posix(),
+        "--scancode-version",
+        scancode_version,
+        "-P",
+        "ort.scanner.storages.postgres.connection.url=jdbc:"
+        f"postgresql://{scandb.host}:{scandb.port}/{scandb.db}",  # type: ignore
+        "-P",
+        f"ort.scanner.storages.postgres.connection.schema={scandb.schema}",  # type: ignore
+        "-P",
+        f"ort.scanner.storages.postgres.connection.username={scandb.user}",  # type: ignore
+        "-P",
+        f"ort.scanner.storages.postgres.connection.password={scandb.password}",  # type: ignore
+        "-P",
+        "ort.scanner.storages.postgres.connection.sslmode=require",
+        "--ort-file",
+        "./synthetic-analyzer-result.json",
+    ]
 
-        # Get database config
-        scandb = ort_postgres_config()
-
-        args: list[str] = [
-            "orth",
-            "create-analyzer-result",
-            "--package-ids-file",
-            package_ids_file.as_posix(),
-            "--scancode-version",
-            scancode_version,
-            "-P",
-            "ort.scanner.storages.postgres.connection.url=jdbc:"
-            f"postgresql://{scandb.host}:{scandb.port}/{scandb.db}",  # type: ignore
-            "-P",
-            f"ort.scanner.storages.postgres.connection.schema={scandb.schema}",  # type: ignore
-            "-P",
-            f"ort.scanner.storages.postgres.connection.username={scandb.user}",  # type: ignore
-            "-P",
-            f"ort.scanner.storages.postgres.connection.password={scandb.password}",  # type: ignore
-            "-P",
-            "ort.scanner.storages.postgres.connection.sslmode=require",
-            "--ort-file",
-            "./synthetic-analyzer-result.json",
-        ]
-
-        run(args=args)
+    run(args=args)
 
 
 @command_group.command(
+    name="create-analyzer-results",
     options_metavar="NO_SCAN_CONTEXT",
 )
 @click.argument("package-ids-file", type=click.Path(exists=True))
-def create_analyzer_results(package_ids_file: Path) -> None:
-    Command().create_analyzer_results(package_ids_file)
+def __create_analyzer_results(package_ids_file: Path) -> None:
+    create_analyzer_results(package_ids_file)

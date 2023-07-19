@@ -18,23 +18,16 @@ from __future__ import annotations
 
 from rich import print
 
-from orthw.commands import command_group
-
-# ----------------------------------
-# Command Line options and arguments
+from orthw.utils.cmdgroups import package_config_group
 
 
-class OrtHWCommand:
-    """orthw command - pc-find"""
-
-    _command_name: str = "pc-find"
-
-    def process(self) -> None:
-        print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def sort_() -> None:
+    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
 
 
-@command_group.command(
+@package_config_group.command(
+    name="sort",
     options_metavar="PACKAGE_CONFIG",
 )
-def pc_find() -> None:
-    OrtHWCommand().process()
+def __sort() -> None:
+    sort_()
