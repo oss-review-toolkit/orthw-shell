@@ -172,6 +172,10 @@ def __run_in_docker(
     client = docker.from_env()
     docker_image = config.get("ort_docker_image")
 
+    # Check if docker is available on system
+    if not required_command("docker"):
+        sys.exit(1)
+
     # Mount proper dirs
     if workdir:
         mounts.append(Mount("/workspace", workdir.as_posix(), type="bind"))
