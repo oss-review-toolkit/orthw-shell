@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # SPDX-License-Identifier: Apache-2.0
-# SPDX-FileCopyrightText: 2023 Helio Chissini de Castro
+# License-Filename: LICENSE
 from __future__ import annotations
 
 import os
