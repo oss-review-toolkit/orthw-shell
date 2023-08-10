@@ -19,6 +19,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import click
+from docker.models.containers import Container
 
 from orthw import config
 from orthw.utils import logging
@@ -31,7 +32,7 @@ def analyze(
     output_dir: str | None = None,
     format_: str = "JSON",
     docker: bool = False,
-) -> None:
+) -> int | Container:
     """Use Ort analyzer command on provided source dir
 
     Args:
@@ -39,6 +40,8 @@ def analyze(
         format_ (str, optional): Format of the result output. Defaults to "JSON".
         output_dir (str | None, optional): Specified output dir or cuurent dir
         docker (bool, optional): If is runing on docker. Defaults to False.
+    Returns:
+        int | Container: Status code for local runs or Container object for docker runs
     """
 
     args: list[str] = [
@@ -60,7 +63,7 @@ def analyze(
             logging.warning("No curations folder available. Running without curations.")
 
     # Execute external run
-    run(
+    return run(
         args=args,
         is_docker=docker,
         workdir=Path(workdir),

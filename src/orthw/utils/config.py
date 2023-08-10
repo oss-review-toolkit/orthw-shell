@@ -114,7 +114,6 @@ class Config:
         self.__add("evaluation_result_file", cfgdir / "evaluation-result.json")
         self.__add("package_configuration_md5_sum_file", cfgdir / "package-configuration-md5sum.txt")
         self.__add("package_curations_md5_sum_file", cfgdir / "package-curations-md5sum.txt")
-        self.__add("scan_result_file", cfgdir / "scan-result.json")
         self.__add("scan_results_storage_dir", cfgdir / "scan-results")
         self.__add("target_url_file", cfgdir / "target-url.txt")
         self.__add("temp_dir", cfgdir / "tmp")

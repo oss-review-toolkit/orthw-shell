@@ -20,22 +20,21 @@ import subprocess  # nosec
 import sys
 from pathlib import Path
 
-import docker
-from docker.types import Mount
+from docker.models.containers import Container
 
-from orthw import config
 from orthw.utils import admin, console, logging
+from orthw.utils.docker import __run_in_docker
 from orthw.utils.required import required_command
 
 
 def run(
     args: list[str],
-    console_output: bool = True,
+    console_output: bool = False,
     output_file: Path | None = None,
     workdir: Path | None = None,
     output_dir: Path | None = None,
     is_docker: bool = False,
-) -> int:
+) -> int | Container:
     """Run a process with defined arguments in the proper setting for bare metal or docker
 
     Args:
@@ -72,7 +71,6 @@ def run(
         return __run_in_docker(
             args,
             console_output=console_output,
-            output_file=output_file,
             workdir=workdir,
             output_dir=output_dir,
         )
@@ -148,68 +146,3 @@ def __run_host(
     res = proc.wait()
     logging.debug(f"Return code: {res}")
     return res
-
-
-def __run_in_docker(
-    args: list[str],
-    console_output: bool = True,
-    output_file: Path | None = None,
-    workdir: Path | None = None,
-    output_dir: Path | None = None,
-) -> int:
-    """_summary_
-
-    Args:
-        args (list[str]): Command and arguments
-        console_output (bool, optional): If you want to have command output. Defaults to True.
-        output_file (Path | None, optional): If the output need to be redirected to a file. Defaults to None.
-        workdir (Path | None, optional): Work directory.
-        output_dir (Path | None, optional): Output dir is necessary to pass along.
-    Returns:
-        int: result code
-    """
-    mounts: list[Mount] = []
-    client = docker.from_env()
-    docker_image = config.get("ort_docker_image")
-
-    # Check if docker is available on system
-    if not required_command("docker"):
-        sys.exit(1)
-
-    # Mount proper dirs
-    if workdir:
-        mounts.append(Mount("/workspace", workdir.as_posix(), type="bind"))
-        # Replace workdir for workspace if exists on path
-        args = ["/workspace" if entry == workdir.as_posix() else entry for entry in args]
-    else:
-        mounts.append(Mount("/workspace", Path.cwd(), type="bind"))
-    if output_dir:
-        mounts.append(Mount("/output", output_dir.as_posix(), type="bind"))
-        args.append("--output-dir")
-        args.append("/output")
-
-    # Get main command as entrypoint
-    entrypoint = args.pop(0)
-    # Join arguments as string
-    arguments = " ".join(args)
-
-    # Run container with proper mounts and command
-    logging.debug(
-        f"Running [bright_green]{docker_image}[/bright_green] container with:\n"
-        f"[green]entrypoint:[/green] {entrypoint}\n"
-        f"[green]arguments:[/green] {arguments}\n",
-    )
-    container = client.containers.run(
-        docker_image,
-        entrypoint=entrypoint,
-        command=arguments,
-        mounts=mounts,
-        working_dir="/workspace",
-        detach=True,
-    )
-
-    container.wait()
-    thelog = map(chr, container.logs())
-    print("".join(thelog).replace("|", "\n"))
-
-    return 0

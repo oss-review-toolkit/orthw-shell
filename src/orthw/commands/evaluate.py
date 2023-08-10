@@ -16,30 +16,33 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
-import sys
-from tempfile import TemporaryDirectory
+from pathlib import Path
 
 import click
+from docker.models.containers import Container
 
 from orthw import config
 from orthw.utils import logging
-from orthw.utils.checksum import check_evaluation_md5_sum
 from orthw.utils.cmdgroups import command_group
 from orthw.utils.process import run
 
 
-def evaluate(format_: str = "JSON") -> None:
-    """Use Ort analyzer command on provided source dir
+def evaluate(
+    ort_file: str,
+    output_dir: str | None = None,
+    format_: str = "JSON",
+    docker: bool = False,
+) -> int | Container:
+    """Use Ort evaluate command on provided source dir
 
     :param source_code_dir: Source directory to be evaluated
     :type source_code_dir: str
     """
 
-    if not check_evaluation_md5_sum():
-        # Skip evaluation as the input files haven't changed.
-        return
-
-    temp_dir = TemporaryDirectory()
+    if not Path(ort_file):
+        logging.error(f"Path for ort file {ort_file} do not exists. Bailing out.")
+        return 1
+    workdir = Path(ort_file).parent.absolute()
 
     args: list[str] = [
         "ort",
@@ -48,12 +51,10 @@ def evaluate(format_: str = "JSON") -> None:
         config.get("ort_config_copyright_garbage_file"),
         "--package-curations-dir",
         config.get("ort_config_package_curations_dir"),
-        "--output-dir",
-        temp_dir.name,
         "--output-formats",
-        "JSON",
+        format_,
         "--ort-file",
-        config.get("scan_result_file"),
+        Path(ort_file).name,
         "--repository-configuration-file",
         config.get("repository_configuration_file"),
         "--rules-file",
@@ -65,15 +66,23 @@ def evaluate(format_: str = "JSON") -> None:
     ]
 
     # Execute external run
-    if run(args=args):
-        logging.error("Error running the evaluator.")
-        sys.exit(1)
+    return run(
+        args=args,
+        is_docker=docker,
+        workdir=workdir,
+        output_dir=Path(output_dir) if output_dir else workdir,
+    )
 
 
 @command_group.command(
     name="evaluate",
     options_metavar="NO_SCAN_CONTEXT",
+    short_help="Run ort evaluate command on provided source code directory",
 )
 @click.option("--format", "-f", "format_", default="JSON")
-def __evaluate(format_: str) -> None:
-    evaluate()
+@click.option("--output-dir", type=click.Path(exists=False), required=False)
+@click.option("--ort-file", type=click.Path(exists=False), required=True)
+@click.pass_context
+def __evaluate(ctx: click.Context, ort_file: str, format_: str, output_dir: str) -> None:
+    """Run ort evaluate command on provided source code directory"""
+    evaluate(ort_file=ort_file, format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))
