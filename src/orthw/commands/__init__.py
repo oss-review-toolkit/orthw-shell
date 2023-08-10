@@ -38,3 +38,27 @@ from .raw_licenses import raw_licenses  # noqa: F401
 from .scan import scan  # noqa: F401
 from .scan_results import scan_results  # noqa: F401
 from .update import update  # noqa: F401
+
+__all__ = [
+    "analyze",
+    "check_advisories",
+    "clean",
+    "create_analyzer_results",
+    "delete_scan_results",
+    "evaluate",
+    "find_license_url",
+    "find_scans_for_package",
+    "generate_license_classification_request",
+    "handled_licenses",
+    "handled_licenses_by_category",
+    "init",
+    "licenses",
+    "offending_licenses",
+    "offending_packages",
+    "packages",
+    "packages_for_detected_licenses",
+    "raw_licenses",
+    "scan",
+    "scan_results",
+    "update",
+]
