@@ -359,6 +359,7 @@ init() {
   local target_url=$1
 
   rm -f $evaluation_md5_sum_file
+  rm -rf $scan_results_storage_dir
   mkdir -p $dot_dir
   echo "$target_url" > $target_url_file
 
