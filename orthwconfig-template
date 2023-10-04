@@ -95,7 +95,7 @@ scandb_password=""
 ort_docker_registry_server=""
 ort_docker_registry_username=""
 ort_docker_registry_password=""
-ort_docker_image="registry.gitlab.com/oss-review-toolkit/ort-gitlab-ci/ort:latest"
+ort_docker_image="ghcr.io/oss-review-toolkit/ort-extended:latest"
 
 #
 # netrc file credentials to inject when running ORT docker.
