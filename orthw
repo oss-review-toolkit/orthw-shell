@@ -476,6 +476,7 @@ report() {
     --ort-file $evaluation_result_file \
     --output-dir $temp_dir \
     --report-formats $report_formats \
+    --refresh-resolutions \
     --repository-configuration-file $repository_configuration_file \
     --resolutions-file $ort_config_resolutions_file \
     -O SpdxDocument=output.file.formats=json,yaml \
