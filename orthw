@@ -164,8 +164,7 @@ analyze() {
   ort analyze \
     --input-dir $source_code_dir \
     --output-dir . \
-    --output-formats JSON \
-    --package-curations-dir $ort_config_package_curations_dir
+    --output-formats JSON
 }
 
 analyze_in_docker() {
