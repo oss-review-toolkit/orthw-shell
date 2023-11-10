@@ -29,7 +29,7 @@ For example:
 
 The installation of these tools depends on the operating system:
 - Ubuntu Linux: 
-  - Run: `sudo apt install curl md5sum openjdk-18-jdk xz-utils -y`
+  - Run: `sudo apt install coreutils curl openjdk-18-jdk xz-utils -y`
 - MacOS: 
   - Install [HomeBrew][homebrew] and run: `brew install curl md5sha1sum openjdk xz`
 - Windows using Chocolatey and [Git Bash][git-bash]
