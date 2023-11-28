@@ -143,13 +143,13 @@ usage() {
   echo "  analyze <source-code-dir>"
   echo "  analyze-in-docker <source-code-dir>"
   echo "  create-analyzer-result <package-ids-file>"
-  echo "  delete-scan-results <package-id>"
+  echo "  delete-package-provenances <package-id>"
   echo "  find-license-url <license-id>"
   echo "  find-scans-for-package <package-id"
   echo "  generate-license-classification-request <license-id>"
   echo "  handled-licenses"
   echo "  handled-licenses-by-category"
-  echo "  scan-results <package-id pattern>"
+  echo "  package-provenances <package-id pattern>"
   echo "  update"
   echo ""
   echo "Working dir:"
@@ -407,12 +407,12 @@ init() {
   exit 0
 }
 
-list_scan_results() {
+list_package_provenances() {
   local package_id=$1
   # The package_id is parameter to the SQL LIKE operator, see https://www.postgresqltutorial.com/postgresql-like/.
-  # For example to query all Sun Maven packages use: 'Maven:%sun%'.
+  # For example to query all Sun Maven package provenances use: 'Maven:%sun%'.
 
-  local sql="SELECT ROW_NUMBER() OVER (ORDER BY identifier) as index,identifier FROM scan_results WHERE identifier LIKE '$package_id'"
+  local sql="SELECT ROW_NUMBER() OVER (ORDER BY identifier) as index,identifier FROM package_provenances WHERE identifier LIKE '$package_id'"
   local result=$(query_scandb "$sql")
 
   echo "$result"
@@ -662,19 +662,19 @@ if [ "$command" = "find-scans-for-package" ] && [ "$#" -eq 2 ]; then
 fi
 
 
-if [ "$command" = "delete-scan-results" ] && [ "$#" -eq 2 ]; then
+if [ "$command" = "delete-package-provenances" ] && [ "$#" -eq 2 ]; then
   package_id=$2
 
-  list_scan_results $package_id
+  list_package_provenances $package_id
 
-  count_sql="SELECT COUNT(*) FROM scan_results WHERE identifier LIKE '$package_id'"
+  count_sql="SELECT COUNT(*) FROM package_provenances WHERE identifier LIKE '$package_id'"
   count=$(query_scandb "$count_sql")
 
-  echo "Found the above $count scan results for query string '$package_id'."
+  echo "Found the above $count package provenances for query string '$package_id'."
   echo "Press enter to delete them."
   read -r key
 
-  delete_sql="DELETE FROM scan_results WHERE identifier LIKE '$package_id'"
+  delete_sql="DELETE FROM package_provenances WHERE identifier LIKE '$package_id'"
   query_scandb "$delete_sql"
 
   exit 0
@@ -1217,9 +1217,9 @@ if [ "$command" = "report-webapp" ] && [ "$#" -eq 1 ]; then
 fi
 
 
-if [ "$command" = "scan-results" ] && [ "$#" -eq 2 ]; then
+if [ "$command" = "package-provenances" ] && [ "$#" -eq 2 ]; then
   package_id=$2
-  list_scan_results $package_id
+  list_package_provenances $package_id
   exit 0
 fi
 
