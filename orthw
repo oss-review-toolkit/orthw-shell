@@ -145,7 +145,7 @@ usage() {
   echo "  create-analyzer-result <package-ids-file>"
   echo "  delete-scan-results <package-id>"
   echo "  find-license-url <license-id>"
-  echo "  find-scans-for-package <package-id"
+  echo "  find-scans-for-package <package-id>"
   echo "  generate-license-classification-request <license-id>"
   echo "  handled-licenses"
   echo "  handled-licenses-by-category"
