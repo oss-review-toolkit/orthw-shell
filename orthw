@@ -442,7 +442,7 @@ orth() {
 }
 
 query_scandb() {
-  local sql=$1
+  local sql="SET search_path TO '${scandb_schema}';$1"
   require_command "psql"
 
   export PGPASSWORD="$scandb_password"
