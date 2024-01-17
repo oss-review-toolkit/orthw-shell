@@ -1,73 +1,71 @@
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+    requires = ["poetry-core"]
+    build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "orthw"
-version = "0.5.3"
-description = "orthw is a python app designed to simplify and speed up common tasks performed when processing ort scan results. It supports a number of commands, which can be run in the terminal."
-authors = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
-maintainers = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
-readme = "README.md"
-license = "Apache-2.0"
-packages = [ { include = "orthw", from = "src" } ]
-keywords = ["ort", "orthw", "compliance", "automation"]
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Environment :: Console",
-    "License :: OSI Approved :: Apache Software License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-]
+    name = "orthw"
+    version = "0.5.3"
+    description = "orthw is a python app designed to simplify and speed up common tasks performed when processing ort scan results. It supports a number of commands, which can be run in the terminal."
+    authors = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
+    maintainers = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
+    readme = "README.md"
+    license = "Apache-2.0"
+    packages = [{ include = "orthw", from = "src" }]
+    keywords = ["ort", "orthw", "compliance", "automation"]
+    classifiers = [
+        "Development Status :: 3 - Alpha",
+        "Environment :: Console",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ]
 
 [tool.poetry.scripts]
-orthw = "orthw.orthw:main"
+    orthw = "orthw.orthw:main"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-click = "^8.1.3"
-rich = "^13.1.0"
-dict2obj = "^1.2.0"
-psycopg2-binary = "^2.9.5"
-gitpython = "^3.1.31"
-jinja2 = "^3.1.2"
-python-dotenv = "^1.0.0"
-appdirs = "^1.4.4"
-toml = "^0.10.2"
-docker = "^6.1.3"
-importlib-metadata = "^6.8.0"
-pyyaml = "^6.0.1"
+    python = "^3.10"
+    click = "^8.1.7"
+    rich = "^13.7.0"
+    dict2obj = "^1.2.0"
+    psycopg2-binary = "^2.9.9"
+    gitpython = "^3.1.31"
+    jinja2 = "^3.1.3"
+    python-dotenv = "^1.0.0"
+    appdirs = "^1.4.4"
+    toml = "^0.10.2"
+    docker = "^7.0.0"
+    importlib-metadata = "^7.0.1"
+    pyyaml = "^6.0.1"
+    pydantic = "^2.5.3"
 
 [tool.poetry.group.dev.dependencies]
-pytest-cov = "*"
-pre-commit = "*"
-pycodestyle = "*"
-pylint = "*"
-pytest-mypy = "*"
-ruff = "*"
-mkdocs-material = "*"
-black = "*"
-types-pyyaml = "*"
-mypy = "*"
-urllib3 = "1.26.16"
-types-toml = "^0.10.8.6"
+    pytest-cov = "^4.1.0"
+    pre-commit = "^3.6.0"
+    pycodestyle = "^2.11.1"
+    pytest-mypy = "^0.10.3"
+    ruff = "^0.1.13"
+    mkdocs-material = "^9.5.4"
+    types-pyyaml = "^6.0.12.12"
+    mypy = "^1.8.0"
+    types-toml = "^0.10.8.7"
 
 [tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-line_length = 120
+    multi_line_output = 3
+    include_trailing_comma = true
+    force_grid_wrap = 0
+    use_parentheses = true
+    line_length = 120
 
 [tool.black]
-target-version = ["py310"]
-line-length = 120
-include = '\.pyi?$'
-exclude = '''
+    target-version = ["py310"]
+    line-length = 120
+    include = '\.pyi?$'
+    exclude = '''
 (
   /(
       \.eggs         # exclude a few common directories in the
@@ -87,117 +85,130 @@ exclude = '''
 '''
 
 [tool.pytest.ini_options]
-addopts = [
-    "--import-mode=importlib",
-]
-log_cli = true
-log_cli_level = "INFO"
-pythonpath = "src"
+    addopts = ["--import-mode=importlib"]
+    log_cli = true
+    log_cli_level = "INFO"
+    pythonpath = "src"
 
 [tool.pylint.messages_control]
-disable = [
-    "abstract-method",
-    "arguments-differ",
-    "attribute-defined-outside-init",
-    "blacklisted-name",
-    "chained-comparison",
-    "duplicate-code",
-    "eval-used",
-    "exec-used",
-    "expression-not-assigned",
-    "fixme",
-    "global-statement",
-    "invalid-name",
-    "import-error",
-    "logging-fstring-interpolation",
-    "missing-docstring",
-    "no-member",
-    "no-name-in-module",
-    "protected-access",
-    "redefined-argument-from-local",
-    "redefined-outer-name",
-    "reimported",
-    "stop-iteration-return",
-    "too-few-public-methods",
-    "too-many-ancestors",
-    "too-many-arguments",
-    "too-many-branches",
-    "too-many-instance-attributes",
-    "too-many-lines",
-    "too-many-locals",
-    "too-many-return-statements",
-    "too-many-statements",
-    "unexpected-special-method-signature",
-    "unspecified-encoding"
-]
+    disable = [
+        "abstract-method",
+        "arguments-differ",
+        "attribute-defined-outside-init",
+        "blacklisted-name",
+        "chained-comparison",
+        "duplicate-code",
+        "eval-used",
+        "exec-used",
+        "expression-not-assigned",
+        "fixme",
+        "global-statement",
+        "invalid-name",
+        "import-error",
+        "logging-fstring-interpolation",
+        "missing-docstring",
+        "no-member",
+        "no-name-in-module",
+        "protected-access",
+        "redefined-argument-from-local",
+        "redefined-outer-name",
+        "reimported",
+        "stop-iteration-return",
+        "too-few-public-methods",
+        "too-many-ancestors",
+        "too-many-arguments",
+        "too-many-branches",
+        "too-many-instance-attributes",
+        "too-many-lines",
+        "too-many-locals",
+        "too-many-return-statements",
+        "too-many-statements",
+        "unexpected-special-method-signature",
+        "unspecified-encoding",
+    ]
 
 [tool.mypy]
-follow_imports = "normal"
-strict_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-disallow_any_generics = true
-check_untyped_defs = true
-no_implicit_reexport = true
-disallow_untyped_defs = true
-ignore_missing_imports = true
+    plugins = [
+        "pydantic.mypy",
+    ]
+
+    follow_imports = "normal"
+    strict_optional = true
+    warn_redundant_casts = true
+    warn_unused_ignores = true
+    disallow_any_generics = true
+    check_untyped_defs = true
+    no_implicit_reexport = true
+    disallow_untyped_defs = true
+    ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+    init_forbid_extra = true
+    init_typed = true
+    warn_required_dynamic_aliases = true
 
 [tool.ruff.mccabe]
-# Unlike Flake8, default to a complexity level of 10.
-max-complexity = 10
+    # Unlike Flake8, default to a complexity level of 10.
+    max-complexity = 10
 
 [tool.ruff]
-fix = true
-line-length = 120
-ignore = []
-extend-select = [
-    "E",   # pycodestyle error
-    "W",   # pycodestyle warning
-    "F",   # pyflakes
-    "A",   # flakes8-builtins
-    "COM", # flakes8-commas
-    "C4",  # flake8-comprehensions
-    "Q",   # flake8-quotes
-    "SIM", # flake8-simplify
-    "PTH", # flake8-use-pathlib
-    "I",   # isort
-    "N",   # pep8 naming
-    "UP",  # pyupgrade
-    "S",   # bandit
-]
+    fix = true
+    line-length = 120
+    ignore = [
+        'N802',   # function name should be lowercase
+        'SIM105', # Suggest contextlib instead of try/except with pass
+    ]
+    extend-select = [
+        "E",   # pycodestyle error
+        "W",   # pycodestyle warning
+        "F",   # pyflakes
+        "A",   # flakes8-builtins
+        "COM", # flakes8-commas
+        "C4",  # flake8-comprehensions
+        "Q",   # flake8-quotes
+        "SIM", # flake8-simplify
+        "PTH", # flake8-use-pathlib
+        "I",   # isort
+        "N",   # pep8 naming
+        "UP",  # pyupgrade
+        "S",   # bandit
+    ]
 
-# Exclude a variety of commonly ignored directories.
-extend-exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".hg",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "venv",
-]
-per-file-ignores = {}
+    # Exclude a variety of commonly ignored directories.
+    extend-exclude = [
+        ".bzr",
+        ".direnv",
+        ".eggs",
+        ".git",
+        ".hg",
+        ".mypy_cache",
+        ".nox",
+        ".pants.d",
+        ".ruff_cache",
+        ".svn",
+        ".tox",
+        ".venv",
+        "__pypackages__",
+        "_build",
+        "buck-out",
+        "build",
+        "dist",
+        "node_modules",
+        "venv",
+    ]
+    per-file-ignores = {}
 
-# Allow unused variables when underscore-prefixed.
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+    # Allow unused variables when underscore-prefixed.
+    dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
-# Assume Python 3.10.
-target-version = "py310"
+    # Assume Python 3.10.
+    target-version = "py310"
 
 [tool.ruff.flake8-tidy-imports]
-ban-relative-imports = "all"
+    ban-relative-imports = "all"
 
 [tool.ruff.isort]
-required-imports = ["from __future__ import annotations"]
+    required-imports = ["from __future__ import annotations"]
+
+[tool.pyright]
+    reportUnboundVariable = false
