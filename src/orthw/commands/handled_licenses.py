@@ -28,7 +28,7 @@ def handled_licenses() -> None:
         "orth",
         "list-license-categories",
         "--license-classifications-file",
-        config.get("ort_config_license_classifications_file"),
+        config.ort_config_license_classifications_file.as_posix(),
     ]
 
     run(args)

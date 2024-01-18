@@ -28,7 +28,7 @@ from orthw.utils.process import run
 
 
 def evaluate(
-    ort_file: str,
+    ort_file: Path,
     output_dir: str | None = None,
     format_: str = "JSON",
     docker: bool = False,
@@ -48,21 +48,21 @@ def evaluate(
         "ort",
         "evaluate",
         "--copyright-garbage-file",
-        config.get("ort_config_copyright_garbage_file"),
+        config.ort_config_copyright_garbage_file.as_posix(),
         "--package-curations-dir",
-        config.get("ort_config_package_curations_dir"),
+        config.ort_config_package_curations_dir.as_posix(),
         "--output-formats",
         format_,
         "--ort-file",
-        Path(ort_file).name,
+        ort_file.name,
         "--repository-configuration-file",
-        config.get("repository_configuration_file"),
+        config.repository_configuration_file.as_posix(),
         "--rules-file",
-        config.get("ort_config_rules_file"),
+        config.ort_config_rules_file.as_posix(),
         "--license-classifications-file",
-        config.get("ort_config_license_classifications_file"),
+        config.ort_config_license_classifications_file.as_posix(),
         "--package-configuration-dir",
-        config.get("ort_config_package_configuration_dir"),
+        config.ort_config_package_configuration_dir.as_posix(),
     ]
 
     # Execute external run
@@ -85,4 +85,4 @@ def evaluate(
 @click.pass_context
 def __evaluate(ctx: click.Context, ort_file: str, format_: str, output_dir: str) -> None:
     """Run ort evaluate command on provided source code directory"""
-    evaluate(ort_file=ort_file, format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))
+    evaluate(ort_file=Path(ort_file), format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))

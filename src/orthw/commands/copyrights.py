@@ -16,6 +16,8 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
+from pathlib import Path
+
 import click
 
 from orthw import config
@@ -34,14 +36,14 @@ def copyrights(package_id: str = "") -> None:
 
     require_initialized()
 
-    ort_config_copyright_garbage_file: str = config.get("ort_config_copyright_garbage_file")
-    ort_config_package_configuration_dir: str = config.get("ort_config_package_configuration_dir")
-    scan_result_file: str = config.get("scan_result_file")
+    ort_config_copyright_garbage_file: Path = config.ort_config_copyright_garbage_file
+    ort_config_package_configuration_dir: Path = config.ort_config_package_configuration_dir
+    scan_result_file: Path = config.scan_result_file
     if not scan_result_file or not ort_config_package_configuration_dir or not ort_config_copyright_garbage_file:
         logging.error("Invalid configuration.")
         return
 
-    args: list[str] = ["orth", "list-copyrights", "--ort-file", scan_result_file]
+    args: list[str] = ["orth", "list-copyrights", "--ort-file", scan_result_file.as_posix()]
 
     if package_id:
         args += ["--package-id", package_id]
@@ -49,9 +51,9 @@ def copyrights(package_id: str = "") -> None:
     else:
         args += [
             "--package-configuration-dir",
-            ort_config_package_configuration_dir,
+            ort_config_package_configuration_dir.as_posix(),
             "--copyright-garbage-file",
-            ort_config_package_configuration_dir,
+            ort_config_package_configuration_dir.as_posix(),
         ]
 
         run(args=args, output_file=config.path("copyrights_file"))

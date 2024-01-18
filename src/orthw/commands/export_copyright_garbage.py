@@ -32,10 +32,14 @@ def export_copyright_garbage() -> None:
     """Command export-copyright-garbage"""
     require_initialized()
 
-    copyrights_file: str = config.get("copyrights_file")
-    ort_config_copyright_garbage_file = config.get("ort_config_copyright_garbage_file")
-    scan_result_file = config.get("scan_result_file")
-    if copyrights_file is None or ort_config_copyright_garbage_file is None or scan_result_file is None:
+    copyrights_file: Path = config.copyrights_file
+    ort_config_copyright_garbage_file: Path = config.ort_config_copyright_garbage_file
+    scan_result_file: Path = config.scan_result_file
+    if (
+        copyrights_file.is_file() is None
+        or not ort_config_copyright_garbage_file.is_file()
+        or not scan_result_file.is_file()
+    ):
         logging.error("Configuration invalid.")
         return
 
@@ -48,11 +52,11 @@ def export_copyright_garbage() -> None:
         "orth",
         "map-copyrights",
         "--input-copyrights-file",
-        copyrights_file,
+        copyrights_file.as_posix(),
         "--output-copyrights-file",
         mapped_copyrights_file.as_posix(),
         "--ort-file",
-        scan_result_file,
+        scan_result_file.as_posix(),
     ]
     run(args=args)
 
@@ -67,7 +71,7 @@ def export_copyright_garbage() -> None:
         "--input-copyright-garbage-file",
         mapped_copyrights_file.as_posix(),
         "--output-copyright-garbage-file",
-        ort_config_copyright_garbage_file,
+        config.ort_config_copyright_garbage_file.as_posix(),
     ]
     run(args=args)
 

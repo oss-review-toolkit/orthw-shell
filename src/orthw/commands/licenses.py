@@ -42,14 +42,9 @@ def licenses(package_id: str, source_code_dir: str | None = None) -> None:
         "--omit-excluded",
     ]
 
-    evaluation_result_file: str = config.get("evaluation_result_file")
-    args += ["--ort-file", evaluation_result_file]
-
-    repository_configuration_file: str = config.get("repository_configuration_file")
-    args += ["--repository-configuration-file", repository_configuration_file]
-
-    ort_config_package_configuration_dir: str = config.get("ort_config_package_configuration_dir")
-    args += ["--package-configuration-dir", ort_config_package_configuration_dir]
+    args += ["--ort-file", config.evaluation_result_file.as_posix()]
+    args += ["--repository-configuration-file", config.repository_configuration_file.as_posix()]
+    args += ["--package-configuration-dir", config.ort_config_package_configuration_dir.as_posix()]
 
     if source_code_dir:
         args += ["--source-code-dir", source_code_dir]

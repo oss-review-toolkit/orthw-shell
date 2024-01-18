@@ -32,7 +32,7 @@ from orthw.utils.process import run
 
 
 def init(target_url: str) -> int:
-    target_url_file: Path = Path(config.get("target_url_file"))
+    target_url_file: Path = config.target_url_file
     temp_file = Path(urlparse(target_url).path)
     filename: str = temp_file.name
     extension: str = temp_file.suffix
@@ -42,7 +42,7 @@ def init(target_url: str) -> int:
     logging.debug(f"filename: {filename}")
     logging.debug(f"extension: {extension}")
 
-    evaluation_md5_sum_file: Path = Path(config.get("evaluation_md5_sum_file"))
+    evaluation_md5_sum_file: Path = config.evaluation_md5_sum_file
     if evaluation_md5_sum_file.exists():
         evaluation_md5_sum_file.unlink()
 
@@ -75,7 +75,7 @@ def init(target_url: str) -> int:
     if ".yml" in filename or ".yaml" in filename:
         data = yaml.safe_load(data)
 
-    scan_result_file: Path = config.path("scan_result_file")
+    scan_result_file: Path = config.scan_result_file
     try:
         with Path.open(scan_result_file, "w") as output:
             json.dump(data, output)
@@ -87,7 +87,7 @@ def init(target_url: str) -> int:
         "orth",
         "extract-repository-configuration",
         "--repository-configuration-file",
-        config.get("repository_configuration_file"),
+        config.repository_configuration_file.as_posix(),
         "--ort-file",
         scan_result_file.as_posix(),
     ]
@@ -100,7 +100,7 @@ def init(target_url: str) -> int:
         "--ort-file",
         scan_result_file.as_posix(),
         "--scan-results-storage-dir",
-        config.get("scan_results_storage_dir"),
+        config.scan_results_storage_dir.as_posix(),
     ]
 
     return run(args)

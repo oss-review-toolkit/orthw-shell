@@ -30,9 +30,9 @@ def find_license_url(license_id: str) -> str:
         key = license_id.strip("LicenseRef-scancode-")
         license_file_path = f"src/licensedcode/data/licenses/{key}.LICENSE"
 
-        license_file: Path = config.path("scancode_home") / license_file_path
+        license_file: Path = config.scancode_home / license_file_path
         if license_file.exists():
-            git_repo = git.repo.Repo(config.get("scancode_home"))
+            git_repo = git.repo.Repo(config.scancode_home.as_posix())
             revision = git_repo.git.rev_parse("HEAD")
             return f"https://github.com/nexB/scancode-toolkit/blob/{revision}/{license_file_path}"
 

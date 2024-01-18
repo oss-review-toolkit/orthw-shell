@@ -49,7 +49,7 @@ def __run_in_docker(
     """
     mounts: list[Mount] = []
     client = docker.from_env()
-    docker_image = config.get("ort_docker_image")
+    docker_image: str = config.ort_docker_image
 
     # Check if docker is available on system
     if not required_command("docker"):

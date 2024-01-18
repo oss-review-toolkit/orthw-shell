@@ -16,8 +16,6 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
-from pathlib import Path
-
 from orthw import config
 from orthw.utils import logging
 from orthw.utils.cmdgroups import command_group
@@ -25,19 +23,18 @@ from orthw.utils.cmdgroups import command_group
 
 def clean() -> None:
     try:
-        dot_dir = Path(config.get("dot_dir"))
+        dot_dir = config.configdir
         if dot_dir and dot_dir.is_dir():
-            print(dot_dir)
             logging.info(f"Removed directory {dot_dir}")
     except OSError:
         logging.error(f"Removing directory {dot_dir}")
     try:
-        config_file = Path(config.get("repository_configuration_file"))
+        config_file = config.repository_configuration_file
         if config_file and config_file.is_file():
             config_file.unlink(missing_ok=True)
             logging.info(f"Removed file {config_file}")
     except OSError:
-        logging.error(f"Error removing directory {config.get('repository_configuration_file')}")
+        logging.error(f"Error removing directory {config.repository_configuration_file}")
 
 
 @command_group.command(

@@ -23,7 +23,7 @@ import click
 from orthw import config
 from orthw.utils import logging
 from orthw.utils.cmdgroups import command_group
-from orthw.utils.database import ort_postgres_config
+from orthw.utils.database import PostgresConfig
 from orthw.utils.process import run
 
 
@@ -34,7 +34,7 @@ def create_analyzer_results(package_ids_file: Path) -> None:
         return
 
     # Get database config
-    scandb = ort_postgres_config()
+    scandb = PostgresConfig()
 
     args: list[str] = [
         "orth",
@@ -44,14 +44,13 @@ def create_analyzer_results(package_ids_file: Path) -> None:
         "--scancode-version",
         scancode_version,
         "-P",
-        "ort.scanner.storages.postgres.connection.url=jdbc:"
-        f"postgresql://{scandb.host}:{scandb.port}/{scandb.db}",  # type: ignore
+        f"ort.scanner.storages.postgres.connection.url=jdbc:postgresql://{scandb.pg_host}:{scandb.pg_port}/{scandb.pg_db}",
         "-P",
-        f"ort.scanner.storages.postgres.connection.schema={scandb.schema}",  # type: ignore
+        f"ort.scanner.storages.postgres.connection.schema={scandb.pg_schema}",
         "-P",
-        f"ort.scanner.storages.postgres.connection.username={scandb.user}",  # type: ignore
+        f"ort.scanner.storages.postgres.connection.username={scandb.pg_user}",
         "-P",
-        f"ort.scanner.storages.postgres.connection.password={scandb.password}",  # type: ignore
+        f"ort.scanner.storages.postgres.connection.password={scandb.pg_password}",
         "-P",
         "ort.scanner.storages.postgres.connection.sslmode=require",
         "--ort-file",

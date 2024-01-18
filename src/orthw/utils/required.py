@@ -56,17 +56,8 @@ def bootstrap_commands() -> bool:
 
 def require_initialized() -> None:
     """Check the base config directories required for operations"""
-    dot_dir: Path = Path(config.get("dot_dir"))
-    target_url_file: Path = Path(config.get("target_url_file"))
-    scan_result_file: Path = Path(config.get("scan_result_file"))
+    target_url_file: Path = config.target_url_file
 
-    if (
-        dot_dir is None
-        or not dot_dir.is_dir()
-        or target_url_file is None
-        or not target_url_file.is_file()
-        or scan_result_file is None
-        or not scan_result_file.is_file()
-    ):
+    if target_url_file is None or not target_url_file.is_file():
         logging.error("The working directory is not initialized. Please run 'orthw init <target-url>' first.")
         sys.exit(1)

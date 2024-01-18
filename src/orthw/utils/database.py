@@ -19,11 +19,26 @@ from __future__ import annotations
 import sys
 
 import psycopg2
-from dict2obj import Dict2Obj
+from pydantic import BaseModel
 from rich.pretty import pprint
 
 from orthw import config
 from orthw.utils import admin, logging
+
+
+class PostgresConfig(BaseModel):
+    pg_db: str | None = config.scandb_db
+    pg_host: str | None = config.scandb_host
+    pg_port: str | None = config.scandb_port
+    pg_schema: str | None = config.scandb_schema
+    pg_user: str | None = config.scandb_user
+    pg_password: str | None = config.scandb_password
+
+    def __init__(self) -> None:
+        for key, value in self.__dict__.items():
+            if value is None:
+                logging.error(f"No env value [bright_white]SCANDB_{key.upper()}[/] !")
+                sys.exit(1)
 
 
 def query_scandb(sql: str) -> list[tuple[str, str]] | None:
@@ -31,15 +46,15 @@ def query_scandb(sql: str) -> list[tuple[str, str]] | None:
         logging.error("This script is not allowed to run as admin.")
         sys.exit(1)
 
-    scandb = ort_postgres_config()
+    scandb = PostgresConfig()
 
     try:
         conn = psycopg2.connect(
-            database=scandb.db,  # type: ignore
-            user=scandb.user,  # type: ignore
-            password=scandb.password,  # type: ignore
-            host=scandb.host,  # type: ignore
-            port=scandb.port,  # type: ignore
+            database=scandb.pg_db,
+            user=scandb.pg_user,
+            password=scandb.pg_password,
+            host=scandb.pg_host,
+            port=scandb.pg_port,
         )
     except psycopg2.Error as e:
         logging.error("Fail to connect to Postgres database.")
@@ -64,21 +79,3 @@ def list_scan_results(package_id: str) -> None:
     f"FROM scan_results WHERE identifier LIKE {safe_pid}"  # nosec B606
 
     pprint(query_scandb(sql))
-
-
-def ort_postgres_config() -> object:
-    scandb = {
-        "db": config.get("scandb_db"),
-        "host": config.get("scandb_host"),
-        "port": config.get("scandb_port"),
-        "schema": config.get("scandb_schema"),
-        "user": config.get("scandb_user"),
-        "password": config.get("scandb_password"),
-    }
-
-    for key, value in scandb.items():
-        if value is None:
-            logging.error(f"No env value [bright_white]SCANDB_{key.upper()}[/] !")
-            sys.exit(1)
-
-    return Dict2Obj(scandb)
