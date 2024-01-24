@@ -207,6 +207,7 @@ analyze_in_docker() {
     -it \
     $mount_netrc_option \
     -v $ort_home:/ort \
+    -v $HOME/.ssh:/home/ort/.ssh \
     -v $project_dir:/workspace \
     --entrypoint /bin/bash \
     $ort_docker_image
