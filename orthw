@@ -479,6 +479,7 @@ report() {
     --refresh-resolutions \
     --repository-configuration-file $repository_configuration_file \
     --resolutions-file $ort_config_resolutions_file \
+    -O CycloneDX=output.file.formats=json,xml \
     -O SpdxDocument=output.file.formats=json,yaml \
     -O EvaluatedModel=output.file.formats=json \
     -O PlainTextTemplate=project-types-as-packages="SpdxDocumentFile" \
