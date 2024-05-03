@@ -106,10 +106,11 @@ orthw_home=~/ort-project/orthw
 
 ## 4. Make `orthw` Script Executable Everywhere
 
-To make `orthw` executable everywhere, add a `PATH` export to your terminal configuration file.
+To make `orthw` executable everywhere, add a `alias` export to your terminal configuration file.
 
-- Use a text editor to open either the `~/.bashrc` or `~/.zshrc` file (depending on the shell you use).
-- Add a path export pointing to the `orthw` script e.g. `export PATH=" ~/ort-project/orthw/orthw$PATH"`.
+- Use a text editor to open your terminal launch configuration file e.g. `~/.bashrc` or `~/.zshrc`.
+- Add an alias pointing to the `orthw` script e.g. `alias orthw="bash ~/ort-project/orthw/orthw"`.
+- Reload your terminal configuration file e.g. `source ~/.bashrc` or `source ~/.zshrc`.
 
 ## 5. Test if Everything Works
 
