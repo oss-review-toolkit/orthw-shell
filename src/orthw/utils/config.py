@@ -28,7 +28,7 @@ class Config(BaseYamlSettings):
     configdir: Path = Path(AppDirs("orthw").user_config_dir)
     configfile: Path = Path(AppDirs("orthw").user_config_dir) / "config.yml"
 
-    model_config = YamlSettingsConfigDict(yaml_files=configfile.as_posix())
+    model_config = YamlSettingsConfigDict(yaml_files=configfile.as_posix(), extra="allow")
 
     configuration_home: Path = configdir / "ort-config"
     enabled_advisors: str | None = "osv"
