@@ -26,8 +26,10 @@ def offending_licenses() -> None:
 
 
 @command_group.command(
+    context="SCAN_CONTEXT",
     name="offending-licenses",
-    options_metavar="SCAN_CONTEXT",
+    help="List licenses for which policy violations were found within initialized ORT result file.",
+    short_help="List licenses for which policy violations were found within initialized ORT result file."
 )
 def __offending_licenses() -> None:
     offending_licenses()

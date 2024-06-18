@@ -1,0 +1,19 @@
+# Issues to fix
+
+## MUST-FIX
+
+- orthw init https://raw.githubusercontent.com/oss-review-toolkit/orthw/main/examples/npm-mime-types-2.1.26-scan-result.json fails
+with "Error: Object of type bytes is not JSON serializable""
+- 
+
+## SHOULD-FIX
+
+- Running `--help` prints The
+
+Running `python -m orthw analyze` or `python -m orthw analyze --help`
+
+Usage: python -m orthw analyze NO_SCAN_CONTEXT
+
+
+- Rename workdir to work-dir if argument else work_dir. Should we rename it to input-dir to align with ORT/ORTH itseld?
+

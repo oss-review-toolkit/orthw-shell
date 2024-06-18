@@ -54,8 +54,10 @@ def licenses(package_id: str, source_code_dir: str | None = None) -> None:
 
 
 @command_group.command(
+    context="SCAN_CONTEXT",
     name="licenses",
-    options_metavar="SCAN_CONTEXT",
+    help="Lists the license findings for a given package id as distinct text locations.",
+    short_help="Lists the license findings for a given package id as distinct text locations."
 )
 @click.option("--source-code-dir", default=None)
 @click.argument("package_id")

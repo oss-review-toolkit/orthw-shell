@@ -16,18 +16,43 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
-from rich import print
+from pathlib import Path
 
+from orthw import config
+from orthw.utils import logging
 from orthw.utils.cmdgroups import repository_group
+from orthw.utils.process import run
+from orthw.utils.required import require_initialized
 
 
 def generate_scope_excludes() -> None:
-    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+    require_initialized()
+
+    scan_result_file: Path = config.scan_result_file
+    repository_configuration_file: Path = config.repository_configuration_file
+
+    args: list[str] = [
+        "orth",
+        "repository-configuration",
+        "generate-scope-excludes",
+        "--ort-file".
+        scan_result_file.as_posix(),
+        "--repository-configuration-file",
+        repository_configuration_file.as_posix()
+    ]
+
+    run(args=args)
 
 
 @repository_group.command(
+    context="REPOSITORY_CONFIG",
     name="generate-scope-excludes",
-    options_metavar="REPOSITORY_CONFIG",
+    help="""
+        Generate scope excludes in the ort.yml file based on common defaults
+        for supported package managers, replacing any existing scope excludes.
+    """,
+    short_help="Generate scope excludes in the ort.yml file based on common defaults for supported package managers."
 )
 def __generate_scope_excludes() -> None:
+    """Generate scope excludes in the ort.yml file based on common defaults for supported package managers."""
     generate_scope_excludes()

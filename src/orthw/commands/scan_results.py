@@ -27,7 +27,7 @@ def scan_results() -> None:
 
 @command_group.command(
     name="scan-results",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 def __scan_results() -> None:
     scan_results()

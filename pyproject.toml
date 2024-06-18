@@ -4,14 +4,25 @@
 
 [tool.poetry]
     name = "orthw"
-    version = "0.5.3"
+    version = "1.0"
     description = "orthw is a python app designed to simplify and speed up common tasks performed when processing ort scan results. It supports a number of commands, which can be run in the terminal."
-    authors = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
-    maintainers = ["Helio Chissini de Castro <heliocastro@gmail.com>, Frank Viernau <frank_viernau@epam.com>"]
+    authors = ["The ORTHW Project Authors"]
+    maintainers = [
+        "Frank Viernau <frank_viernau@epam.com>",
+        "Helio Chissini de Castro <heliocastro@gmail.com>",
+        "Thomas Steenbergen <opensource@steenbe.nl>"
+    ]
     readme = "README.md"
     license = "Apache-2.0"
     packages = [{ include = "orthw", from = "src" }]
-    keywords = ["ort", "orthw", "compliance", "automation"]
+    keywords = [
+        "ort",
+        "orthw",
+        "compliance",
+        "open source license compliance",
+        "open source licensing",
+        "automation"
+    ]
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
@@ -44,6 +55,7 @@
     pydantic = "^2.7.3"
     pydantic-settings = "^2.3.1"
     yaml-settings-pydantic = "^2.0.2"
+    requests = "^2.32.3"
 
 [tool.poetry.group.dev.dependencies]
     pytest-cov = "^4.1.0"
@@ -55,6 +67,7 @@
     types-pyyaml = "^6.0.12.20240311"
     mypy = "^1.10.0"
     types-toml = "^0.10.8.7"
+    types-requests = "^2.32.0.20240602"
 
 [tool.black]
     target-version = ["py310"]

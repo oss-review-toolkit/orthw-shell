@@ -16,18 +16,46 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
-from rich import print
+import click
 
+from pathlib import Path
+
+from orthw import config
+from orthw.utils import logging
 from orthw.utils.cmdgroups import package_config_group
+from orthw.utils.process import run
+from orthw.utils.required import require_initialized
 
 
-def clean() -> None:
-    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def clean(package_id: str) -> None:
+    require_initialized()
+
+    package_configuration_file: Path = "FIXME find_package(package_id)"
+    scan_result_file: Path = config.evaluation_result_file
+
+    args: list[str] = [
+        "orth",
+        "package-configuration",
+        "remove-entries",
+        "--package-configuration-file".
+        package_configuration_file,
+        "--ort-file",
+        ort_config_resolutions_file.as_posix()
+    ]
+
+    run(args=args)
 
 
 @package_config_group.command(
+    context="PACKAGE_CONFIG",
     name="clean",
-    options_metavar="PACKAGE_CONFIG",
+    help="""
+        Removes all path excludes and license finding curations from package configuration file
+        which do not match any files or license findings.
+    """,
+    short_help="Removes all excludes and curations from package configuration file which do not match any findings.",
 )
-def __clean() -> None:
-    clean()
+@click.argument("package_id")
+def __clean(package_id: str) -> None:
+    """Removes all excludes and curations from package configuration file which do not match any findings."""
+    clean(package_id=package_id)

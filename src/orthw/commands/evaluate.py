@@ -33,7 +33,7 @@ def evaluate(
     format_: str = "JSON",
     docker: bool = False,
 ) -> int | Container:
-    """Use Ort evaluate command on provided source dir
+    """Evaluate ORT result file against policy rules.
 
     :param source_code_dir: Source directory to be evaluated
     :type source_code_dir: str
@@ -62,7 +62,7 @@ def evaluate(
         "--license-classifications-file",
         config.ort_config_license_classifications_file.as_posix(),
         "--package-configuration-dir",
-        config.ort_config_package_configuration_dir.as_posix(),
+        config.ort_config_package_configuration_dir.as_posix()
     ]
 
     # Execute external run
@@ -75,14 +75,13 @@ def evaluate(
 
 
 @command_group.command(
+    context="NO_SCAN_CONTEXT",
     name="evaluate",
-    options_metavar="NO_SCAN_CONTEXT",
-    short_help="Run ort evaluate command on provided source code directory",
+    short_help="Evaluate ORT result file against policy rules."
 )
 @click.option("--format", "-f", "format_", default="JSON")
 @click.option("--output-dir", type=click.Path(exists=False), required=False)
 @click.option("--ort-file", type=click.Path(exists=False), required=True)
 @click.pass_context
 def __evaluate(ctx: click.Context, ort_file: str, format_: str, output_dir: str) -> None:
-    """Run ort evaluate command on provided source code directory"""
     evaluate(ort_file=Path(ort_file), format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))

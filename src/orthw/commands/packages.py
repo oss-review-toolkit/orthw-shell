@@ -18,16 +18,36 @@ from __future__ import annotations
 
 from rich import print
 
+from pathlib import Path
+
+import click
+
+from orthw import config
+from orthw.utils import logging
 from orthw.utils.cmdgroups import command_group
+from orthw.utils.process import run
+from orthw.utils.required import require_initialized
 
 
 def packages() -> None:
-    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+    require_initialized()
 
+    scan_result_file: Path = config.scan_result_file
+
+    args: list[str] = [
+        "orth",
+        "list-packages",
+        "--ort-file",
+        scan_result_file.as_posix()
+    ]
+
+    run(args=args)
 
 @command_group.command(
+    context="SCAN_CONTEXT",
     name="packages",
-    options_metavar="SCAN_CONTEXT",
+    help="Lists ids of the packages within initialized ORT result file.",
+    short_help="List ids of the packages within initialized ORT result file."
 )
 def __packages() -> None:
     packages()

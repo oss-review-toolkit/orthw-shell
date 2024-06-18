@@ -16,18 +16,43 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
-from rich import print
+from pathlib import Path
 
+from orthw import config
+from orthw.utils import logging
 from orthw.utils.cmdgroups import repository_group
+from orthw.utils.process import run
+from orthw.utils.required import require_initialized
 
 
 def generate_rule_violation_resolutions() -> None:
-    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+    require_initialized()
+
+    evaluation_result_file: Path = config.evaluation_result_file
+    repository_configuration_file: Path = config.repository_configuration_file
+
+    args: list[str] = [
+        "orth",
+        "repository-configuration",
+        "generate-rule-violation-resolutions",
+        "--ort-file".
+        evaluation_result_file.as_posix(),
+        "--repository-configuration-file",
+        repository_configuration_file.as_posix(),
+        "--severity ERROR"
+    ]
+
+    run(args=args)
 
 
 @repository_group.command(
+    context="REPOSITORY_CONFIG",
     name="generate-rule-violation-resolutions",
-    options_metavar="REPOSITORY_CONFIG",
+    help="""
+        Generates resolutions in the ort.yml file for all unresolved rule violations.
+    """,
+    short_help="Generates resolutions in the ort.yml file for all unresolved rule violations."
 )
 def __generate_rule_violation_resolutions() -> None:
+    """Generates resolutions in the ort.yml file for all unresolved rule violations."""
     generate_rule_violation_resolutions()

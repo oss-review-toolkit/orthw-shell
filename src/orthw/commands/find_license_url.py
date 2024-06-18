@@ -40,9 +40,19 @@ def find_license_url(license_id: str) -> str:
 
 
 @command_group.command(
+    context="NO_SCAN_CONTEXT",
     name="find-license-url",
-    options_metavar="NO_SCAN_CONTEXT",
+    help="""
+        Returns URL to full text for given SPDX or ScanCode license id.
+
+        Examples:
+
+        orthw find-license-url Apache-2.0
+
+        orthw find-license-url LicenseRef-scancode-agere-bsd
+    """,
+    short_help="Returns URL to full text for given SPDX or ScanCode license id."
 )
 @click.argument("license-id")
 def __find_license_url(license_id: str) -> None:
-    find_license_url(license_id=license_id)
+    print(find_license_url(license_id=license_id))

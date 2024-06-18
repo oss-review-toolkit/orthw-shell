@@ -16,18 +16,37 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
-from rich import print
+from pathlib import Path
 
+from orthw import config
+from orthw.utils import logging
 from orthw.utils.cmdgroups import repository_group
-
+from orthw.utils.process import run
+from orthw.utils.required import require_initialized
 
 def format_() -> None:
-    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+    require_initialized()
+
+    repository_configuration_file: Path = config.repository_configuration_file.as_posix()
+
+    args: list[str] = [
+        "orth",
+        "repository-configuration",
+        "format",
+        repository_configuration_file
+    ]
+
+    run(args=args)
+
+    print("Formatted repository configuration file " + repository_configuration_file + ".")
 
 
 @repository_group.command(
+    context="REPOSITORY_CONFIG",
     name="format",
-    options_metavar="REPOSITORY_CONFIG",
+    help="Formats the ort.yml file.",
+    short_help="Formats the ort.yml file."
 )
 def ___format() -> None:
+    """Formats the ort.yml file."""
     format_()

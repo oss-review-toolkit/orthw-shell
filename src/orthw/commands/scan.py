@@ -32,7 +32,7 @@ def scan(
     format_: str = "JSON",
     docker: bool = False,
 ) -> int | Container:
-    """Use Ort scan command on provided source dir
+    """Run ORT Scanner on given source code directory to detect licenses and copyrights
 
     Args:
         ort_file (str): Analyzer file.
@@ -70,17 +70,22 @@ def scan(
 
 @command_group.command(
     name="scan",
-    options_metavar="NO_SCAN_CONTEXT",
-    short_help="Run ort scan command on provided source code directory.",
+    help=(
+        "Run ORT Scanner on given source code directory to via external scanners "
+        "detect licenses and copyrights."
+    ),
+    short_help=(
+        "Run ORT Scanner on given source code directory to via external scanners "
+        "detect licenses and copyrights."
+    ),
+    context="NO_SCAN_CONTEXT",
     context_settings={
         "allow_extra_args": True,
         "ignore_unknown_options": True,
-    },
+    }
 )
 @click.option("--format", "-f", "format_", default="JSON")
 @click.option("--output-dir", type=click.Path(exists=False), required=False)
 @click.option("--ort-file", type=click.Path(exists=False), required=True)
-@click.pass_context
 def __scan(ctx: click.Context, ort_file: str, format_: str, output_dir: str) -> None:
-    """Run ort scan command on provided source code directory"""
     scan(ort_file=ort_file, format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))

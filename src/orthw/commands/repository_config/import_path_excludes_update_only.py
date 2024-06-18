@@ -1,4 +1,4 @@
-# Copyright 2023 The ORTHW Project Authors
+# Copyright 2024 The ORTHW Project Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,10 +24,11 @@ from orthw.utils.cmdgroups import repository_group
 from orthw.utils.process import run
 from orthw.utils.required import require_initialized
 
-def export_path_excludes() -> None:
+exports_path_excludes_file: Path = config.exports_path_excludes_file
+
+def import_path_excludes_update_only() -> None:
     require_initialized()
 
-    exports_path_excludes_file: Path = config.exports_path_excludes_file
     scan_result_file: Path = config.scan_result_file
     repository_configuration_file: Path = config.repository_configuration_file
     exports_vcs_url_mapping_file: Path = config.exports_vcs_url_mapping_file
@@ -35,7 +36,7 @@ def export_path_excludes() -> None:
     args: list[str] = [
         "orth",
         "repository-configuration",
-        "export-path-excludes",
+        "import-path-excludes",
         "--path-excludes-file",
         exports_path_excludes_file.as_posix(),
         "--ort-file".
@@ -43,7 +44,8 @@ def export_path_excludes() -> None:
         "--repository-configuration-file",
         repository_configuration_file.as_posix(),
         "--vcs-url-mapping-file",
-        exports_vcs_url_mapping_file.as_posix()
+        exports_vcs_url_mapping_file.as_posix(),
+        "--update-only-existing"
     ]
 
     run(args=args)
@@ -51,13 +53,12 @@ def export_path_excludes() -> None:
 
 @repository_group.command(
     context="REPOSITORY_CONFIG",
-    name="export-path-excludes",
-    help="""
-        Export the path excludes from the ort.yml to a path excludes file which maps repository URLs
-        to the path excludes for the respective repository.
-    """,
-    short_help="Export the path excludes from the ort.yml to a file."
+    name="import-path-excludes-update-only",
+    help="Imports path excludes by repository from {file} into the ort.yml file."
+        .format(file=config.exports_license_finding_curations_file),
+    short_help="Imports path excludes by repository from {file} into the ort.yml file."
+        .format(file=config.exports_license_finding_curations_file)
 )
-def __export_path_excludes() -> None:
-    """Export the path excludes from the ort.yml to a file"""
-    export_path_excludes()
+def __import_path_excludes_update_only() -> None:
+    """Imports path excludes by repository from a file into the ort.yml file."""
+    import_path_excludes_only()

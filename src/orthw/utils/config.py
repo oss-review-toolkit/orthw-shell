@@ -51,7 +51,7 @@ class Config(BaseYamlSettings):
     orth_jvm_options: str | None = "-Xmx16G"
     orth_options: str | None = None
     scancode_home: Path = configdir / "scancode-toolkit"
-    scancode_version: str = "32.0.8"
+    scancode_version: str = "32.1.0"
     scandb_db: str | None = None
     scandb_host: str | None = None
     scandb_password: str | None = None
@@ -75,8 +75,10 @@ class Config(BaseYamlSettings):
     ort_config_how_to_fix_text_provider_script: Path = configuration_home / "how-to-fix-text-provider.kts"
     ort_config_license_classifications_file: Path = configuration_home / "license-classifications.yml"
     ort_config_notice_templates_dir: Path = configuration_home / "notice-templates"
-    ort_config_package_configuration_dir: Path = configuration_home / "package-configurations"
-    ort_config_package_curations_dir: Path = configuration_home / "curations"
+    # ort_config_package_configurations_dir: Path = configuration_home / "package-configurations"
+    # ort_config_package_curations_dir: Path = configuration_home / "curations"
+    ort_config_package_configurations_dir: Path = "/Volumes/Workspace/enrico/ort-config-micronova/package-configurations"
+    ort_config_package_curations_dir: Path = "/Volumes/Workspace/enrico/ort-config-micronova/curations"
     ort_config_resolutions_file: Path = configuration_home / "resolutions.yml"
     ort_config_rules_file: Path = configuration_home / "evaluator.rules.kts"
 

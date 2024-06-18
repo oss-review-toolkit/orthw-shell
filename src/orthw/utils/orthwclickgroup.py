@@ -17,9 +17,11 @@
 from __future__ import annotations
 
 import io
-from typing import Any
+from collections.abc import Callable
+from typing import Any, overload
 
 import click
+from click.core import _check_multicommand
 from rich.box import HORIZONTALS
 from rich.console import Console
 from rich.padding import Padding
@@ -84,13 +86,22 @@ class OrtHwClickGroup(click.Group):
             if cmd is None or cmd.hidden:
                 continue
 
-            self.group
+            context: str | None = None
+            alias: str | None = None
+            if "obj" in cmd.context_settings:
+                if "orthw_context" in cmd.context_settings["obj"]:
+                    context = cmd.context_settings["obj"]["orthw_context"]
+                if "alias" in cmd.context_settings["obj"]:
+                    alias = cmd.context_settings["obj"]["alias"]
 
-            if cmd.options_metavar and cmd.options_metavar in custom_cmd:
+            if context in custom_cmd:
+                # Ignore if is an alias ( but is registered already)
+                if alias == subcommand:
+                    continue
                 cmd_description = {}
                 cmd_description["short_help"] = cmd.short_help if cmd.short_help else ""
                 cmd_description["subcommand"] = subcommand
-                custom_cmd[cmd.options_metavar]["content"].append(cmd_description)
+                custom_cmd[context]["content"].append(cmd_description)
 
         for key, value in custom_cmd.items():
             if not len(value["content"]):
@@ -112,3 +123,122 @@ class OrtHwClickGroup(click.Group):
             console.print(Padding(table, (1, 1)))
 
         formatter.write(sio.getvalue())
+
+    def add_command(
+        self,
+        cmd: click.Command,
+        name: str | None = None,
+        alias: bool = False,
+    ) -> None:
+        """Registers another :class:`Command` with this group.  If the name
+        is not provided, the name of the command is used.
+        """
+        name = name or cmd.name
+
+        if alias:
+            if "obj" in cmd.context_settings:
+                cmd.context_settings["obj"]["alias"] = name
+            else:
+                cmd.context_settings["obj"] = {"alias": name}
+        if name is None:
+            raise TypeError("Command has no name.")
+
+        _check_multicommand(self, name, cmd, register=True)
+        self.commands[name] = cmd
+
+    @overload
+    def command(self, __func: Callable[..., Any]) -> click.Command: ...
+
+    @overload
+    def command(
+        self,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Callable[[Callable[..., Any]], click.Command]: ...
+
+    def command(
+        self,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Callable[[Callable[..., Any]], click.Command] | click.Command:
+        from click.decorators import command
+
+        func: Callable[..., Any] | None = None
+
+        if args and callable(args[0]):
+            assert (  # noqa: S101
+                len(args) == 1 and not kwargs
+            ), "Use 'command(**kwargs)(callable)' to provide arguments."
+            (func,) = args
+            args = ()
+
+        if self.command_class and kwargs.get("cls") is None:
+            kwargs["cls"] = self.command_class
+
+        def decorator(f: Callable[..., Any]) -> click.Command:
+            context: str | None = kwargs.pop("context") if "context" in kwargs else None
+            cmd: click.Command = command(*args, **kwargs)(f)
+
+            if context:
+                if "obj" in cmd.context_settings:
+                    cmd.context_settings["obj"]["orthw_context"] = context
+                else:
+                    cmd.context_settings["obj"] = {"orthw_context": context}
+
+            self.add_command(cmd)
+            return cmd
+
+        if func is not None:
+            return decorator(func)
+
+        return decorator
+
+    @overload
+    def group(self, __func: Callable[..., Any]) -> click.Group:
+        pass
+
+    @overload
+    def group(
+        self,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Callable[[Callable[..., Any]], click.Group]:
+        pass
+
+    def group(
+        self,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Callable[[Callable[..., Any]], click.Group] | click.Group | None:
+        from click.decorators import group
+
+        func: Callable[..., Any] | None = None
+
+        if args and callable(args[0]):
+            assert len(args) == 1 and not kwargs, "Use 'group(**kwargs)(callable)' to provide arguments."  # noqa: S101
+            (func,) = args
+            args = ()
+
+        if self.group_class is not None and kwargs.get("cls") is None:
+            if self.group_class is type:
+                kwargs["cls"] = type(self)
+            else:
+                kwargs["cls"] = self.group_class
+
+        def decorator(f: Callable[..., Any]) -> click.Group:
+            context: str | None = kwargs.pop("context") if "context" in kwargs else None
+            cmd: click.Group = group(*args, **kwargs)(f)
+
+            if context:
+                if "obj" in cmd.context_settings:
+                    cmd.context_settings["obj"]["orthw_context"] = context
+                else:
+                    cmd.context_settings["obj"] = {"orthw_context": context}
+
+            self.add_command(cmd)
+            return cmd
+
+        if func is not None:
+            return decorator(func)
+
+        return decorator

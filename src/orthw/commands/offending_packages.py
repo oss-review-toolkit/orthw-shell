@@ -18,16 +18,39 @@ from __future__ import annotations
 
 from rich import print
 
+from pathlib import Path
+
+import click
+
+from orthw import config
+from orthw.utils import logging
 from orthw.utils.cmdgroups import command_group
+from orthw.utils.process import run
+from orthw.utils.required import require_initialized
 
 
 def offending_packages() -> None:
-    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+    require_initialized()
+
+    scan_result_file: Path = config.scan_result_file
+
+    args: list[str] = [
+        "orth",
+        "list-packages",
+        "--ort-file",
+        scan_result_file.as_posix(),
+        "--offending-only",
+        "--offending-severities ERROR"
+    ]
+
+    run(args=args)
 
 
 @command_group.command(
+    context="SCAN_CONTEXT",
     name="offending-packages",
-    options_metavar="SCAN_CONTEXT",
+    help="List id of packages for which policy violations were found within initialized ORT result file.",
+    short_help="List id of packages for which policy violations were found within initialized ORT result file."
 )
 def __offending_packages() -> None:
     offending_packages()

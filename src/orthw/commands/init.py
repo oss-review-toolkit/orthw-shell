@@ -18,12 +18,14 @@ from __future__ import annotations
 
 import json
 import lzma
+import tempfile
 from pathlib import Path
-from urllib import request
 from urllib.parse import urlparse
 
 import click
+import requests
 import yaml
+from docker.models.containers import Container
 
 from orthw import config
 from orthw.utils import logging
@@ -31,14 +33,11 @@ from orthw.utils.cmdgroups import command_group
 from orthw.utils.process import run
 
 
-def init(target_url: str) -> int:
-    target_url_file: Path = config.target_url_file
-    temp_file = Path(urlparse(target_url).path)
-    filename: str = temp_file.name
-    extension: str = temp_file.suffix
+def init(target_url: str) -> int | Container:
+    parsed_url = urlparse(target_url)
+    filename: str = Path(parsed_url.path).name
+    extension: str = Path(parsed_url.path).suffix
 
-    logging.debug(f"target_url_file: {target_url_file}")
-    logging.debug(f"temp_file: {temp_file}")
     logging.debug(f"filename: {filename}")
     logging.debug(f"extension: {extension}")
 
@@ -51,64 +50,72 @@ def init(target_url: str) -> int:
         logging.error(f"Cannot initialize with the given file {filename}. The file extension is unexpected.")
         return 1
 
-    try:
-        with Path.open(target_url_file, "w") as output:
-            output.write(target_url)
-    except OSError:
-        logging.error(f"Unable to create output file {target_url_file.as_posix()}.")
-        return 1
-
-    # Retrieve target scan result file
-    parsed_url = urlparse(target_url)
+    # Parse and retrieve target scan result file
     if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"] or not parsed_url.netloc:
-        logging.error(f"Cannot retrieve {target_url}.")
+        logging.error(f"Can't parse {target_url}.")
         return 1
 
-    parsed_url = urlparse(target_url)
-    if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"]:
-        logging.error(f"Cannot retrieve {target_url}.")
-        return 1
-    response = request.urlopen(target_url)  # noqa: S310
-
-    data = lzma.decompress(response.read()) if extension == ".xz" else response.read()
-
-    if ".yml" in filename or ".yaml" in filename:
-        data = yaml.safe_load(data)
-
-    scan_result_file: Path = config.scan_result_file
-    try:
-        with Path.open(scan_result_file, "w") as output:
-            json.dump(data, output)
-    except OSError:
-        logging.error(f"Cannot open {scan_result_file.as_posix()} to write.")
+    response = requests.get(url=target_url, timeout=120)
+    if response.status_code != 200:
+        logging.error(f"Can't retrieve {target_url}")
         return 1
 
-    args: list[str] = [
-        "orth",
-        "extract-repository-configuration",
-        "--repository-configuration-file",
-        config.repository_configuration_file.as_posix(),
-        "--ort-file",
-        scan_result_file.as_posix(),
-    ]
+    response_data = lzma.decompress(response.content) if extension == ".xz" else response.content
 
-    run(args)
+    if extension == ".yml" or extension == ".yaml":
+        data = yaml.safe_load(response_data)
+    elif extension == ".json":
+        data = json.loads(response_data)
 
-    args = [
-        "orth",
-        "import-scan-results",
-        "--ort-file",
-        scan_result_file.as_posix(),
-        "--scan-results-storage-dir",
-        config.scan_results_storage_dir.as_posix(),
-    ]
+    # We don't need a fixed scan_result_file as this is a shell temporary measure.
+    # Use proper Temp directory to realize he operation one single time
+    with tempfile.NamedTemporaryFile(suffix=".json") as temp_file:
+        scan_result_file: Path = Path(temp_file.name)
+        try:
+            with scan_result_file.open("w") as output:
+                json.dump(data, output)
+        except OSError:
+            logging.error(f"Cannot open {scan_result_file.as_posix()} to write.")
+            return 1
 
-    return run(args)
+        args: list[str] = [
+            "orth",
+            "extract-repository-configuration",
+            "--repository-configuration-file",
+            config.repository_configuration_file.as_posix(),
+            "--ort-file",
+            scan_result_file.as_posix(),
+        ]
+
+        status = run(args)
+        if status:
+            return 1
+
+        args = [
+            "orth",
+            "import-scan-results",
+            "--ort-file",
+            scan_result_file.as_posix(),
+            "--scan-results-storage-dir",
+            config.scan_results_storage_dir.as_posix(),
+        ]
+
+        return run(args)
 
 
 @command_group.command(
+    context="SCAN_CONTEXT",
     name="init",
-    options_metavar="SCAN_CONTEXT",
+    help="""
+        Initializes current directory with an ORT result file afterwhich other orth commands can be used.
+
+        Examples:
+
+        orthw init https://raw.githubusercontent.com/oss-review-toolkit/orthw/main/examples/npm-mime-types-2.1.26-scan-result.json
+
+        orthw init file:///home/ort-user/ort-project/orthw/examples/npm-mime-types-2.1.26-scan-result.json
+    """,
+    short_help="Initializes current directory with an ORT result file afterwhich other orth commands can be used."
 )
 @click.argument("target_url")
 def __init(target_url: str) -> None:

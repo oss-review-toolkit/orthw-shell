@@ -19,6 +19,7 @@ from __future__ import annotations
 import sys
 
 import psycopg2
+from psycopg2.sql import Literal
 from pydantic import BaseModel
 from rich.pretty import pprint
 
@@ -41,7 +42,7 @@ class PostgresConfig(BaseModel):
                 sys.exit(1)
 
 
-def query_scandb(sql: str) -> list[tuple[str, str]] | None:
+def query_scandb(sql: Literal) -> list[tuple[str, str]] | None:
     if admin():
         logging.error("This script is not allowed to run as admin.")
         sys.exit(1)
@@ -74,8 +75,10 @@ def query_scandb(sql: str) -> list[tuple[str, str]] | None:
 
 def list_scan_results(package_id: str) -> None:
     # Prevent SQL injection with literals
-    safe_pid = psycopg2.sql.Literal(package_id)
-    sql = "SELECT ROW_NUMBER() OVER (ORDER BY identifier) as index,identifier"
-    f"FROM scan_results WHERE identifier LIKE {safe_pid}"  # nosec B606
+    safe_pid = Literal(package_id)
+    sql: Literal[str] = Literal(
+        "SELECT ROW_NUMBER() OVER (ORDER BY identifier) as index,identifier"
+        f"FROM scan_results WHERE identifier LIKE {safe_pid}",
+    )
 
     pprint(query_scandb(sql))

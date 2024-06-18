@@ -32,7 +32,6 @@ from orthw.utils.orthwclickgroup import OrtHwClickGroup
 @click.option("--logfile", required=False, help="Set the log output to specified file.")
 @click.pass_context
 def command_group(ctx: click.Context, debug: bool, docker: bool, logfile: str) -> None:
-    ctx.obj = {}
     if debug:
         logging.setLevel(stdlogger.DEBUG)
         ctx.obj["debug"] = True
@@ -54,19 +53,28 @@ def command_group(ctx: click.Context, debug: bool, docker: bool, logfile: str) -
 @command_group.group(
     cls=OrtHwClickGroup,
     name="package-config",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 @click.pass_context
 def package_config_group(ctx: click.Context) -> None:
     """Operations related to package configuration."""
+    pass
+
+
+command_group.add_command(package_config_group, name="pc", alias=True)
 
 
 # Subgroup for repository config operations
 @command_group.group(
     cls=OrtHwClickGroup,
     name="repository-config",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 @click.pass_context
 def repository_group(ctx: click.Context) -> None:
     """Operations related to package configuration."""
+    pass
+
+
+# Add command as alias
+command_group.add_command(repository_group, name="rp", alias=True)

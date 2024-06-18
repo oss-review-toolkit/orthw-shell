@@ -16,18 +16,42 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
-from rich import print
+from pathlib import Path
 
+from orthw import config
+from orthw.utils import logging
 from orthw.utils.cmdgroups import repository_group
+from orthw.utils.process import run
+from orthw.utils.required import require_initialized
 
 
 def generate_timeout_error_resolutions() -> None:
-    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+    require_initialized()
+
+    scan_result_file: Path = config.scan_result_file
+    repository_configuration_file: Path = config.repository_configuration_file
+    ort_config_resolutions_file: Path = ort_config_resolutions_file
+
+    args: list[str] = [
+        "orth",
+        "generate-timeout-error-resolutions",
+        "--ort-file".
+        scan_result_file.as_posix(),
+        "--repository-configuration-file",
+        repository_configuration_file.as_posix(),
+        "--resolutions-file",
+        ort_config_resolutions_file,
+        "--omit-excluded"
+    ]
+
+    run(args=args)
 
 
 @repository_group.command(
+    context="REPOSITORY_CONFIG",
     name="generate-timeout-error-resolutions",
-    options_metavar="REPOSITORY_CONFIG",
+    short_help="Generates resolutions for scanner timeout errors in the ort.yml file."
 )
 def __generate_timeout_error_resolutions() -> None:
+    """Generates resolutions for scanner timeout errors in the ort.yml file."""
     generate_timeout_error_resolutions()

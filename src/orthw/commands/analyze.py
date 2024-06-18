@@ -33,12 +33,14 @@ def analyze(
     format_: str = "JSON",
     docker: bool = False,
 ) -> int | Container:
-    """Use Ort analyzer command on provided source dir
-
+    """Run ORT Analyzer on given source code directory to find used dependencies.
+   
+    orthw analyze
+    
     Args:
         workdir (str): Source directory to be analyzed.
         format_ (str, optional): Format of the result output. Defaults to "JSON".
-        output_dir (str | None, optional): Specified output dir or cuurent dir
+        output-dir (str | None, optional): Specified output dir or current dir
         docker (bool, optional): If is runing on docker. Defaults to False.
     Returns:
         int | Container: Status code for local runs or Container object for docker runs
@@ -70,14 +72,22 @@ def analyze(
 
 
 @command_group.command(
+    context="NO_SCAN_CONTEXT",
     name="analyze",
-    options_metavar="NO_SCAN_CONTEXT",
-    short_help="Run ort analyze command on provided source code directory.",
+    help="""
+        Run ORT Analyzer on given source code directory to determine dependencies.
+
+        Examples:
+
+        orthw analyze --work-dir /home/ort-user/ort-scans/mime-types/ --output_dir /home/ort-user/ort-scans/mime-types/
+    """,
+    no_args_is_help=True,
+    short_help="Run ORT Analyzer on given source code directory to find used dependencies.",
 )
 @click.option("--format", "-f", "format_", default="JSON")
-@click.option("--output_dir", type=click.Path(exists=False), required=False)
-@click.option("--workdir", type=click.Path(), required=True)
+@click.option("--output-dir", type=click.Path(exists=False), required=False)
+@click.option("--work-dir", type=click.Path(), required=True)
 @click.pass_context
 def __analyze(ctx: click.Context, workdir: str, format_: str, output_dir: str) -> None:
-    """Run ort analyze command on provided source code directory"""
-    analyze(workdir=workdir, format_=format_, output_dir=output_dir, docker=bool("docker" in ctx.obj))
+    """Run ORT Analyzer on given source code directory to find used dependencies."""
+    analyze(workdir=work-dir, format_=format_, output_dir=output-dir, docker=bool("docker" in ctx.obj))

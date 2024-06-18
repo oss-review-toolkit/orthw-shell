@@ -36,8 +36,8 @@ def handled_licenses_by_category() -> None:
 
 
 @command_group.command(
-    name="handled-licenses-by-category",
-    options_metavar="NO_SCAN_CONTEXT",
+    context="NO_SCAN_CONTEXT",
+    name="handled-licenses-by-category"
 )
 def __handled_licenses_by_category() -> None:
     handled_licenses_by_category()

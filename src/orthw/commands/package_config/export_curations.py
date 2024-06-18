@@ -16,18 +16,57 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
-from rich import print
+import click
 
+from pathlib import Path
+
+from orthw import config
+from orthw.utils import logging
 from orthw.utils.cmdgroups import package_config_group
+from orthw.utils.process import run
+from orthw.utils.required import require_initialized
 
 
-def export_curations() -> None:
-    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def export_curations(package_id: str, source_code_dir: str) -> None:
+    require_initialized()
+
+    package_configuration_file: Path = "FIXME find_package(package_id)"
+    exports_license_finding_curations_file: Path = config.exports_license_finding_curations_file
+    source_code_dir: Path = config.source_code_dir
+    exports_vcs_url_mapping_file: Path = config.exports_vcs_url_mapping_file
+
+    args: list[str] = [
+        "orth",
+        "package-configuration",
+        "export-license-finding-curations",
+        "--package-configuration-file".
+        package_configuration_file,
+        "--license-finding-curations-file",
+        exports_license_finding_curations_file.as_posix(),
+        "--source-code-dir",
+        source_code_dir.as_posix(),
+        "--vcs-url-mapping-file",
+        exports_vcs_url_mapping_file.as_posix()
+    ]
+
+    run(args=args)
 
 
 @package_config_group.command(
+    context="PACKAGE_CONFIG",
     name="export-curations",
-    options_metavar="PACKAGE_CONFIG",
+    help="""
+        Export the license finding curations to a file which maps repository URLs
+        to the license finding curations for the respective repository.
+
+        Examples:
+
+        orthw package-config export-curations Maven:org.apache.curator:curator-framework:2.13.0 /home/ort-user/code-repo/
+    """,
+    short_help="Export the license finding curations to a file."
 )
-def __export_curations() -> None:
-    export_curations()
+@click.argument("package_id")
+@click.argument("source_code_dir")
+def __export_curations(package_id: str, source_code_dir: str) -> None:
+    """Export the license finding curations to a file."""
+    export_curations(package_id=package_id, source_code_dir=source_code_dir)

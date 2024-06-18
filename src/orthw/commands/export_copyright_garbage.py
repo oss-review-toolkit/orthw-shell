@@ -56,7 +56,7 @@ def export_copyright_garbage() -> None:
         "--output-copyrights-file",
         mapped_copyrights_file.as_posix(),
         "--ort-file",
-        scan_result_file.as_posix(),
+        scan_result_file.as_posix()
     ]
     run(args=args)
 
@@ -71,14 +71,18 @@ def export_copyright_garbage() -> None:
         "--input-copyright-garbage-file",
         mapped_copyrights_file.as_posix(),
         "--output-copyright-garbage-file",
-        config.ort_config_copyright_garbage_file.as_posix(),
+        config.ort_config_copyright_garbage_file.as_posix()
     ]
     run(args=args)
 
 
 @command_group.command(
+    context="SCAN_CONTEXT",
     name="export-copyright-garbage",
-    options_metavar="SCAN_CONTEXT",
+    short_help=(
+        "Import copyright garbage from a plain text file containing one "
+        "copyright statement per line into the given copyright garbage file."
+    )
 )
 def __export_copyright_garbage() -> None:
     export_copyright_garbage()

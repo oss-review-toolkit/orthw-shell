@@ -16,41 +16,15 @@ For example:
   - Includes commands to format, sort, clean up and generate ORT config files such as [.ort.yml][ort-yml] and [package configuration][ort-package-configurations].
   - Is pre-configured to work with the [ort-config] repository allowing you to re-use the work of other ORT users.
 
-# Installation
+## Installation
 
-## 1. Prerequisites
+### 1. Prerequisites
 
 `orthw` requires the following tools to be installed on the system where you intend to run it:
 
-* [curl](https://curl.se)
-* [md5sum](https://linux.die.net/man/1/md5sum)
-* [OpenJDK](https://openjdk.org/)
-* [xz](https://linux.die.net/man/1/xz)
+* [python](https://curl.se)
 
-The installation of these tools depends on the operating system:
-- Ubuntu Linux:
-  - Run: `sudo apt install curl md5sum openjdk-18-jdk xz-utils -y`
-- MacOS:
-  - Install [HomeBrew][homebrew] and run: `brew install curl md5sha1sum openjdk xz`
-- Windows using Chocolatey and [Git Bash][git-bash]
-  - Install [Chocolatey][chocolatey]
-  - Run `choco install curl md5 microsoft-openjdk`
-  - Alternatively you can also install Microsoft OpenJDK using Powershell _as administrator_ and run `winget search Microsoft.OpenJDK`
-  - Use [Git Bash][git-bash] as your terminal
-- Windows using Windows Subsystem for Linux
-  - Install [Ubuntu on WSL for Windows 10][ubuntu-wsl-win-10], or [Ubuntu on WSL for Windows 11][ubuntu-wsl-win-11]
-  - Run `sudo apt install curl md5sum openjdk-18-jdk xz-utils -y`
-
- To verify that all the tools have installed correctly, open a new terminal and run:
-
-| Command           | Output starts with                 |
-|-------------------|------------------------------------|
-| `curl --version`  | `curl [VERSION_NUMBER]`            |
-| `java -version`   | `openjdk version [VERSION_NUMBER]` |
-| `md5sum --version`| `md5sum/sha1sum [VERSION_NUMBER]`  |
-| `xz --version`    | `xz (XZ Utils) [VERSION_NUMBER]`   |
-
-The next step is to clone the repositories of [ORT][ort], [ort-config], [ScanCode][scancode] and [orthw script][orthw].
+The next step is to clone the repositories of [ORT][ort], [ort-config], [ScanCode][scancode] and [orthw][orthw].
 Run the commands shown below in a dedicated directory such as `~/ort-project`:
 
 ```bash
@@ -68,7 +42,7 @@ Finally, create an `exports` directory which will be used to store exported lice
 mkdir -p ~/ort-project/exports
 ```
 
-## 2. Build ORT
+### 2. Build ORT
 
 Navigate to the directory where you cloned the [ORT][ort] repository and run its [native build][ort-build-native] command:
 
@@ -77,7 +51,7 @@ cd ~/ort-project/ort && \
 ./gradlew installDist
 ```
 
-## 3. Create your `orthw` configuration
+### 3. Create your `orthw` configuration
 
 - Copy the `orthwconfig-template` file from the orthw repository into your home directory.
 
@@ -112,18 +86,15 @@ exports_home: ~/ort-project/exports
 orthw_home: ~/ort-project/orthw
 ```
 
-## 4. Make `orthw` Script Executable Everywhere
+### 4. Install `orthw` 
 
-To make `orthw` executable everywhere, add a `PATH` export to your terminal configuration file.
 
-- Use a text editor to open either the `~/.bashrc` or `~/.zshrc` file (depending on the shell you use).
-- Add a path export pointing to the `orthw` script e.g. `export PATH=" ~/ort-project/orthw/orthw$PATH"`.
 
-## 5. Test if Everything Works
+### 5. Test if Everything Works
 
 Verify that `orthw` works by  running `orthw` in a new terminal window: `orthw` should print the full list of available commands and no error messages.
 
-# Usage
+## Usage
 
 Follow the [Getting Started][gs] guide to learn how to use `orthw` to:
 - [Initializing a local directory with an ORT scan result][gs-orthw-init]
@@ -137,13 +108,34 @@ Follow the [Getting Started][gs] guide to learn how to use `orthw` to:
 - [Listing licenses flagged with a policy violation][gs-orthw-offending-licenses]
 - [Conclude the license for a package][gs-orthw-concluded-license-curation]
 
-# Contributing to `orthw` and Questions
+## Development
+
+PYTHONPATH=$PWD/src
+export PYTHONPATH
+pip install poetry
+python -m poetry
+poetry install
+python -m orthw
+
+poetry up -> update deps
+
+To check your path is correctly configured
+
+`python -c "import sys; print('\n'.join(sys.path))"`
+
+python -m orthw package-config create Maven:org.eclipse.platform:org.eclipse.osgi:3.18.200 
+
+pip install ptpython
+
+import 
+
+## Contributing to `orthw` and Questions
 
 All contributions are welcome. If you are interested in contributing, please read our
 [contributing guide][ort-contributing]. To get quick answers to any of your questions
 we recommend that you [join our Slack community][ort-slack].
 
-# License
+## License
 
 Copyright (C) 2019-2022 HERE Europe B.V.\
 Copyright (C) 2022 EPAM Systems, Inc.

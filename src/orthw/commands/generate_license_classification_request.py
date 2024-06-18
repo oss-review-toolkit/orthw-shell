@@ -37,8 +37,8 @@ def generate_license_classification_request(license_id: str, stdout: bool = True
 
 
 @command_group.command(
-    name="generate-license-classification-request",
-    options_metavar="NO_SCAN_CONTEXT",
+    context="NO_SCAN_CONTEXT",
+    name="generate-license-classification-request"
 )
 @click.argument("license-id")
 def __generate_license_classification_request(license_id: str) -> None:

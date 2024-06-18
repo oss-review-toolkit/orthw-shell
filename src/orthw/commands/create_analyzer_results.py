@@ -20,19 +20,12 @@ from pathlib import Path
 
 import click
 
-from orthw import config
-from orthw.utils import logging
 from orthw.utils.cmdgroups import command_group
 from orthw.utils.database import PostgresConfig
 from orthw.utils.process import run
 
 
 def create_analyzer_results(package_ids_file: Path) -> None:
-    scancode_version = config.env("SCANCODE_VERSION")
-    if not scancode_version:
-        logging.error("Missing [bright_white]SCANCODE_VERSION[/] env.")
-        return
-
     # Get database config
     scandb = PostgresConfig()
 
@@ -41,8 +34,6 @@ def create_analyzer_results(package_ids_file: Path) -> None:
         "create-analyzer-result",
         "--package-ids-file",
         package_ids_file.as_posix(),
-        "--scancode-version",
-        scancode_version,
         "-P",
         f"ort.scanner.storages.postgres.connection.url=jdbc:postgresql://{scandb.pg_host}:{scandb.pg_port}/{scandb.pg_db}",
         "-P",
@@ -54,15 +45,15 @@ def create_analyzer_results(package_ids_file: Path) -> None:
         "-P",
         "ort.scanner.storages.postgres.connection.sslmode=require",
         "--ort-file",
-        "./synthetic-analyzer-result.json",
+        "./synthetic-analyzer-result.json"
     ]
 
     run(args=args)
 
 
 @command_group.command(
-    name="create-analyzer-results",
-    options_metavar="NO_SCAN_CONTEXT",
+    context="NO_SCAN_CONTEXT",
+    name="create-analyzer-results"
 )
 @click.argument("package-ids-file", type=click.Path(exists=True))
 def __create_analyzer_results(package_ids_file: Path) -> None:

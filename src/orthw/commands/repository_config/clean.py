@@ -16,18 +16,56 @@
 # License-Filename: LICENSE
 from __future__ import annotations
 
-from rich import print
+import click
 
+from pathlib import Path
+
+from orthw import config
+from orthw.commands import evaluate
+from orthw.utils import logging
 from orthw.utils.cmdgroups import repository_group
+from orthw.utils.process import run
+from orthw.utils.required import require_initialized
 
 
-def clean() -> None:
-    print("\n[sandy_brown]This command is not implemented yet.[/sandy_brown]")
+def clean(source_code_dir: str) -> None:
+    require_initialized()
+
+    # FIXME implement args to call evaluate
+    evaluate()
+
+    evaluation_result_file: Path = config.evaluation_result_file
+    repository_configuration_file: Path = config.repository_configuration_file
+    ort_config_resolutions_file: Path = config.ort_config_resolutions_file
+
+    logging.debug(f"source_code_dir: {source_code_dir}")
+
+    args: list[str] = [
+        "orth",
+        "repository-configuration",
+        "remove-entries",
+        "--ort-file",
+        evaluation_result_file.as_posix(),
+        "--repository-configuration-file".
+        repository_configuration_file.as_posix(),
+        "--source-code-dir",
+        source_code_dir,
+        "--resolutions-file",
+        ort_config_resolutions_file.as_posix()
+    ]
+
+    run(args=args)
 
 
 @repository_group.command(
     name="clean",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
+    help="""
+        Removes all non-matching path and scope excludes as well as rule violation resolutions from the ort.yml file.
+    """,
+    short_help="Removes all non-matching entries from the ort.yml file."
 )
-def __clean() -> None:
-    clean()
+@click.argument("source_code_dir")
+def __clean(source_code_dir: str) -> None:
+    "Removes all non-matching entries from the ort.yml file."
+    clean(source_code_dir=source_code_dir)

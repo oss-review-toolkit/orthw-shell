@@ -38,9 +38,9 @@ def clean() -> None:
 
 
 @command_group.command(
+    context="SCAN_CONTEXT",
     name="clean",
-    options_metavar="SCAN_CONTEXT",
-    short_help="Clean arifact outputs.",
+    short_help="Uninitiates a directory (removes ort.yml file and .orthw directory)."
 )
 def __clean() -> None:
     clean()
