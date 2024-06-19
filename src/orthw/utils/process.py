@@ -23,7 +23,7 @@ from pathlib import Path
 from docker.models.containers import Container
 
 from orthw.utils import admin, console, logging
-from orthw.utils.docker import __run_in_docker
+from orthw.utils.docker import _run_in_docker
 from orthw.utils.required import required_command
 
 
@@ -68,7 +68,7 @@ def run(
                 sys.exit(1)
 
     if is_docker:
-        return __run_in_docker(
+        return _run_in_docker(
             args,
             console_output=console_output,
             workdir=workdir,

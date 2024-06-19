@@ -28,7 +28,7 @@ from orthw.utils import logging
 from orthw.utils.required import required_command
 
 
-def __run_in_docker(
+def _run_in_docker(
     args: list[str],
     console_output: bool = True,
     output_file: Path | None = None,
