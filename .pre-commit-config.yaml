@@ -16,10 +16,11 @@ repos:
                 - pydantic
                 - types-PyYaml==6.0
                 - types-toml
+                - types-requests
             args: [--config, pyproject.toml]
 
     - repo: https://github.com/charliermarsh/ruff-pre-commit
-      rev: "v0.4.7"
+      rev: "v0.4.9"
       hooks:
           - id: ruff
             args: [ --fix ]
