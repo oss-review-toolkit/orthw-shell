@@ -27,7 +27,7 @@ def export_curations() -> None:
 
 @package_config_group.command(
     name="export-curations",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 def __export_curations() -> None:
     export_curations()

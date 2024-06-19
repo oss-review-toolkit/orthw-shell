@@ -27,7 +27,7 @@ def format_() -> None:
 
 @package_config_group.command(
     name="format",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 def __format() -> None:
     format_()

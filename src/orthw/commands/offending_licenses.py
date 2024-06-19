@@ -27,7 +27,7 @@ def offending_licenses() -> None:
 
 @command_group.command(
     name="offending-licenses",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 def __offending_licenses() -> None:
     offending_licenses()

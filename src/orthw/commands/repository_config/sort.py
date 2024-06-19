@@ -27,7 +27,7 @@ def sort_() -> None:
 
 @repository_group.command(
     name="sort",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def __sort() -> None:
     sort_()

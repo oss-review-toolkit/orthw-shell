@@ -20,6 +20,7 @@ from pathlib import Path
 
 import click
 import git
+import git.repo
 
 from orthw import config
 from orthw.utils.cmdgroups import command_group
@@ -41,7 +42,7 @@ def find_license_url(license_id: str) -> str:
 
 @command_group.command(
     name="find-license-url",
-    options_metavar="NO_SCAN_CONTEXT",
+    context="NO_SCAN_CONTEXT",
 )
 @click.argument("license-id")
 def __find_license_url(license_id: str) -> None:

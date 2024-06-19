@@ -39,7 +39,7 @@ def clean() -> None:
 
 @command_group.command(
     name="clean",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
     short_help="Clean arifact outputs.",
 )
 def __clean() -> None:

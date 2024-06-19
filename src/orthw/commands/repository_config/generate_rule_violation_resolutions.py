@@ -27,7 +27,7 @@ def generate_rule_violation_resolutions() -> None:
 
 @repository_group.command(
     name="generate-rule-violation-resolutions",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def __generate_rule_violation_resolutions() -> None:
     generate_rule_violation_resolutions()

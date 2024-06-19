@@ -27,7 +27,7 @@ def clean() -> None:
 
 @package_config_group.command(
     name="clean",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 def __clean() -> None:
     clean()

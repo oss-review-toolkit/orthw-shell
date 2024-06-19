@@ -27,7 +27,7 @@ def clean() -> None:
 
 @repository_group.command(
     name="clean",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def __clean() -> None:
     clean()

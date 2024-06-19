@@ -27,7 +27,7 @@ def report() -> None:
 
 @command_group.command(
     name="report",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 def __report() -> None:
     report()

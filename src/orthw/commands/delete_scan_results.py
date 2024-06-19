@@ -46,7 +46,7 @@ def delete_scan_results(package_id: str) -> None:
 
 @command_group.command(
     name="delete-scan-results",
-    options_metavar="NO_SCAN_CONTEXT",
+    context="NO_SCAN_CONTEXT",
 )
 @click.argument("package_id")
 def __delete_scan_results(package_id: str) -> None:

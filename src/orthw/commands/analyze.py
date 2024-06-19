@@ -71,7 +71,7 @@ def analyze(
 
 @command_group.command(
     name="analyze",
-    options_metavar="NO_SCAN_CONTEXT",
+    context="NO_SCAN_CONTEXT",
     short_help="Run ort analyze command on provided source code directory.",
 )
 @click.option("--format", "-f", "format_", default="JSON")

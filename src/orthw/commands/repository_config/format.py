@@ -27,7 +27,7 @@ def format_() -> None:
 
 @repository_group.command(
     name="format",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def ___format() -> None:
     format_()

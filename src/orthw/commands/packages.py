@@ -27,7 +27,7 @@ def packages() -> None:
 
 @command_group.command(
     name="packages",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 def __packages() -> None:
     packages()

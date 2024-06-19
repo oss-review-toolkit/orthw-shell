@@ -27,7 +27,7 @@ def create() -> None:
 
 @package_config_group.command(
     name="create",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 def __create() -> None:
     create()

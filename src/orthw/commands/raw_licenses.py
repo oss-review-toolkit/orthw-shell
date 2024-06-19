@@ -27,7 +27,7 @@ def raw_licenses() -> None:
 
 @command_group.command(
     name="raw-licenses",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 def __raw_licenses() -> None:
     raw_licenses()

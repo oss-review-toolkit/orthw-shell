@@ -76,7 +76,7 @@ def evaluate(
 
 @command_group.command(
     name="evaluate",
-    options_metavar="NO_SCAN_CONTEXT",
+    context="NO_SCAN_CONTEXT",
     short_help="Run ort evaluate command on provided source code directory",
 )
 @click.option("--format", "-f", "format_", default="JSON")

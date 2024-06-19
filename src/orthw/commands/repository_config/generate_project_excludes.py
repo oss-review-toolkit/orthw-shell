@@ -27,7 +27,7 @@ def generate_project_excludes() -> None:
 
 @repository_group.command(
     name="generate-project-excludes",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def ___generate_project_excludes() -> None:
     generate_project_excludes()

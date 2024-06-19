@@ -27,7 +27,7 @@ def import_path_excludes() -> None:
 
 @repository_group.command(
     name="import-path-excludes",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def __import_path_excludes() -> None:
     import_path_excludes()

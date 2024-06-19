@@ -27,7 +27,7 @@ def export_path_excludes() -> None:
 
 @repository_group.command(
     name="export-path-excludes",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def __export_path_excludes() -> None:
     export_path_excludes()

@@ -27,7 +27,7 @@ def generate_timeout_error_resolutions() -> None:
 
 @repository_group.command(
     name="generate-timeout-error-resolutions",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def __generate_timeout_error_resolutions() -> None:
     generate_timeout_error_resolutions()

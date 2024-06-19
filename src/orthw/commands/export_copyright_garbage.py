@@ -78,7 +78,7 @@ def export_copyright_garbage() -> None:
 
 @command_group.command(
     name="export-copyright-garbage",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 def __export_copyright_garbage() -> None:
     export_copyright_garbage()

@@ -27,7 +27,7 @@ def offending_packages() -> None:
 
 @command_group.command(
     name="offending-packages",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 def __offending_packages() -> None:
     offending_packages()

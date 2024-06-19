@@ -27,7 +27,7 @@ def import_curations() -> None:
 
 @package_config_group.command(
     name="import-curations",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 def __import_curations() -> None:
     import_curations()

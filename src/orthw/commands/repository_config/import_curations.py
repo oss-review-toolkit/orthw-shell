@@ -27,7 +27,7 @@ def import_curations() -> None:
 
 @repository_group.command(
     name="import-curations",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def __import_curations() -> None:
     """Import curations"""

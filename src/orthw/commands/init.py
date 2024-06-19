@@ -105,7 +105,7 @@ def init(target_url: str) -> int | Container:
 
 @command_group.command(
     name="init",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 @click.argument("target_url")
 def __init(target_url: str) -> None:

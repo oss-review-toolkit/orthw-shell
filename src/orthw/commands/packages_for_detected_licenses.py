@@ -27,7 +27,7 @@ def packages_for_detected_licenses() -> None:
 
 @command_group.command(
     name="packages-for-detected-licenses",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 def __packages_for_detected_licenses() -> None:
     packages_for_detected_licenses()

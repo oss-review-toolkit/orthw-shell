@@ -55,7 +55,7 @@ def licenses(package_id: str, source_code_dir: str | None = None) -> None:
 
 @command_group.command(
     name="licenses",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 @click.option("--source-code-dir", default=None)
 @click.argument("package_id")

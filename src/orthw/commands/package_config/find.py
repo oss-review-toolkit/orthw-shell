@@ -27,7 +27,7 @@ def find() -> None:
 
 @package_config_group.command(
     name="find",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 def __find() -> None:
     find()

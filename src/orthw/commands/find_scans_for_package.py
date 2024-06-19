@@ -17,7 +17,7 @@
 from __future__ import annotations
 
 import click
-from psycopg2 import sql
+from psycopg2.sql import Literal
 from rich import print
 from rich.pretty import pprint
 
@@ -28,7 +28,7 @@ from orthw.utils.database import list_scan_results, query_scandb
 def find_scans_for_package(package_id: str) -> None:
     list_scan_results(package_id=package_id)
 
-    count_sql: str = sql.literal(
+    count_sql: Literal[str] = Literal(
         f"SELECT COUNT(*) FROM scan_results WHERE identifier LIKE '{package_id}'",  # noqa: S608
     )
     count: list[tuple[str, str]] | None = query_scandb(sql=count_sql)
@@ -40,7 +40,7 @@ def find_scans_for_package(package_id: str) -> None:
     print("[bright_blue]Press enter to delete them.[/bright_blue]")
     input()
 
-    delete_sql: str = f"DELETE FROM scan_results WHERE identifier LIKE {package_id}"  # nosec B608  # noqa: S608
+    delete_sql: Literal[str] = Literal(f"DELETE FROM scan_results WHERE identifier LIKE {package_id}")  # noqa: S608
     result = query_scandb(sql=delete_sql)
 
     if result:
@@ -49,7 +49,7 @@ def find_scans_for_package(package_id: str) -> None:
 
 @command_group.command(
     name="find-scans-for-package",
-    options_metavar="NO_SCAN_CONTEXT",
+    context="NO_SCAN_CONTEXT",
 )
 @click.argument("package_id")
 def __find_scans_for_package(package_id: str) -> None:

@@ -56,15 +56,15 @@ def copyrights(package_id: str = "") -> None:
             ort_config_package_configuration_dir.as_posix(),
         ]
 
-        run(args=args, output_file=config.path("copyrights_file"))
+        run(args=args, output_file=config.copyrights_file)
 
         args += ["--show-raw-statements"]
-        run(args=args, output_file=config.path("copyrights_debug_file"))
+        run(args=args, output_file=config.copyrights_debug_file)
 
 
 @command_group.command(
     name="copyrigths",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
 )
 @click.argument("package-id", type=str, default="")
 def __copyrights(package_id: str) -> None:

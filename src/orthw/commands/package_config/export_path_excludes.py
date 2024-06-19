@@ -27,7 +27,7 @@ def export_path_excludes() -> None:
 
 @package_config_group.command(
     name="export-path",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 def __export_path_excludes() -> None:
     export_path_excludes()

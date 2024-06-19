@@ -27,7 +27,7 @@ def import_path_excludes() -> None:
 
 @package_config_group.command(
     name="import-path-excludes",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 def __import_path_excludes() -> None:
     import_path_excludes()

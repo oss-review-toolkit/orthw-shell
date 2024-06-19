@@ -27,7 +27,7 @@ def sort_() -> None:
 
 @package_config_group.command(
     name="sort",
-    options_metavar="PACKAGE_CONFIG",
+    context="PACKAGE_CONFIG",
 )
 def __sort() -> None:
     sort_()

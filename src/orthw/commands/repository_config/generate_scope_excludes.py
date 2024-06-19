@@ -27,7 +27,7 @@ def generate_scope_excludes() -> None:
 
 @repository_group.command(
     name="generate-scope-excludes",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def __generate_scope_excludes() -> None:
     generate_scope_excludes()

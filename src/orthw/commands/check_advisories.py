@@ -25,7 +25,7 @@ def check_advisories() -> None:
 
 @command_group.command(
     name="check_advisories",
-    options_metavar="SCAN_CONTEXT",
+    context="SCAN_CONTEXT",
     short_help="Check the advisories.",
 )
 def __check_advisories() -> None:

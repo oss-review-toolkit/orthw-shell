@@ -27,7 +27,7 @@ def export_curations() -> None:
 
 @repository_group.command(
     name="export-curations",
-    options_metavar="REPOSITORY_CONFIG",
+    context="REPOSITORY_CONFIG",
 )
 def __export_curations() -> None:
     export_curations()
