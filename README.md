@@ -1,7 +1,8 @@
-# The orthw script
+# The ORT Helper Wrapper (`orthw`) script
 
 `orthw` is a shell script designed to simplify and speed up common tasks performed when processing [ORT][ort]
-scan results. It supports a number of commands, which can be run in the terminal (e.g. Bash). 
+scan results. It supports a number of commands, which can be run in the terminal (e.g. Bash).
+Most of the commands are thin wrappers around the commands provided by [ORT's helper CLI](ort-helper-cli). 
 
 For example:
 - To correct license findings in an open source dependency, you can run `orthw pc-create <package-id>`, which generates
@@ -167,6 +168,7 @@ OSS Review Toolkit (ORT) is a [Linux Foundation project](https://www.linuxfounda
 [ort-contributing]: https://github.com/oss-review-toolkit/.github/blob/main/CONTRIBUTING.md
 [ort-curations]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-curations-yml.md
 [ort-build-native]: https://github.com/oss-review-toolkit/ort#build-natively
+[ort-helper-cli]: https://github.com/oss-review-toolkit/ort/tree/main/helper-cli
 [ort-package-configurations]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-package-configuration-yml.md
 [ort-slack]: https://join.slack.com/t/ort-talk/shared_invite/zt-1c7yi4sj6-mk7R1fAa6ZdW5MQ6DfAVRg
 [ort-yml]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-ort-yml.md
