@@ -98,6 +98,7 @@ usage() {
   echo "  offending-licenses <package-id> <source-code-dir>"
   echo "  packages"
   echo "  packages-for-detected-licenses <license-ids-csv>"
+  echo "  projects"
   echo "  raw-licenses"
   echo "  report"
   echo "  report-cyclone-dx"
@@ -429,6 +430,12 @@ packages() {
   orth list-packages \
     --ort-file $scan_result_file \
     --package-type PACKAGE
+}
+
+projects() {
+  orth list-packages \
+    --ort-file $scan_result_file \
+    --package-type PROJECT
 }
 
 offending_packages() {
@@ -847,6 +854,15 @@ if [ "$command" = "packages-for-detected-licenses" ] && [ "$#" -eq 2 ]; then
   orth list-packages \
     --ort-file $scan_result_file \
     --match-detected-licenses $detected_licenses
+  exit 0
+fi
+
+
+if [ "$command" = "projects" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  projects
+
   exit 0
 fi
 
