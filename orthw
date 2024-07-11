@@ -426,7 +426,9 @@ ort() {
 }
 
 packages() {
-  orth list-packages --ort-file $scan_result_file
+  orth list-packages \
+    --ort-file $scan_result_file \
+    --package-type PACKAGE
 }
 
 offending_packages() {
