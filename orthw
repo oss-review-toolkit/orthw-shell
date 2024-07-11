@@ -108,6 +108,7 @@ usage() {
   echo "  report-notices"
   echo "  report-spdx"
   echo "  report-webapp"
+  echo "  scan-issue-stats"
   echo ""
   echo "Commands for package configurations:"
   echo ""
@@ -1233,6 +1234,13 @@ fi
 if [ "$command" = "report-webapp" ] && [ "$#" -eq 1 ]; then
   require_initialized
   report WebApp
+  exit 0
+fi
+
+
+if [ "$command" = "scan-issue-stats" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+  orth group-scan-issues --ort-file $scan_result_file
   exit 0
 fi
 
