@@ -7,7 +7,7 @@ Most of the commands are thin wrappers around the commands provided by [ORT's he
 For example:
 - To correct license findings in an open source dependency, you can run `orthw pc-create <package-id>`, which generates
   a [package configuration][ort-package-configurations] file.
-- To indicate that certain items are internal to the project (and so license findings should not be reported against them), you can generate scope excludes for your project's  [.ort.yml][ort-yml] file with the command `orthw  rc-generate-scope-excludes` generates [scope excludes][ort-yml-scope-excludes].
+- To indicate that certain items are internal to the project (and so license findings should not be reported against them), you can generate scope excludes for your project's  [.ort.yml][ort-yml] file with the command `orthw rc-generate-scope-excludes` generates [scope excludes][ort-yml-scope-excludes].
 
 ## Benefits of `orthw`
 
