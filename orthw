@@ -98,6 +98,7 @@ usage() {
   echo "  offending-licenses <package-id> <source-code-dir>"
   echo "  packages"
   echo "  packages-for-detected-licenses <license-ids-csv>"
+  echo "  packages-non-excluded"
   echo "  projects"
   echo "  raw-licenses"
   echo "  report"
@@ -431,6 +432,14 @@ packages() {
   orth list-packages \
     --ort-file $scan_result_file \
     --package-type PACKAGE
+}
+
+packages_non_excluded() {
+  orth list-packages \
+    --ort-file $scan_result_file \
+    --package-type PACKAGE \
+    --omit-excluded \
+    --repository-configuration-file $repository_configuration_file
 }
 
 projects() {
@@ -843,6 +852,15 @@ if [ "$command" = "packages" ] && [ "$#" -eq 1 ]; then
   require_initialized
 
   packages
+
+  exit 0
+fi
+
+
+if [ "$command" = "packages-non-excluded" ] && [ "$#" -eq 1 ]; then
+  require_initialized
+
+  packages_non_excluded
 
   exit 0
 fi
