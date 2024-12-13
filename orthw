@@ -63,7 +63,6 @@ copyrights_file="copyrights.txt"
 copyrights_debug_file="copyrights-debug.txt"
 cyclone_dx_report_file="cyclone-dx-report.xml"
 evaluated_model_report_file="evaluated-model.json"
-gitlab_license_model_report_file="gl-license-scanning-report.json"
 html_report_file="report.html"
 repository_configuration_file="ort.yml"
 spdx_json_report_file="report.spdx.json"
@@ -103,7 +102,6 @@ usage() {
   echo "  raw-licenses"
   echo "  report"
   echo "  report-cyclone-dx"
-  echo "  report-gitlab-license-model"
   echo "  report-html"
   echo "  report-model"
   echo "  report-notices"
@@ -506,7 +504,6 @@ report() {
   mv "$temp_dir/bom.cyclonedx.xml" $cyclone_dx_report_file > /dev/null 2>&1
   mv "$temp_dir/bom.spdx.json" $spdx_json_report_file > /dev/null 2>&1
   mv "$temp_dir/bom.spdx.yml" $spdx_yaml_report_file > /dev/null 2>&1
-  mv "$temp_dir/gl-license-scanning-report.json" $gitlab_license_model_report_file > /dev/null 2>&1
   mv "$temp_dir/evaluated-model.json" $evaluated_model_report_file > /dev/null 2>&1
   mv "$temp_dir/scan-report.html" $html_report_file > /dev/null 2>&1
   mv "$temp_dir/scan-report-web-app.html" $webapp_report_file > /dev/null 2>&1
@@ -1202,7 +1199,7 @@ fi
 
 if [ "$command" = "report" ] && [ "$#" -eq 1 ]; then
   require_initialized
-  report "EvaluatedModel,GitLabLicenseModel,PlainTextTemplate,SpdxDocument,StaticHtml,WebApp"
+  report "EvaluatedModel,PlainTextTemplate,SpdxDocument,StaticHtml,WebApp"
   exit 0
 fi
 
@@ -1210,13 +1207,6 @@ fi
 if [ "$command" = "report-cyclone-dx" ] && [ "$#" -eq 1 ]; then
   require_initialized
   report CycloneDx
-  exit 0
-fi
-
-
-if [ "$command" = "report-gitlab-license-model" ] && [ "$#" -eq 1 ]; then
-  require_initialized
-  report GitLabLicenseModel
   exit 0
 fi
 
