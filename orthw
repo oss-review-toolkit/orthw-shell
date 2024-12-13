@@ -61,7 +61,7 @@ exports_vcs_url_mapping_file="$exports_home/vcs-url-mapping.yml"
 #
 copyrights_file="copyrights.txt"
 copyrights_debug_file="copyrights-debug.txt"
-cyclone_dx_report_file="cyclone-dx-report.xml"
+cyclone_dx_report_file="cyclone-dx-report.json"
 evaluated_model_report_file="evaluated-model.json"
 html_report_file="report.html"
 repository_configuration_file="ort.yml"
