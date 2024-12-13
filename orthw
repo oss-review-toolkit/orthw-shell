@@ -1199,7 +1199,7 @@ fi
 
 if [ "$command" = "report" ] && [ "$#" -eq 1 ]; then
   require_initialized
-  report "EvaluatedModel,PlainTextTemplate,SpdxDocument,StaticHtml,WebApp"
+  report "CycloneDx,EvaluatedModel,PlainTextTemplate,SpdxDocument,StaticHtml,WebApp"
   exit 0
 fi
 
