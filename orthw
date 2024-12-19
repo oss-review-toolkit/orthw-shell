@@ -61,7 +61,8 @@ exports_vcs_url_mapping_file="$exports_home/vcs-url-mapping.yml"
 #
 copyrights_file="copyrights.txt"
 copyrights_debug_file="copyrights-debug.txt"
-cyclone_dx_report_file="cyclone-dx-report.json"
+cyclone_dx_json_report_file="cyclone-dx-report.json"
+cyclone_dx_xml_report_file="cyclone-dx-report.xml"
 evaluated_model_report_file="evaluated-model.json"
 html_report_file="report.html"
 repository_configuration_file="ort.yml"
@@ -501,7 +502,8 @@ report() {
     -O EvaluatedModel=output.file.formats=json \
     -O PlainTextTemplate=project-types-as-packages="SpdxDocumentFile" \
     $notice_template_path_option
-  mv "$temp_dir/bom.cyclonedx.xml" $cyclone_dx_report_file > /dev/null 2>&1
+  mv "$temp_dir/bom.cyclonedx.xml" $cyclone_dx_xml_report_file > /dev/null 2>&1
+  mv "$temp_dir/bom.cyclonedx.json" $cyclone_dx_json_report_file > /dev/null 2>&1
   mv "$temp_dir/bom.spdx.json" $spdx_json_report_file > /dev/null 2>&1
   mv "$temp_dir/bom.spdx.yml" $spdx_yaml_report_file > /dev/null 2>&1
   mv "$temp_dir/evaluated-model.json" $evaluated_model_report_file > /dev/null 2>&1
