@@ -20,7 +20,7 @@ fi
 # Executables:
 #
 ort="${ort_home}/cli/build/install/ort/bin/ort"
-orth="${ort_home}/helper-cli/build/install/orth/bin/orth"
+orth="${ort_home}/cli-helper/build/install/orth/bin/orth"
 
 ########################################
 # Dot directory files:
