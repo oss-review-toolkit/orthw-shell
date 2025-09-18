@@ -59,7 +59,7 @@ mkdir -p ~/ort-project && \
 cd ~/ort-project && \
 git clone https://github.com/oss-review-toolkit/ort.git && \
 git clone https://github.com/oss-review-toolkit/ort-config.git && \
-git clone https://github.com/oss-review-toolkit/orthw.git && \
+git clone https://github.com/oss-review-toolkit/orthw-shell.git && \
 git clone https://github.com/nexB/scancode-toolkit.git
 ```
 
@@ -83,7 +83,7 @@ cd ~/ort-project/ort && \
 - Copy the `orthwconfig-template` file from the orthw repository into your home directory.
 
 ```bash
-cp ~/ort-project/orthw/orthwconfig-template ~/.orthwconfig
+cp ~/ort-project/orthw-shell/orthwconfig-template ~/.orthwconfig
 ```
 
 - Open `~/.orthwconfig` in a text editor.
@@ -102,7 +102,7 @@ scancode_home=~/ort-project/scancode-toolkit
 
 exports_home=~/ort-project/exports
 
-orthw_home=~/ort-project/orthw
+orthw_home=~/ort-project/orthw-shell
 ```
 
 ## 4. Make `orthw` Script Executable Everywhere
@@ -110,7 +110,7 @@ orthw_home=~/ort-project/orthw
 To make `orthw` executable everywhere, add a `alias` export to your terminal configuration file.
 
 - Use a text editor to open your terminal launch configuration file e.g. `~/.bashrc` or `~/.zshrc`.
-- Add an alias pointing to the `orthw` script e.g. `alias orthw="bash ~/ort-project/orthw/orthw"`.
+- Add an alias pointing to the `orthw` script e.g. `alias orthw="bash ~/ort-project/orthw-shell/orthw"`.
 - Reload your terminal configuration file e.g. `source ~/.bashrc` or `source ~/.zshrc`.
 
 ## 5. Test if Everything Works
