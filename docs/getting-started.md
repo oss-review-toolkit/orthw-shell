@@ -588,7 +588,7 @@ the _License Clearance Workflow_ above suggests a simpler solution, which is to 
 [ort-config-04c6b0d]: https://github.com/oss-review-toolkit/ort-config/tree/04c6b0d
 [ort-config-04c6b0d-rules-kts]: https://github.com/oss-review-toolkit/ort-config/blob/04c6b0d/evaluator-rules/src/main/resources/example.rules.kts
 [ort-curations]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-curations-yml.md
-[ort-package-configurations]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-package-configuration-yml.md
+[ort-package-configurations]: https://github.com/oss-review-toolkit/ort/blob/main/website/docs/configuration/package-configurations.md
 [ort-path-exclude-reason]: https://github.com/oss-review-toolkit/ort/blob/main/model/src/main/kotlin/config/PathExcludeReason.kt
 [ort-license-finding-curation-reason]: https://github.com/oss-review-toolkit/ort/blob/main/model/src/main/kotlin/config/LicenseFindingCurationReason.kt
 [ort-yml]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-ort-yml.md
