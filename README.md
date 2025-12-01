@@ -168,11 +168,11 @@ OSS Review Toolkit (ORT) is a [Linux Foundation project](https://www.linuxfounda
 [ort-contributing]: https://github.com/oss-review-toolkit/.github/blob/main/CONTRIBUTING.md
 [ort-curations]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-curations-yml.md
 [ort-build-native]: https://github.com/oss-review-toolkit/ort#build-natively
-[ort-helper-cli]: https://github.com/oss-review-toolkit/ort/tree/main/helper-cli
-[ort-package-configurations]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-package-configuration-yml.md
+[ort-helper-cli]: https://github.com/oss-review-toolkit/ort/tree/main/cli-helper
+[ort-package-configurations]: https://github.com/oss-review-toolkit/ort/blob/main/website/docs/configuration/package-configurations.md
 [ort-slack]: https://join.slack.com/t/ort-talk/shared_invite/zt-1c7yi4sj6-mk7R1fAa6ZdW5MQ6DfAVRg
-[ort-yml]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-ort-yml.md
-[ort-yml-scope-excludes]: https://github.com/oss-review-toolkit/ort/blob/main/docs/config-file-ort-yml.md#excluding-scopes
+[ort-yml]: https://github.com/oss-review-toolkit/ort/blob/main/website/docs/configuration/ort-yml.md
+[ort-yml-scope-excludes]: https://github.com/oss-review-toolkit/ort/blob/main/website/docs/configuration/ort-yml.md#excluding-scopes
 [orthw]: https://github.com/oss-review-toolkit/orthw
 [scancode]: https://github.com/nexB/scancode-toolkit
 [ubuntu-wsl-win-10]: https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-10#1-overview
