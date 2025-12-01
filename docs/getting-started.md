@@ -23,7 +23,7 @@ Before you begin working through the tutorial, please complete the [installation
 This tutorial uses the scan result file
 [examples/npm-mime-types-2.1.26-scan-result.json][npm-mime-types-2.1.26-scan-result]
 from the [orthw] repository. The file was created by [ORT][ort] applying policy rules, [curations][ort-curations] and [package
-configurations](ort-package-configurations) from the [ort-config] repository, commit [04c6b0d][ort-config-04c6b0d].
+configurations][ort-package-configurations] from the [ort-config] repository, commit [04c6b0d][ort-config-04c6b0d].
 
 Run the following command in the terminal to switch your local clone of the [ort-config] repository to this commit:
 
