@@ -35,7 +35,7 @@ ignore_excluded_rule_ids=""
 # ScanCode version to filter the scan results with the 'create-analyzer-result' command.
 # An empty string matches any ScanCode version.
 #
-scancode_version="30.1.0"
+scancode_version="32.4.1"
 
 #
 # Comma-separated list of advisors to query for known security advisories or defects.
