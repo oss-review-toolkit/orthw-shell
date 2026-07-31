@@ -205,10 +205,16 @@ analyze_in_docker() {
     echo "Skip setting up a .netrc file, because that's not configured."
   fi
 
+  # If the dir is not owned by UID=1000, issues may arise. Can be fixed by changing ownership.
+  docker_user_home="$HOME/.cache/orthw/docker-user-home"
+  mkdir -p $docker_user_home
+
   docker run \
     -it \
+    --network host \
     $mount_netrc_option \
     -v $ort_home:/ort \
+    -v $docker_user_home:/home/ort \
     -v $HOME/.ssh:/home/ort/.ssh \
     -v $project_dir:/workspace \
     --entrypoint /bin/bash \
