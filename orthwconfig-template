@@ -116,6 +116,12 @@ gitlab_host="gitlab.example.com"
 gitlab_token=""
 
 #
+# JFrog credentials for using the "init" command provided a URL pointing to an ORT file on JFrog.
+#
+jfrog_host="jfrog.example.com"
+jfrog_token=""
+
+#
 # Options for ORT's CLI and helper CLI binaries, `ort` and `orth`.
 # Please refer to the help instructions of the respective CLI binary for the full list of available options.
 #

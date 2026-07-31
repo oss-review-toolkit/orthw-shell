@@ -377,6 +377,9 @@ init() {
   if [[ $target_url == *$gitlab_host* ]]; then
     header_options+=('-H' "PRIVATE-TOKEN: $gitlab_token")
     echo "Added authentication header for GitLab hosted at $gitlab_host."
+  elif [[ $target_url == *$jfrog_host* ]]; then
+    header_options+=('-H' "X-JFrog-Art-Api: $jfrog_token")
+    echo "Added authentication header for JFrog hosted at $jfrog_host."
   fi
 
   local filename="${target_url##*/}"
