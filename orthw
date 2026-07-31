@@ -382,7 +382,7 @@ init() {
   declare -a header_options=()
   if [[ $target_url == *$gitlab_host* ]]; then
     header_options+=('-H' "PRIVATE-TOKEN: $gitlab_token")
-    echo "Added authentication header for $gitlab_host."
+    echo "Added authentication header for GitLab hosted at $gitlab_host."
   fi
 
   local filename="${target_url##*/}"
