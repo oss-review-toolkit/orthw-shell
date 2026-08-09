@@ -107,7 +107,7 @@ netrc_login="example-user"
 netrc_password="example-password"
 
 #
-# GitLab credentials for using the "init" command provided a URL pointing to a GitLab job artifact.
+# GitLab credentials for using the "init" command provided a URL pointing to an ORT file on GitLab.
 # The password can either be a token or a password. The token can be created under
 # https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html and should have 'read_registry' and 'read_api'
 # permissions.
