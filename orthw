@@ -519,11 +519,9 @@ report() {
   mv "$temp_dir/scan-report.html" $html_report_file > /dev/null 2>&1
   mv "$temp_dir/scan-report-web-app.html" $webapp_report_file > /dev/null 2>&1
 
-  # Move notice files and turn the filename into uppercase using underscores instead of ' ' and '-'.
+  # Move the notice files:
   for file in $temp_dir/*NOTICE* ; do
-      local filename=$(basename -- "$file")
-      local target_filename=$(echo $filename | tr 'a-z' 'A-Z' | tr '-' '_' | tr ' ' '_')
-      mv $file ./$target_filename > /dev/null 2>&1
+      mv $file . > /dev/null 2>&1
   done
 
   rm -rf $temp_dir
