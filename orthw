@@ -485,7 +485,7 @@ report() {
 
   local notice_template_files=""
   if [ -d $ort_config_notice_templates_dir ]; then
-    notice_template_files=$(find $ort_config_notice_templates_dir -name "*NOTICE*.ftl" | tr '\n' ',' | sed 's/,*\r*$//')
+    notice_template_files=$(find $(realpath "$ort_config_notice_templates_dir") -name "*NOTICE*.ftl" | tr '\n' ',' | sed 's/,*\r*$//')
   fi
 
   if [ -n "$notice_template_files" ]; then
